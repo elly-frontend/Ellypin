@@ -1,4 +1,6 @@
 import {Injectable, OnInit} from '@angular/core';
+import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
+// import { StitchClientFactory } from 'mongodb-stitch';
 
 import * as Web3 from 'web3';
 
@@ -9,30 +11,58 @@ let tokenAbi = require('./tokenContract.json');
 
 @Injectable()
 export class ContractsService {
+  // clientPromise = StitchClientFactory.create('ifakebook-eqvwi');
+  // client;
+  // db;
+
   private _account: string = null;
   private _web3: any;
 
   private _tokenContract: any;
   private _tokenContractAddress: string = "0x2784a70ae2f84f40007f5d6518e20adff5c82d98";
 
-  constructor() {
+  constructor(private httpClient : HttpClient) {
+  //   this.clientPromise.then(_client => {
+  //     this.client = _client;
+  //     this.db = this.client.service('mongodb', 'mongodb-atlas').db('ifakebook_db');
+  // });
+
     if (typeof window.web3 !== 'undefined') {
       // Use Mist/MetaMask's provider
       this._web3 = new Web3(window.web3.currentProvider);
       console.log();
       
       window.ethereum.enable(); 
-
+      this._tokenContract = this._web3.eth.contract(tokenAbi).at(this._tokenContractAddress);
       // if (this._web3.version.network !== '4') {
       //   alert('Please connect to the Rinkeby network');
       // }
     } else {
-      console.warn(
-        'Please use a dapp browser like mist or MetaMask plugin for chrome'
+      alert(
+        'Please install MetaMask extension for your browser'
       );
     }
+  }
 
-    this._tokenContract = this._web3.eth.contract(tokenAbi).at(this._tokenContractAddress);
+  setHeader():Object {
+    // console.log(localStorage.getItem('accessToken'), "inside set header if");
+    if(localStorage.getItem('accessToken')) {
+      
+      let headers = new HttpHeaders({
+        // 'Content-Type': 'application/json',
+        'Authorization':'Bearer '+localStorage.getItem('accessToken')
+      });
+      return {headers};
+    } else {
+      // console.log("inside set header else");
+
+      let headers = new HttpHeaders({
+        'Content-Type': 'application/json'
+      });
+      return {headers};
+
+    }
+     
   }
 
   public async getAccount(): Promise<string> {
@@ -176,5 +206,37 @@ export class ContractsService {
         
       }
     });
+  }
+
+  testHook(){
+    return this.httpClient.get('https://webhooks.mongodb-stitch.com/api/client/v2.0/app/ellypin-wysik/service/http/incoming_webhook/webhook0')
+  }
+
+  public sendMessage(admin_payload, custodian_payload){
+    let Data = {
+      custodian: custodian_payload,
+      admin: admin_payload
+    }
+    return this.httpClient.post('https://webhooks.mongodb-stitch.com/api/client/v2.0/app/ellypin-wysik/service/http/incoming_webhook/sendMessage',Data)
+  }
+
+  public async getFees(): Promise<number>{
+    return new Promise((resolve, reject) => {
+      this._tokenContract.getFee.call((err, result) => {
+        if(err != null){
+          reject(err);
+        }
+        console.log(result);
+        resolve(result);
+      });
+    })as Promise<number>;
+  }
+  
+  public redeemToken(admin_payload, custodian_payload){
+    let Data = {
+      custodian: custodian_payload,
+      admin: admin_payload
+    }
+    return this.httpClient.post('https://webhooks.mongodb-stitch.com/api/client/v2.0/app/ellypin-wysik/service/http/incoming_webhook/sendMessage',Data)
   }
 }

@@ -4,12 +4,12 @@
         <div class="row">
           <div class="col-md-2 col-sm-3 col-xs-3">
             <div class="logo-wrapper">
-              <a href="home.html">
+              <a>
 								<img src="assets/images/logo.png" alt="Ellypin">
 							</a>
             </div>
           </div>
-          <div class="col-md-10 col-sm-9 col-xs-9">
+          <div class="col-md-10 col-sm-9 col-xs-9" (click)="downloadPdf()">
             <div class="header-title">
               <h1>Ellypin US$ Pod-Proof-of-Deposit token</h1>
             </div>
@@ -19,6 +19,8 @@
     </section>
   </header>
   <div class="body-wrapper">
+      <ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px',fullScreenBackdrop:true, animationType:'circleSwish' }" [template]="customLoadingTemplate"></ngx-loading>
+
     <div class="container">
       <div class="row">
         <div class="col-sm-12">
@@ -40,10 +42,10 @@
 						</a>
           </div>
           <div class="col-md-3 col-sm-6">
-            <a href="javascript:void(0);">
-							<div (click)="getBalance()" class="service-menu-inner">
+            <a>
+							<div  class="service-menu-inner">
 								<p>Total Token Balance</p>
-								<span>(Live)</span>
+								<span>{{userBalance || '0'}}</span>
 							</div>
 						</a>
           </div>
@@ -56,7 +58,7 @@
           </div>
           <div class="col-md-3 col-sm-6">
             <a href="javascript:void(0);">
-							<div (click)="encryptUsingEceis()" class="service-menu-inner">
+							<div (click)="toMyEtherScan()" class="service-menu-inner">
 								<p>My Ether Scan</p>
 							</div>
 						</a>
@@ -175,7 +177,7 @@
     					</a>
             </div>
             <div class="box-wrapper">
-              <a href="javascript:void(0);">
+              <a (click)="connectToMongo()">
     						<div class="box-heading">
     							<span class="box-icon">
     								<img src="assets/images/advance-icon.png">
@@ -297,60 +299,67 @@
         <div class="modal-body">
           <div class="row">
             <div class="col-sm-12">
-              <form action="">
+              <form [formGroup]="buyForm">
               	<h3>Buy</h3>
                 <div class="form-group">
 	                <label>
 	                  Number of Tokens*
 	                  <p>Unique Identifier of Token.</p>
 	                </label>
-	                <input class="form-control" type="text" name="buy-no-token" [(ngModel)]="tokenCount" required="">
-	              </div>
+	                <input class="form-control" type="text" name="buy-no-token" [formControl]="tokenToSend" required="">
+                  <span *ngIf="tokenToSend.invalid && tokenToSend.touched" style="color:red;font-size: 11px">Enter tokens to send</span>
+                </div>
 	              <h3>Buyer Name</h3>
 	              <div class="row">
-	              	<div class="col-sm-6 col-xs-12">
+	              	<div class="col-sm-12 col-xs-12">
               		  <div class="form-group">
 		                  <label>Name*</label>
-		                  <input class="form-control" type="text" name="buy-name" required="">
+                      <input class="form-control" type="text" [formControl]="name" name="buy-name" required="">
+                      <span *ngIf="name.invalid && name.touched" style="color:red;font-size: 11px">Please enter your name</span>
 		                </div>
               		</div>
-              		<div class="col-sm-6 col-xs-12">
+              		<!-- <div class="col-sm-6 col-xs-12">
               		  <div class="form-group">
 		                  <label>Id*</label>
 		                  <input class="form-control" type="text" name="buy-id" required="">
 		                </div>
-              		</div>
-              		<div class="col-sm-12 col-xs-12">
+              		</div> -->
+              		<!-- <div class="col-sm-12 col-xs-12">
               		  <div class="form-group">
-		                  <label>Address*</label>
-		                  <input class="form-control" type="text" name="buy-add" required="">
-		                </div>
-              		</div>
+                      <label>Public Key*</label>
+                      <textarea rows="14" class="form-control" type="text" [formControl]="address" name="someText" placeholder="textbox1"></textarea>
+                      <span *ngIf="address.invalid && address.touched" style="color:red;font-size: 11px">Please enter your downloaded public key</span>
+                    </div>
+              		</div> -->
 	              </div>
 	              <h3>Payment From</h3>
 	              <div class="row">
 	              	<div class="col-sm-6 col-xs-12">
 	              		<div class="form-group">
 		                  <label>Bank Name*</label>
-		                  <input class="form-control" type="text" name="buy-bank-name" required="">
-		                </div>
+		                  <input class="form-control" type="text" [formControl]="bankName" name="buy-bank-name" required="">
+                      <span *ngIf="bankName.invalid && bankName.touched" style="color:red;font-size: 11px">Please enter your bank name</span>
+                    </div>
 	              	</div>
 	              	<div class="col-sm-6 col-xs-12">
 	              		<div class="form-group">
 		                  <label>Swift Code*</label>
-		                  <input class="form-control" type="text" name="buy-swift" required="">
+                      <input class="form-control" type="text" [formControl]="swiftCode" name="buy-swift" required="">
+                      <span *ngIf="swiftCode.invalid && swiftCode.touched" style="color:red;font-size: 11px">Please enter your 6-digit swift code</span>
 		                </div>
 	              	</div>
 	              	<div class="col-sm-6 col-xs-12">
 	              		<div class="form-group">
 		                  <label>Account Number*</label>
-		                  <input class="form-control" type="text" name="buy-acc-no" required="">
+                      <input class="form-control" type="text" [formControl]="accountNumber" name="buy-acc-no" required="">
+                      <span *ngIf="accountNumber.invalid && accountNumber.touched" style="color:red;font-size: 11px">Please enter your bank account number</span>
 		                </div>
 	              	</div>
 	              	<div class="col-sm-6 col-xs-12">
 	              		<div class="form-group">
 		                  <label>Account Name*</label>
-		                  <input class="form-control" type="text" name="buy-acc-name" required="">
+                      <input class="form-control" type="text" [formControl]="accountName" name="buy-acc-name" required="">
+                      <span *ngIf="accountName.invalid && accountName.touched" style="color:red;font-size: 11px">Please enter your bank account name</span>
 		                </div>
 	              	</div>
 	              </div>
@@ -362,7 +371,7 @@
           <div class="row">
             <div class="col-sm-12">
               <div class="form-submit">
-                <button type="submit" class="btn btn-primary btn-lg" data-dismiss="modal" (click)="sendRequest()">Submit</button>
+                <button type="submit" class="btn btn-primary btn-lg" data-dismiss="modal" [disabled]="buyForm.invalid" (click)="sendRequest()">Submit</button>
               </div>
             </div>
           </div>
@@ -371,7 +380,7 @@
     </div>
   </div>
 
-  <div class="modal fade" id="redeem-pop" role="dialog">
+  <div class="modal fade" id="redeem-pop" data-backdrop="static" role="dialog">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
@@ -380,20 +389,22 @@
         <div class="modal-body">
           <div class="row">
             <div class="col-sm-12">
-              <form action="">
+              <form action="" [formGroup]="redeemForm">
               	<h3>Redeem</h3>
 	              <div class="row">
 	              	<div class="col-sm-6 col-xs-12">
 		              	<div class="form-group">
 			                <label>Number of Tokens*</label>
-			                <input class="form-control" type="text" name="redeem-no-token" required="">
-			              </div>
+			                <input class="form-control" type="text" [formControl]="redeemToken" name="redeem-no-token" required="">
+                      <span style="color:red;font-size: 11px" *ngIf="redeemToken.invalid && redeemToken.touched">Enter Tokens to redeem</span>
+                    </div>
 			            </div>
 	              	<div class="col-sm-6 col-xs-12">
               		  <div class="form-group">
 		                  <label>Name* <span>(If different from beneficiary)</span></label>
-		                  <input class="form-control" type="text" name="redeem-name" required="">
-		                </div>
+		                  <input class="form-control" type="text" [formControl]="redeemName" name="redeem-name" >
+                      <span style="color:red;font-size: 11px" *ngIf="redeemName.invalid && redeemName.touched">Please enter your name</span>
+                    </div>
               		</div>
               	</div>
 	              <h3>Pay To</h3>
@@ -401,32 +412,34 @@
 	              	<div class="col-sm-6 col-xs-12">
 	              		<div class="form-group">
 		                  <label>Bank Name*</label>
-		                  <input class="form-control" type="text" name="redeem-bank-name" required="">
-		                </div>
+		                  <input class="form-control" type="text" [formControl]="redeemBankName" name="redeem-bank-name" required="">
+                      <span *ngIf="redeemBankName.invalid && redeemBankName.touched" style="color:red;font-size: 11px">Enter bank name to send amount</span>
+                    </div>
 	              	</div>
 	              	<div class="col-sm-6 col-xs-12">
 	              		<div class="form-group">
 		                  <label>Swift Code*</label>
-		                  <input class="form-control" type="text" name="redeem-swift" required="">
-		                </div>
+		                  <input class="form-control" type="text" [formControl]="redeemSwiftCode" name="redeem-swift" required="">
+                      <span *ngIf="redeemSwiftCode.invalid && redeemSwiftCode.touched" style="color:red;font-size: 11px">Please enter your 6-digit swift code</span>
+                    </div>
 	              	</div>
 	              	<div class="col-sm-6 col-xs-12">
 	              		<div class="form-group">
 		                  <label>Account Number*</label>
-		                  <input class="form-control" type="text" name="redeem-acc-no" required="">
-		                </div>
+		                  <input class="form-control" type="text" [formControl]="redeemAccountNumber" name="redeem-acc-no" required="">
+                      <span *ngIf="redeemAccountNumber.invalid && redeemAccountNumber.touched" style="color:red;font-size: 11px">Please enter your bank account number</span>
+                    </div>
 	              	</div>
 	              	<div class="col-sm-6 col-xs-12">
 	              		<div class="form-group">
 		                  <label>Account Name*</label>
-		                  <input class="form-control" type="text" name="redeem-acc-name" required="">
-		                </div>
+		                  <input class="form-control" type="text" [formControl]="redeemAccountName" name="redeem-acc-name" required="">
+                      <span *ngIf="redeemAccountName.invalid && redeemAccountName.touched" style="color:red;font-size: 11px">Please enter your bank account name</span>
+                    </div>
 	              	</div>
 	              </div>
-                <h3 class="redeem-fee clearfix">Redemption Fee <span>$1,458</span></h3>
-                <textarea rows="24" cols="50" [(ngModel)]="textArea1" name="someText" placeholder="textbox1"></textarea>
-                <textarea rows="24" cols="50" [(ngModel)]="textArea2" name="otherText" placeholder="textbox2"></textarea>
-	            </form>
+                <h3 class="redeem-fee clearfix">Redemption Fee <span>{{fees || '0'}}</span></h3>
+              </form>
             </div>
           </div>
         </div>
@@ -434,7 +447,7 @@
           <div class="row">
             <div class="col-sm-12">
               <div class="form-submit">
-                <button type="submit" class="btn btn-primary btn-lg" data-dismiss="modal" (click)="multiplePublicKey()">Submit</button>
+                <button type="submit" class="btn btn-primary btn-lg" data-dismiss="modal" [disabled]="redeemForm.invalid" (click)="submitRedeem()">Submit</button>
               </div>
             </div>
           </div>
