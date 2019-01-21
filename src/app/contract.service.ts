@@ -30,7 +30,6 @@ export class ContractsService {
     if (typeof window.web3 !== 'undefined') {
       // Use Mist/MetaMask's provider
       this._web3 = new Web3(window.web3.currentProvider);
-      console.log();
       
       window.ethereum.enable(); 
       this._tokenContract = this._web3.eth.contract(tokenAbi).at(this._tokenContractAddress);
@@ -75,10 +74,11 @@ export class ContractsService {
           }
 
           if (accs.length === 0) {
-            alert(
-              'Couldn\'t get any accounts! Make sure your Ethereum client is configured correctly.'
-            );
-            return;
+            // alert(
+            //   'Couldn\'t get any accounts! Make sure your Ethereum client is configured correctly.'
+            // );
+            resolve(null)
+            // return null;
           }
           // console.log(accs[0]);
           
@@ -101,7 +101,7 @@ export class ContractsService {
         if(err != null) {
           reject(err);
         }
-        console.log(result);
+        // console.log(result);
         
         resolve(result);
       });
@@ -191,6 +191,19 @@ export class ContractsService {
     });
   }
 
+  public async mintToken(address:string, amount:number){
+    this._tokenContract.mint( address, amount,(err,result) => {
+      if(err != null){
+        console.log(err);
+      }
+      else{
+        console.log(result);
+      }
+    }
+
+    )
+  }
+
   public async sendContractToken(address,token){
     let account = await this.getAccount();
     let payload = {to:address, value:token}
@@ -206,6 +219,18 @@ export class ContractsService {
         
       }
     });
+  }
+
+  burnToken(token){
+    this._tokenContract.redeem(token,(err,result) => {
+      if(err != null){
+        console.log(err);
+      }
+      else{
+        console.log(result);
+      }
+    }
+    )
   }
 
   testHook(){
@@ -226,7 +251,7 @@ export class ContractsService {
         if(err != null){
           reject(err);
         }
-        console.log(result);
+        // console.log(result);
         resolve(result);
       });
     })as Promise<number>;
@@ -238,5 +263,9 @@ export class ContractsService {
       admin: admin_payload
     }
     return this.httpClient.post('https://webhooks.mongodb-stitch.com/api/client/v2.0/app/ellypin-wysik/service/http/incoming_webhook/sendMessage',Data)
+  }
+
+  public getMessages(role){
+    return this.httpClient.get(`https://webhooks.mongodb-stitch.com/api/client/v2.0/app/ellypin-wysik/service/http/incoming_webhook/getMessage?role=${role}&messageType=receive`)
   }
 }

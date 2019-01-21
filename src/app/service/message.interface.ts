@@ -2,8 +2,8 @@
 export interface Message  {
     parentMessage: string,
     type: Message_Type,
-    sender: string,
-    receiver: string,
+    publicKey: string,
+    email:string,
     message: string,
     time:number
 }

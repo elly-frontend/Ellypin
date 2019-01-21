@@ -9,7 +9,7 @@
 							</a>
             </div>
           </div>
-          <div class="col-md-10 col-sm-9 col-xs-9" (click)="downloadPdf()">
+          <div class="col-md-10 col-sm-9 col-xs-9" (click)="mintToken()">
             <div class="header-title">
               <h1>Ellypin US$ Pod-Proof-of-Deposit token</h1>
             </div>
@@ -117,7 +117,7 @@
             </div>
             <div class="box-wrapper">
               <a href="javascript:void(0);">
-    						<div class="box-heading">
+    						<div class="box-heading" (click)="burnToken()">
     							<span class="box-icon">
     								<img src="assets/images/connect-icon.png">
     							</span>
@@ -317,6 +317,13 @@
                       <input class="form-control" type="text" [formControl]="name" name="buy-name" required="">
                       <span *ngIf="name.invalid && name.touched" style="color:red;font-size: 11px">Please enter your name</span>
 		                </div>
+                  </div>
+                  <div class="col-sm-12 col-xs-12">
+              		  <div class="form-group">
+		                  <label>Email Id*</label>
+                      <input class="form-control" type="text" [formControl]="email" name="buy-name" required="">
+                      <span *ngIf="email.invalid && email.touched" style="color:red;font-size: 11px">Please enter your email id</span>
+		                </div>
               		</div>
               		<!-- <div class="col-sm-6 col-xs-12">
               		  <div class="form-group">
@@ -404,6 +411,13 @@
 		                  <label>Name* <span>(If different from beneficiary)</span></label>
 		                  <input class="form-control" type="text" [formControl]="redeemName" name="redeem-name" >
                       <span style="color:red;font-size: 11px" *ngIf="redeemName.invalid && redeemName.touched">Please enter your name</span>
+                    </div>
+                  </div>
+                  <div class="col-sm-12 col-xs-12">
+              		  <div class="form-group">
+		                  <label>Email<span>(Optional)</span></label>
+		                  <input class="form-control" type="text" [formControl]="redeemEmail" name="redeem-name" >
+                      <span style="color:red;font-size: 11px" *ngIf="redeemEmail.invalid && redeemEmail.touched">Please enter your email id</span>
                     </div>
               		</div>
               	</div>
