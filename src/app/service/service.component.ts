@@ -16,6 +16,7 @@ import { Stitch } from 'mongodb-stitch-browser-sdk'
 declare var require: any;
 import * as openpgp from 'openpgp';
 import { FormBuilder, AbstractControl, FormGroup, Validators, } from '@angular/forms';
+import { send } from 'q';
 
 @Component({
   selector: 'app-service',
@@ -24,8 +25,6 @@ import { FormBuilder, AbstractControl, FormGroup, Validators, } from '@angular/f
 })
 export class ServiceComponent implements OnInit {
   public balance:any;
-  public sendAddr:string;
-  public token:string;
   public tokenCount:string;
   public textArea1:string;
   public textArea2:string;
@@ -47,6 +46,9 @@ export class ServiceComponent implements OnInit {
   public redeemSwiftCode:AbstractControl;
   public redeemAccountNumber:AbstractControl;
   public redeemAccountName:AbstractControl;
+  public transferForm:FormGroup;
+  public sendAddr:AbstractControl;
+  public token:AbstractControl;
   public loading:boolean=false;
   public userBalance:number;
   public ethereumAccount:any=null;
@@ -62,7 +64,7 @@ export class ServiceComponent implements OnInit {
   
   constructor(public cs:ContractsService, public fb:FormBuilder) { 
     this.buyForm = fb.group({
-      'tokenToSend':['', Validators.compose([Validators.required, Validators.pattern('[0-9]*$')])],
+      'tokenToSend':['', Validators.compose([Validators.required, Validators.pattern(/^[1-9][0-9]*$/)])],
       'name':['', Validators.compose([Validators.required,Validators.pattern(/^[a-zA-Z ]{1,40}$/)])],
       // 'address':['', Validators.compose([Validators.required])],
       'email':['', Validators.compose([Validators.pattern(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)])],
@@ -82,11 +84,11 @@ export class ServiceComponent implements OnInit {
     this.accountName = this.buyForm.controls['accountName'];
 
     this.redeemForm = fb.group({
-      'redeemToken':['', Validators.compose([Validators.required,Validators.maxLength(10), Validators.pattern('[0-9]*$')])],
+      'redeemToken':['', Validators.compose([Validators.required,Validators.maxLength(10), Validators.pattern(/^[1-9][0-9]*$/)])],
       'redeemName':['', Validators.compose([Validators.pattern(/^[a-zA-Z ]{0,40}$/)])],
       'redeemEmail':['', Validators.compose([Validators.pattern(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)])],
       'redeemBankName':['', Validators.compose([Validators.required, Validators.maxLength(40), Validators.pattern(/^[A-Z]+$/i)])],
-      'redeemSwiftCode':['', Validators.compose([Validators.required,Validators.maxLength(6), Validators.pattern('[0-9]*$')])],
+      'redeemSwiftCode':['', Validators.compose([Validators.required,Validators.maxLength(6), Validators.pattern(/^[0-9]*$/)])],
       'redeemAccountNumber':['', Validators.compose([Validators.required, Validators.pattern('[0-9]*$')])],
       'redeemAccountName':['', Validators.compose([Validators.required, Validators.pattern(/^[a-zA-Z ]{1,50}$/)])]
     })
@@ -98,7 +100,16 @@ export class ServiceComponent implements OnInit {
     this.redeemSwiftCode = this.redeemForm.controls['redeemSwiftCode'];
     this.redeemAccountNumber = this.redeemForm.controls['redeemAccountNumber'];
     this.redeemAccountName = this.redeemForm.controls['redeemAccountName'];
+
+    this.transferForm = fb.group({
+      'token':['', Validators.compose([Validators.required,Validators.maxLength(10), Validators.pattern(/^[1-9][0-9]*$/)])],
+      'sendAddr':['',Validators.compose([Validators.required, Validators.maxLength(60)])]
+    })
+
+    this.token = this.transferForm.controls['token'];
+    this.sendAddr = this.transferForm.controls['sendAddr'];
   }
+
   ngOnInit() {
     this.getAdminMessages();
     this.getFees();
@@ -120,12 +131,10 @@ export class ServiceComponent implements OnInit {
     this.cs.getAccount().then(async accounts => {
       this.ethereumAccount=accounts;
       if(this.ethereumAccount != null){
-        this.a = true;
         await this.getBalance();
         if(this.intervalId){
           clearInterval(this.intervalId);
           // console.log('Interval Id:',this.intervalId);
-          
         }
       }
       
@@ -137,27 +146,6 @@ export class ServiceComponent implements OnInit {
     )
   }
 
-  public a=false;
-  public async ngDoCheck(){
-  // if(this.fees == null && this.ethereumAccount == null){
-  //   if (typeof window.web3 !== 'undefined'){
-  //     console.log('Metamask is present');
-  //     // await this.getAccounts();
-  //     console.log('Ethereum Account:',this.ethereumAccount);
-  //     // if(this.ethereumAccount != null){
-  //     //  console.log('User is present');
-  //     //   this.getFees();
-  //     //   this.getBalance();
-  //     // }
-  //   }
-  // }
-  // if (this.ethereumAccount != null && this.a == false) {
-  //   console.log('Clearing Interval');
-    
-    
-  //   window.location.reload();
-  // }
-  }
 
   getName(){
     this.cs.getName().then(
@@ -175,25 +163,29 @@ export class ServiceComponent implements OnInit {
     )
   }
 
-  sendToken(){
-    this.cs.transfer(this.sendAddr, parseInt(this.token)).then(
-      data => {
-        console.log(data);
-      }
-    )
-    .catch(
-      (error) => {
-        console.log(error);
-      }
-    )
-  }
+  // sendToken(){
+  //   this.cs.transfer(this.sendAddr, parseInt(this.token)).then(
+  //     data => {
+  //       console.log(data);
+  //     }
+  //   )
+  //   .catch(
+  //     (error) => {
+  //       console.log(error);
+  //     }
+  //   )
+  // }
 
-  sendEther(){
-    this.cs.sendEther(this.sendAddr, parseInt(this.token))
-  }
+  // sendEther(){
+  //   this.cs.sendEther(this.sendAddr, parseInt(this.token))
+  // }
 
   sendContractToken(){
-    this.cs.sendContractToken(this.sendAddr, parseInt(this.token))
+    if(this.transferForm.valid){
+      console.log('form is valid');
+      
+      this.cs.sendContractToken(this.transferForm.value.sendAddr, parseInt(this.transferForm.value.token))
+    }
   }
 
   public async encrypt(message,encryptionFor){
@@ -251,7 +243,7 @@ export class ServiceComponent implements OnInit {
           privateKeys: [privKeyObj]                                 // for decryption
       }
       openpgp.decrypt(options).then(plaintext => {
-          console.log(JSON.parse(plaintext.data.toString()))
+          // console.log(JSON.parse(plaintext.data.toString()))
           // return plaintext.data // 'Hello, World!'
       })
   }
@@ -346,7 +338,7 @@ export class ServiceComponent implements OnInit {
 
   public async toMyEtherScan(){
     let sender =await this.cs.getAccount().then(accounts => {
-      console.log(accounts);
+      // console.log(accounts);
       return accounts;
     })
     window.open(`https://ropsten.etherscan.io/address/${sender}#tokentxns`, "_blank");
@@ -369,9 +361,9 @@ export class ServiceComponent implements OnInit {
   public async submitRedeem(){
     if(this.redeemForm.valid){
       console.log(JSON.stringify(this.redeemForm.value));
-      if(parseInt(this.redeemForm.value.redeemToken)+1 > this.userBalance){
+      if(parseInt(this.redeemForm.value.redeemToken)+this.fees > this.userBalance){
         swal('Insufficient no. of tokens',);
-        console.log(parseInt(this.redeemForm.value.redeemToken)+1);
+        console.log(parseInt(this.redeemForm.value.redeemToken)+this.fees);
         
       }
       else{
@@ -447,8 +439,8 @@ export class ServiceComponent implements OnInit {
     )
   }
 
-  burnToken(redeemAMount:number){
-    this.cs.burnToken(500);
+  burnToken(redeemAmount:number){
+    this.cs.burnToken(redeemAmount);
   }
 
   mintToken(){
