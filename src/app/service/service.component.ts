@@ -445,6 +445,13 @@ export class ServiceComponent implements OnInit {
 
   mintToken(){
     console.log('In mintToken');
-      this.cs.mintToken('0x5C6a5121d259DF9Eca31FAf034A54FFa25db2834',5);
+      this.cs.mintToken('0x5C6a5121d259DF9Eca31FAf034A54FFa25db2834',500);
   }
+
+  getRedeemBalance(){
+    this.cs.getRedeemBalance().then((redeemBalance:any) => {
+      console.log(redeemBalance.c[0]);
+    });
+  }
+
 }

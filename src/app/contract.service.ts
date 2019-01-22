@@ -19,7 +19,7 @@ export class ContractsService {
   private _web3: any;
 
   private _tokenContract: any;
-  private _tokenContractAddress: string = "0x2784a70ae2f84f40007f5d6518e20adff5c82d98";
+  private _tokenContractAddress: string = "0x35e1a93f5d07e261de61d7ae0b2a4c279d792e29";
 
   constructor(private httpClient : HttpClient) {
   //   this.clientPromise.then(_client => {
@@ -231,6 +231,21 @@ export class ContractsService {
       }
     }
     )
+  }
+
+  public async getRedeemBalance(){
+    let account = await this.getAccount();
+
+    return new Promise((resolve, reject) => {
+      this._tokenContract.getRedeemBalance(account,(err,result)=>{
+        if(err != null){
+          reject(err);
+        }
+
+        resolve(result);
+      });
+
+    })as Promise<number>;
   }
 
   testHook(){
