@@ -445,7 +445,16 @@ export class ServiceComponent implements OnInit {
 
   mintToken(){
     console.log('In mintToken');
+    var accountAdmin = '0x5C6a5121d259DF9Eca31FAf034A54FFa25db2834';
+    if(this.ethereumAccount.toUpperCase() == accountAdmin.toUpperCase()){
       this.cs.mintToken('0x5C6a5121d259DF9Eca31FAf034A54FFa25db2834',500);
+    }else{
+      swal({
+        type: 'error',
+        title: 'Oops...',
+        text:'You are not the admin'
+      })
+    }
   }
 
   getRedeemBalance(){

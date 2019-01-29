@@ -19,7 +19,7 @@ export class ContractsService {
   private _web3: any;
 
   private _tokenContract: any;
-  private _tokenContractAddress: string = "0x35e1a93f5d07e261de61d7ae0b2a4c279d792e29";
+  private _tokenContractAddress: string = "0x24f5c1b5159c9f643d09358f08fd5b4447a2797e";
 
   constructor(private httpClient : HttpClient) {
   //   this.clientPromise.then(_client => {
