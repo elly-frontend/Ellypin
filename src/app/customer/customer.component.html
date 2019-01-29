@@ -1,0 +1,434 @@
+<div class="body-wrapper">
+  <div class="container-fluid">
+      <div class="body-inner">
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="right-part">
+              <div class="contract-detail-wrapper">
+                <div class="table-responsive">
+                  <table class="table table-bordered text-center">
+                    <thead>
+                      <tr>
+                        <th>Pod</th>
+                        <th>Currency Pod</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>Name</td>
+                        <td>{{contractDetails.contractName}}</td>
+                      </tr>
+                      <tr>
+                        <td>Symbol</td>
+                        <td>{{contractDetails.symbol}}</td>
+                      </tr>
+                      <tr>
+                        <td>Asset tokenized / Rate</td>
+                        <td>{{custData.asset}} / {{custData.rate}}</td>
+                      </tr>
+                      <tr>
+                        <td>Maturity</td>
+                        <td>{{custData.maturity}}</td>
+                      </tr>
+                      <tr>
+                        <td>Custodian</td>
+                        <td>{{custData.custodian}}</td>
+                      </tr>
+                      <tr>
+                        <td>Location</td>
+                        <td>{{custData.location}}</td>
+                      </tr>
+                      <tr>
+                        <td>Decimals</td>
+                        <td>{{contractDetails.decimal}}</td>
+                      </tr>
+                      <tr>
+                        <td>Mint and assigned when assets deposited</td>
+                        <td>{{custData.mint}}</td>
+                      </tr>
+                      <tr>
+                        <td>Contract Address</td>
+                        <td>{{contractDetails.contractAddress}}</td>
+                      </tr>
+                      <tr>
+                        <td>Contract Owner</td>
+                        <td>{{custData.owner}}</td>
+                      </tr>
+                      <tr>
+                        <td>Smart Contract type</td>
+                        <td>{{custData.contractType}}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div class="bottom-link-wrapper">
+                <a >Fee Schedule</a>
+                <a >Terms and Condition</a>
+                <a >MyEtherScan</a>
+              </div>
+
+              <div class="clearfix">
+                <div class="col-sm-4 fees-wrapper">
+                  <div class="table-responsive">
+                    <table class="table table-bordered text-center">
+                      <thead>
+                        <tr>
+                          <th colspan="2">Fees</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>Transfer</td>
+                          <td>1</td>
+                        </tr>
+                        <tr>
+                          <td>Redeem</td>
+                          <td>0.10%</td>
+                        </tr>
+                        <tr>
+                          <td>Buy</td>
+                          <td>5</td>
+                        </tr>
+                        <tr>
+                          <td></td>
+                          <td></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <div class="col-sm-4 asset-wrapper">
+                  <h4>Asset Balance</h4>
+                  <div class="asset-inner"></div>
+                </div>
+                <div class="col-sm-4 podbal-wrapper">
+                  <div class="table-responsive">
+                    <table class="table table-bordered text-center">
+                      <thead>
+                        <tr>
+                          <th colspan="2">Pod Balance</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>Total</td>
+                          <td></td>
+                        </tr>
+                        <tr>
+                          <td>Burned</td>
+                          <td></td>
+                        </tr>
+                        <tr>
+                          <td>Redeemed</td>
+                          <td></td>
+                        </tr>
+                        <tr>
+                          <td>Net</td>
+                          <td></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+
+              <div class="pop-links clearfix">
+                <div class="col-sm-6 external-link-wrapper">
+                  <h3>External Transactions</h3>
+                  <a  data-toggle="modal" data-target="#approve-pop">Approve</a>
+                  <a  data-toggle="modal" data-target="#transfer-pop">Transfer</a>
+                  <a >Market Place</a>
+                  <a >Link To Exchanges</a>
+                </div>
+                <div class="col-sm-6 interact-link-wrapper">
+                    <h3>Interact With Ellypin</h3>
+                    <a  data-toggle="modal" data-target="#buy-pop">Buy</a>
+                    <a  data-toggle="modal" data-target="#redeem-pop">Redeem</a>
+                    <a >Pod Faucet</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  </div>
+</div>
+
+<div class="modal fade" id="buy-pop" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-body">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <form action="">
+          <h3>Buy</h3>
+          <div class="row">
+            <div class="col-sm-6 col-xs-12">
+              <div class="form-group">
+                <label>Buy</label>
+                <div class="input-group">
+                  <input class="form-control" type="text" name="buypod" required="">
+                  <span class="input-group-addon">Pods</span>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6 col-xs-12">
+              <div class="form-group">
+                <label>Fee</label>
+                <input class="form-control" type="text" name="fee" required="">
+              </div>
+            </div>  
+            <div class="col-sm-12 col-xs-12">
+              <div class="form-group">
+                <label>Amount to Pay</label>
+                <input class="form-control" type="text" name="amnt-pay" required="">
+              </div>
+            </div>
+          </div>
+          <h3>Buyer Details</h3>
+          <div class="row">
+            <div class="col-sm-4 col-xs-12">
+              <div class="form-group">
+                <label>First Name</label>
+                <input class="form-control" type="text" name="buyer-fname" required="">
+              </div>
+            </div>
+            <div class="col-sm-4 col-xs-12">
+              <div class="form-group">
+                <label>Middle Name</label>
+                <input class="form-control" type="text" name="buyer-mname">
+              </div>
+            </div>
+            <div class="col-sm-4 col-xs-12">
+              <div class="form-group">
+                <label>Last Name</label>
+                <input class="form-control" type="text" name="buyer-lname">
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12 col-xs-12">
+              <div class="form-group">
+                <label>Address - Number and Street</label>
+                <input class="form-control" type="text" name="buy-add" required="">
+              </div>
+            </div>
+            <div class="col-sm-4 col-xs-12">
+              <div class="form-group">
+                <label>City</label>
+                <input class="form-control" type="text" name="buyer-city" required="">
+              </div>
+            </div>
+            <div class="col-sm-4 col-xs-12">
+              <div class="form-group">
+                <label>Province</label>
+                <input class="form-control" type="text" name="buyer-province" required="">
+              </div>
+            </div>
+            <div class="col-sm-4 col-xs-12">
+              <div class="form-group">
+                <label>Country</label>
+                <input class="form-control" type="text" name="buyer-country" required="">
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-4 col-xs-12">
+              <div class="form-group">
+                <label>Email</label>
+                <input class="form-control" type="email" name="buyer-email" required="">
+              </div>
+            </div>
+            <div class="col-sm-4 col-xs-12">
+              <div class="form-group">
+                <label>Tel</label>
+                <input class="form-control" type="tel" name="buyer-tel">
+              </div>
+            </div>
+            <div class="col-sm-4 col-xs-12">
+              <div class="form-group">
+                <label>Postcode</label>
+                <input class="form-control" type="text" name="buyer-postcode">
+              </div>
+            </div>
+          </div>
+          <h3>Bank Information</h3>
+          <div class="row">
+            <div class="col-sm-8 col-xs-12">
+              <div class="form-group">
+                <label>Paying Bank Name and Address</label>
+                <input class="form-control" type="text" name="bank-name" required="">
+              </div>
+            </div>
+            <div class="col-sm-4 col-xs-12">
+              <div class="form-group">
+                <label>Sending Party</label>
+                <input class="form-control" type="text" name="sending-party" required="">
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-9">
+              <p>Pay to ABC Bank, Singapore . SWIFT No xxxxxxxxxxxx Account Noaaaaaaaaaaaa Account Name: Ellypin EAD account</p>
+            </div>
+            <div class="col-sm-3">
+              <div class="form-submit">
+                <button type="submit" class="btn btn-danger btn-lg" data-dismiss="modal">Submit</button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="redeem-pop" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-body">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <form action="">
+          <h3>Redeem</h3>
+          <div class="row">
+            <div class="col-sm-6 col-xs-12">
+              <div class="form-group">
+                <label>Redeem</label>
+                <div class="input-group">
+                  <input class="form-control" type="text" name="red-pod" required="">
+                  <span class="input-group-addon">Pods</span>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6 col-xs-12">
+              <div class="form-group">
+                <label>Redemption Fee</label>
+                <input class="form-control" type="text" name="red-fee" required="">
+              </div>
+            </div>  
+            <div class="col-sm-12 col-xs-12">
+              <div class="form-group">
+                <label>Net to you</label>
+                <div class="input-group">
+                  <span class="input-group-addon"><i class="fa fa-usd" aria-hidden="true"></i></span>
+                  <input class="form-control" type="text" name="net-amnt" required="">
+                </div>
+              </div>
+            </div>
+          </div>
+          <h3>Pay To</h3>
+          <div class="row"> 
+            <div class="col-sm-6 col-xs-12">
+              <div class="form-group">
+                <label>Receiving Bank Name and Address</label>
+                <input class="form-control" type="text" name="receive-bank-name" required="">
+              </div>
+            </div>
+            <div class="col-sm-3 col-xs-12">
+              <div class="form-group">
+                <label>Account Number</label>
+                <input class="form-control" type="text" name="acc-number" required="">
+              </div>
+            </div>
+            <div class="col-sm-3 col-xs-12">
+              <div class="form-group">
+                <label>Swift Code</label>
+                <input class="form-control" type="text" name="swift-code" required="">
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-8 col-xs-12">
+              <div class="form-group">
+                <label>Beneficiary Name and Address</label>
+                <input class="form-control" type="text" name="ben-name-add" required="">
+              </div>
+            </div>
+            <div class="col-sm-4 col-xs-12">
+              <div class="form-group">
+                <label>Email</label>
+                <input class="form-control" type="email" name="ben-email" required="">
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="form-submit">
+                <button type="submit" class="btn btn-danger btn-lg" data-dismiss="modal">Submit</button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="transfer-pop" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-body">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <form action="">
+          <h3>Transfer To</h3>
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="form-group">
+                <label>To Address</label>
+                <input class="form-control" type="text" name="to-add" required="">
+              </div>
+            </div>
+            <div class="col-sm-12">
+              <div class="form-group">
+                <label>Quantity</label>
+                <input class="form-control" type="text" name="qty-transfer" required="">
+              </div>
+            </div>
+            </div>
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="form-submit">
+                <button type="submit" class="btn btn-danger btn-lg" data-dismiss="modal">Execute</button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="approve-pop" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-body">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <form action="">
+          <h3>Approve</h3>
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="form-group">
+                <label>Address Approved</label>
+                <input class="form-control" type="text" name="add-approve" required="">
+              </div>
+            </div>
+            <div class="col-sm-12">
+              <div class="form-group">
+                <label>Quantity</label>
+                <input class="form-control" type="text" name="qty-approve" required="">
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="form-submit">
+                <button type="submit" class="btn btn-danger btn-lg" data-dismiss="modal">Execute</button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

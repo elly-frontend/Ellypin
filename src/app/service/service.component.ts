@@ -1,5 +1,5 @@
 import { Component, OnInit, HostListener,DoCheck  } from '@angular/core';
-import { ContractsService } from '../contract.service';
+import { DataService } from '../../services/data.service';
 import {Message, Message_Type} from './message.interface';
 import adminPublicKey from './adminPublicKey';
 import adminPrivateKey from './adminPrivateKey';
@@ -62,7 +62,7 @@ export class ServiceComponent implements OnInit {
   public db:any;
   public intervalId:any;
   
-  constructor(public cs:ContractsService, public fb:FormBuilder) { 
+  constructor(public cs:DataService, public fb:FormBuilder) { 
     this.buyForm = fb.group({
       'tokenToSend':['', Validators.compose([Validators.required, Validators.pattern(/^[1-9][0-9]*$/)])],
       'name':['', Validators.compose([Validators.required,Validators.pattern(/^[a-zA-Z ]{1,40}$/)])],

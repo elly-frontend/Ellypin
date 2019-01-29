@@ -1,59 +1,214 @@
 <header class="webheader-wrapper">
-		<section>
-			<div class="container">
-				<div class="row">
-					<div class="col-md-4 col-sm-5 col-xs-9">
-						<div class="logo-wrapper">
-							<a href="home.html">
-								<img src="assets/images/logo.png" alt="Ellypin">
-								<div class="logo-inner">
-									<h2>EURO POD</h2>
-									<span>BY ELLYPIN</span>
-								</div>
-							</a>
+	<div class="container">
+			<div class="row">
+				<div class="col-md-3 col-sm-5 col-xs-9">
+					<div class="logo-wrapper">
+						<a href="home.html">
+							<img src="assets/images/logo.png" alt="Ellypin">
+							<div class="logo-inner">
+								<h4>Ellypin</h4>
+								<h5>Ellypin Digital Pte. Ltd. Singapore</h5>
+							</div>
+						</a>
+					</div>
+				</div>
+				<div class="col-md-9 col-sm-7 col-xs-3">
+					<div class="menu-upper-part">
+						<h1>Tokenization</h1>
+					</div>
+					<div class="menu-wrapper">
+						<nav>
+							<ul>
+								<li><a href="javascript:void(0);">About</a></li>
+								<li><a href="javascript:void(0);">Products</a></li>
+								<li><a href="javascript:void(0);">Faq</a></li>
+								<li><a href="javascript:void(0);">Whitepaper</a></li>
+								<li><a href="javascript:void(0);">Contact</a></li>
+							</ul>
+						</nav>
+					</div>
+				</div>
+			</div>
+	</div>
+</header>
+<div class="body-wrapper home-body">
+	<section class="banner-sec">
+		<div class="container">
+			<div class="row">
+				<div class="col-sm-4">
+					<div class="banner-link-wrapper">
+						<a routerLink="/common/pod">
+							<h2>Fiat Currency <br> Pod</h2>
+						</a>
+						<p>Payment-On-Delivery</p>
+					</div>
+				</div>
+				<div class="col-sm-4">
+					<div class="banner-link-wrapper">
+						<a routerLink="/common/pom">
+							<h2>Bond And CDs <br> Pom</h2>
+						</a>
+						<p>Payment-On-Maturity</p>
+					</div>
+				</div>
+				<div class="col-sm-4">
+					<div class="banner-link-wrapper">
+						<a>
+							<h2>Demo</h2>
+						</a>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="banner-quote">
+						<p>
+							We Tokenize Currenices, Precious Metals, Bonds and Loans in a safe, secure and transparent rule -based system using the Ellypin Tokenization Protocol
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<section class="intro-sec">
+		<div class="container">
+			<div class="row">
+				<div class="section-heading">
+					<h2>What is a POD ?</h2>
+					<h2>What is a POM ?</h2>
+				</div>
+				<div class="section-content">
+					<p>POD stands for Payment on Delivery and is an ERC20 token that represents an asset that is kept at a 1-to-1 ratio at a Custodian.</p>
+					<p>POM stands for Payment on Maturity and is an ERC20 token that represents an asset with a maturity at a fixed date in the future and is also kept at a Custodian.</p>
+					<p>PODs and POMs are Created when the asset is deposited, and are Burned when the asset is Redeemed. Always 1-to-1.Assets are not created out of thin air. The underlying asset is a real-world tangible asset and the PODs and POMs are digital assets, so they straddle both worlds and have 2 sets of functions: 1 that complies with real-world requirements and the other that operates on standard ERC20 functions and acts just like any other ERC20 token.</p>
+					<div class="section-image">
+						<img src="assets/images/intro.png" class="img-responsive" alt="Ellypin">
+					</div>
+					<p>We work with the banking system, and comply with KYC regulations when transactions occur in the real-world. During token Creation and Redemption, we will be in real-world mode. When in Digital mode, the token can be transferred peer-to-peer.The tokenization of PODs and POMs follows the Ellypin Tokenization Protocol.</p>
+				</div>
+			</div>
+		</div>
+	</section>	
+	<section class="protocol-sec">
+		<div class="container">
+			<div class="row">
+				<div class="section-heading">
+					<h2>The Ellypin Tokenization Protocol</h2>
+				</div>
+				<div class="section-content">
+					<p>This is a publicly disclosed set of rules that govern the tokenization of real-world assets.</p>
+					<p>These rules are created to make the Creation of the tokens, the transactions post-creation and the Redemption of assets and Burning of the tokens post-redemption safe, secure and transparent.</p>
+					<ul>
+						<li>Tokens are minted only upon deposit of the appropriate quantity and quality of the underlying real-world asset.</li>
+						<li>The Custodian of the assets cannot be the Minter of the tokens.</li>
+						<li>The Custodian and the Administrator will corroborate and verify each other in an arm’s length relationship.</li>
+						<li>Once redeemed, the tokens are Burned.</li>
+						<li>All actions are initiated by the Customer.</li>
+						<li>There is proper record keeping. Records are maintained in an encrypted Database.</li>
+						<li>The integrity of the system, the safety of the asset and the welfare of the Customer are paramount.</li>
+					</ul>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-12 box-wrapper">
+					<div class="row">
+						<div class="col-sm-6 box-image">
+							<img src="assets/./images/pre-cre.png" alt="Ellypin">
+						</div>
+						<div class="col-sm-6 box-content">
+							<div class="box-heading">
+								<h3>Pre-Creation Information Flow </h3>
+							</div>
+							<ul>
+								<li>The Customer is identified by his or her public key, name and ID.</li>
+								<li>The name is checked for AML / CFT by our expert external KYC provider. This takes seconds.</li>
+								<li>A Pass will continue the process. A fail will end it.</li>
+								<li>The BUY request will be sent simultaneously to the Custodian and the Administrator. Checks and Balances.</li>
+								<li>All information sent is encrypted.</li>
+								<li>The information is used to automatically pre-populate the quantity to be purchased and the public key of the Customer.</li>
+							</ul>
 						</div>
 					</div>
-					<div class="col-md-8 col-sm-7 col-xs-3">
-						<div class="menu-wrapper">
-							<nav>
-								<ul>
-									<li><a href="javascript:void(0);">Faq</a></li>
-									<li><a href="javascript:void(0);">About</a></li>
-									<li><a href="javascript:void(0);">Built on Ellypin Pod</a></li>
-								</ul>
-							</nav>
+				</div>
+				<div class="col-sm-12 box-wrapper">
+					<div class="row">
+						<div class="col-sm-6 box-content">
+							<div class="box-heading">
+								<h3>Token Creation</h3>
+							</div>
+							<ul>
+								<li>The information on the number of tokens to Mint and which wallet that will be assigned to has been pre-filled from the information entered by the Customer.</li>
+								<li>Once the funds are received, the Custodian updates the total asset balance, issues a receipt to the Customer and the system informs the Administrator.</li>
+								<li>The Administrator Mints and Assigns the tokens according to the information that is pre-filled.</li>
+								<li>The system updates the total number of tokens and the holdings in the customer's wallet.</li>
+								<li>There can be no arbitrary Creation and Assignment by either the Custodian or the Administrator.</li>
+							</ul>
+						</div>
+						<div class="col-sm-6 box-image">
+							<img src="assets/./images/token-cre.png" alt="Ellypin">
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-12 box-wrapper">
+					<div class="row">
+						<div class="col-sm-6 box-image">
+							<img src="assets/./images/pre-red.png" alt="Ellypin">
+						</div>
+						<div class="col-sm-6 box-content">
+							<div class="box-heading">
+								<h3>Pre-Redemption Information Flow </h3>
+							</div>
+							<ul>
+								<li> The Customer is identified by his or her public key.</li>
+								<li>The Name of the beneficiary  is checked for AML / CFT by our expert  external KYC provider. This takes seconds.
+								</li>
+								<li>A pass will continue the process. A fail will end it.</li>
+								<li>The Redemption request will be sent simultaneously to the Custodian and the Administrator. Checks and Balances.
+								</li>
+								<li>All information sent is encrypted.</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-12 box-wrapper">
+					<div class="row">
+						<div class="col-sm-6 box-content">
+							<div class="box-heading">
+								<h3>Token Redemption</h3>
+							</div>
+							<ul>
+								<li>The Customer sends the tokens to be Redeemed to the Redemption Wallet. This wallet is maintained by the Administrator, who does not own the contents.</li>
+								<li>Once the tokens are received, the Administrator updates the information.</li>
+								<li>The System then advises the Custodian to remit the funds to the beneficiary at the specified bank. All this information was pre-filled by the Customer.</li>	
+								<li>No arbitrary sent simultaneously to the Custodian and the Administrator. Checks and Balances.</li>
+								<li>All information sent is encrypted.</li>
+							</ul>
+						</div>
+						<div class="col-sm-6 box-image">
+							<img src="assets/./images/token-red.png" alt="Ellypin">
 						</div>
 					</div>
 				</div>
 			</div>
-		</section>
-	</header>
-	<div class="body-wrapper">
-		<section class="homesec">
-			<div class="container">
-				<div class="row">
-					<div class="col-sm-12">
-						<div class="banner-quote">
-							<p>The <span>Safest, Most transparent, Exchange-Independent</span></p>
-							<p>transferable proof of deposit token backed</p>
-							<p>1-for-1 by Euros</p>
-						</div>
-					</div>
+		</div>
+	</section>
+	<section class="tech-sec">
+		<div class="container">
+			<div class="row">
+				<div class="section-heading">
+					<h2>The Ellypin Technical Stack</h2>
 				</div>
-				<div class="row banner-button-wrapper">
-					<div class="col-sm-6 col-xs-12">
-						<div class="banner-button">
-							<a  class="btn btn-md btn-primary" (click)="toService()">Other Tokens</a>
-						</div>
-					</div>
-					<div class="col-sm-6 col-xs-12">
-						<div class="banner-button">
-							<a href="service.html" class="btn btn-md btn-primary">Buy, Sell, Redeem, Transfer Euro Pod</a>
-						</div>
-					</div>
+				<div class="section-image" style="margin-bottom: 20px;">
+					<img src="assets/./images/tech-stack.png" class="img-responsive" alt="Ellypin">
+				</div>
+				<div class="section-content">
+					<p>Technically, we are using an open source ERC20 smart contract deployed on the Ethereum Blockchain on an enterprise-grade Cloud Computing platform. On top of the smart contract we have a custom Interface layer,  connected to an off-chain Database.</p>
+					<p>The simple explaination is that the ERC20 smart contract is battle-tested, has a whole suite of ready-made supporting apps like MetaMask and MyEtherScan, and is brilliant at keepin track of the total number of tokens and the holdings of individual wallets, for digital assets. For real-world assets, it needs something more: a custodian to hold the assets, a KYC regime to weed out bad actors, and a confidential way to pass sensitive information like banking information. That's the Interface layer.</p>
+					<p>The off-chain Database keeps track of the important information. The Custodian and Administrator check and balance each other.  The AWS Cloud Computing platform enables us to ramp up capacity to whatever is needed at very short notice.</p>
 				</div>
 			</div>
-		</section>	
-		<section class="map-wrapper">
-			<iframe src="https://www.google.com/maps/embed?pb=!1m10!1m8!1m3!1d14031.296349729875!2d77.07370365!3d28.4547188!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sin!4v1545040239697" width="100%" height="100%" frameborder="0" style="border:0" allowfullscreen></iframe>
-		</section>
+		</div>
+	</section>
+</div>
+
+

@@ -16,3 +16,10 @@ $(window).on("load",function(){
     $('body').removeClass('mobile-open');
   });
 });
+
+$('#podtable tbody').on('click', 'tr', function() {
+    window.location = '#';
+});
+$('#pomtable tbody').on('click', 'tr', function() {
+    window.location = '#';
+});

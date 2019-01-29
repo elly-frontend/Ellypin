@@ -7,10 +7,10 @@ import * as Web3 from 'web3';
 declare let require: any;
 declare let window: any;
 
-let tokenAbi = require('./tokenContract.json');
+let tokenAbi = require('../tokenContract.json');
 
 @Injectable()
-export class ContractsService {
+export class DataService {
   // clientPromise = StitchClientFactory.create('ifakebook-eqvwi');
   // client;
   // db;
@@ -131,6 +131,19 @@ export class ContractsService {
       });
     })as Promise<string>;
   }
+
+  public async getDecimal(): Promise<string>{
+    return new Promise((resolve, reject) => {
+      this._tokenContract.decimals.call((err, result) => {
+        if(err != null){
+          reject(err);
+        }
+        console.log(result);
+        resolve(result);
+      });
+    })as Promise<string>;
+  }
+
 
   public async transfer(address,token): Promise<any> {
     let account = await this.getAccount();
@@ -282,5 +295,9 @@ export class ContractsService {
 
   public getMessages(role){
     return this.httpClient.get(`https://webhooks.mongodb-stitch.com/api/client/v2.0/app/ellypin-wysik/service/http/incoming_webhook/getMessage?role=${role}&messageType=receive`)
+  }
+
+  public getCustomerData(){
+    return this.httpClient.get(`https://webhooks.mongodb-stitch.com/api/client/v2.0/app/ellypin-wysik/service/http/incoming_webhook/ellypinData`)
   }
 }

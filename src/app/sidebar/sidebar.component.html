@@ -1,0 +1,32 @@
+<div class="body-wrapper">
+  <div class="container-fluid">
+      <div class="body-inner">
+        <div class="row">
+          <div class="col-sm-2">
+            <aside class="left-part">
+              <div class="logo-wrapper">
+                <a>
+                  <img src="assets/images/logo.png" alt="Ellypin">
+                  <div class="logo-inner">
+                    <h4>Ellypin</h4>
+                  </div>
+                </a>
+              </div>
+              <div class="left-menu-wrapper">
+                <nav class="navbar">
+                  <ul class="nav navbar-nav">
+                    <li><a routerLink="/home" routerLinkActive="active-link" [routerLinkActiveOptions]="{exact: true}">Home</a></li>
+                    <li><a routerLink="/common/pod" routerLinkActive="active-link" [routerLinkActiveOptions]="{exact: true}">Pod</a></li>
+                    <li><a routerLink="/common/pom" routerLinkActive="active-link" [routerLinkActiveOptions]="{exact: true}">Pom</a></li>
+                    <li><a>Faq</a></li>
+                    <li><a >Contact</a></li>
+                  </ul>
+                </nav>
+              </div>
+            </aside>
+          </div>
+          <router-outlet></router-outlet>
+        </div>
+      </div>
+  </div>
+</div>

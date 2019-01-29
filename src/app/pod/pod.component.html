@@ -1,0 +1,47 @@
+<div class="col-sm-10">
+            <div class="right-part">
+              <div class="section-wrapper">
+                <h2 class="section-title">Payment On Delivery (Pod)</h2>
+                <p>POD or payment-on-delivery is an erc20 token that represents a fiat currency or any asset that can be kept in safe custody at a bank or custodian.  Deposit and Redemption is in kind.  The value of the POD depends on the underlying asset.</p>
+                <p>The asset or currency backs the POD 1-for-1, not fractional or algorithmic or conditional.  In the case of fiat currencies, the asset backing is a deposit in a fully disclosed, specified, licensed financial institution in a disclosed location. No storage fees are charged and no interest or other income accrues to the POD holder. The POD is denominated in the currency that forms its asset backing, so there is no capital gain or loss and no income, by definition.</p>
+                <p>The POD is truly decentralized: PODs are Minted when a deposit is received, and Burned when Redeemed.</p>
+                <p>A simple straightforward state-of -the art AML / CFT KYC check is conducted by our external expert on Buy and Redeem transactions. Painless to most people, keeps out bad people. PODs can be traded, transferred peer-to-peer at the speed of crypto but with the intrinsic value of real-world currencies and assets</p>
+              </div>
+              <div class="section-wrapper">
+                <h2 class="section-title">How Does This Work ?</h2>
+                <p>All processes are initiated only by the end-user. PODs are created when the appropriate currency / asset is deposited and PODs are burned when redeemed. In between they act like other tokens and can be transferred, approved, bought and sold. To start, click on the symbol below. This will take you to the customised POD page and which will automatically connect to your MetaMask  browser. The customised POD page is a safe and simple User Interface which has functions that enable you to access the common functions of the erc20 contract and Buy and Redeem functions. For the standard erc20 functions, you can also use MetaMask (speed setting fastest).</p>
+                <h4 class="demo-note">Watch the Demo below  or click contact on the left for further assistance</h4>
+              </div>
+              <div class="demo-wrapper">
+                <a href="javascript:void(0);"> click Here for Demo</a>
+              </div>
+              <div class="section-wrapper">
+                <h2 class="section-title">List OF Pods</h2>
+                <div class="table-responsive">
+                  <table class="table table-striped table-bordered text-center" id="podtable">
+                    <thead>
+                      <tr>
+                        <th>Description</th>
+                        <th>Symbol</th>
+                        <th>Custodian / Location</th>
+                        <th>Remarks</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let item of podArray" routerLink="/common/customer">
+                          <td>{{item.description}}</td>
+                          <td>{{item.symbol}}</td>
+                          <td>{{item.custodian}}/{{item.location}}</td>
+                          <td>{{item.remarks}}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="bottom-link-wrapper">
+                <a style="cursor: pointer;" (click)="getMetamask()">Get MetaMask</a>
+                <a href="javascript:void(0);">Get Hardware Wallet</a>
+                <a href="javascript:void(0);">MyEtherScan</a>
+              </div>
+            </div>
+          </div>
