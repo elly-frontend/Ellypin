@@ -1,15 +1,16 @@
 import { Component, OnInit, HostListener,DoCheck  } from '@angular/core';
+import { ContractService } from '../../services/contract.service';
 import { DataService } from '../../services/data.service';
-import {Message, Message_Type} from './message.interface';
-import adminPublicKey from './adminPublicKey';
-import adminPrivateKey from './adminPrivateKey';
-import custodianPrivateKey from './custodianPrivateKey';
-import custodianPublicKey from './custodianPublic';
+import {Message, Message_Type} from '../sharedData/message.interface';
+import adminPublicKey from '../sharedData/adminPublicKey';
+import adminPrivateKey from '../sharedData/adminPrivateKey';
+import custodianPrivateKey from '../sharedData/custodianPrivateKey';
+import custodianPublicKey from '../sharedData/custodianPublic';
 import swal from 'sweetalert2';
 import * as Web3 from 'web3';
 declare let window: any;
 
-import * as jsPDF from 'jspdf'
+import * as jsPDF from 'jspdf';
 
 import { Stitch } from 'mongodb-stitch-browser-sdk'
 
@@ -62,7 +63,7 @@ export class ServiceComponent implements OnInit {
   public db:any;
   public intervalId:any;
   
-  constructor(public cs:DataService, public fb:FormBuilder) { 
+  constructor(public cs:ContractService, public fb:FormBuilder, public dataService:DataService) { 
     this.buyForm = fb.group({
       'tokenToSend':['', Validators.compose([Validators.required, Validators.pattern(/^[1-9][0-9]*$/)])],
       'name':['', Validators.compose([Validators.required,Validators.pattern(/^[a-zA-Z ]{1,40}$/)])],
@@ -269,7 +270,7 @@ export class ServiceComponent implements OnInit {
 }
 
   public testingHook(){
-    this.cs.testHook().subscribe(
+    this.dataService.testHook().subscribe(
       data=>{
         console.log(data);
         
@@ -309,7 +310,7 @@ export class ServiceComponent implements OnInit {
       // console.log('Admin_Message:',admin_message);
       // console.log('Custodian_message:',custodian_message);
       this.loading = true;
-      this.cs.sendMessage(admin_message,custodian_message).subscribe(
+      this.dataService.sendMessage(admin_message,custodian_message).subscribe(
         (data:any) => {
           console.log(data);
           swal('Request Created Successfully');
@@ -390,7 +391,7 @@ export class ServiceComponent implements OnInit {
         console.log('Admin_Message:',admin_message);
         console.log('Custodian_message:',custodian_message);
         this.loading = true;
-        this.cs.redeemToken(admin_message,custodian_message).subscribe(
+        this.dataService.redeemToken(admin_message,custodian_message).subscribe(
           (data:any) => {
             console.log(data);
             swal('Request Created Successfully');
@@ -409,7 +410,7 @@ export class ServiceComponent implements OnInit {
   }
 
   public async getAdminMessages(){
-    await this.cs.getMessages('ADMIN').subscribe(
+    await this.dataService.getMessages('ADMIN').subscribe(
       (data:any) => {
         // console.log('ADMIN MESSAGE:',data);
         this.adminMessages = data;
@@ -425,7 +426,7 @@ export class ServiceComponent implements OnInit {
   }
 
   getCustodianMessage(){
-    this.cs.getMessages('CUSTODIAN').subscribe(
+    this.dataService.getMessages('CUSTODIAN').subscribe(
       (data:any) => {
         // console.log('CUSTODIAN MESSAGE:',data);
         this.custodianMessages = data;

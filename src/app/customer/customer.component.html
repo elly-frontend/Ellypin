@@ -85,7 +85,7 @@
                         </tr>
                         <tr>
                           <td>Redeem</td>
-                          <td>0.10%</td>
+                          <td>{{fees}}</td>
                         </tr>
                         <tr>
                           <td>Buy</td>
@@ -114,7 +114,7 @@
                       <tbody>
                         <tr>
                           <td>Total</td>
-                          <td></td>
+                          <td>{{userBalance}}</td>
                         </tr>
                         <tr>
                           <td>Burned</td>
@@ -155,55 +155,71 @@
       </div>
   </div>
 </div>
+<ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px',fullScreenBackdrop:true, animationType:'circleSwish' }" [template]="customLoadingTemplate"></ngx-loading>
 
-<div class="modal fade" id="buy-pop" role="dialog">
+<div class="modal fade" id="buy-pop" data-backdrop="static" role="dialog">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-body">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <form action="">
+        <form action="" [formGroup]="buyForm">
           <h3>Buy</h3>
           <div class="row">
             <div class="col-sm-6 col-xs-12">
               <div class="form-group">
                 <label>Buy</label>
                 <div class="input-group">
-                  <input class="form-control" type="text" name="buypod" required="">
+                  <input class="form-control" type="text" (keyup)="keyBuy($event)" [formControl]="buyToken" name="buypod" >
                   <span class="input-group-addon">Pods</span>
                 </div>
+                <span *ngIf="buyToken.invalid && buyToken.touched" style="color:red;font-size: 11px">Enter tokens to buy</span>
               </div>
             </div>
             <div class="col-sm-6 col-xs-12">
               <div class="form-group">
                 <label>Fee</label>
-                <input class="form-control" type="text" name="fee" required="">
+                <input class="form-control" readonly [formControl]="buyFee" type="text" name="fee" required="">
               </div>
             </div>  
             <div class="col-sm-12 col-xs-12">
               <div class="form-group">
                 <label>Amount to Pay</label>
-                <input class="form-control" type="text" name="amnt-pay" required="">
+                <input class="form-control" readonly type="text" [(ngModel)]="buyAmount"  [ngModelOptions]="{standalone: true}" name="amnt-pay" required="">
               </div>
             </div>
           </div>
-          <h3>Buyer Details</h3>
+          
           <div class="row">
+            <div class="col-sm-6 col-xs-12">
+              <h3>Buyer Details</h3>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                  <label class="file-uploader">
+                    <input type="file" name="buyer-id">
+                    <span>Upload Identity Document</span>
+                  </label>
+                </div>
+              </div>  
             <div class="col-sm-4 col-xs-12">
               <div class="form-group">
                 <label>First Name</label>
-                <input class="form-control" type="text" name="buyer-fname" required="">
+                <input class="form-control" type="text" [formControl]="buyFirstName" placeholder="Enter First Name" name="buyer-fname" required="">
+                <span *ngIf="buyFirstName.invalid && buyFirstName.touched" style="color:red;font-size: 11px">Enter your first name</span>
               </div>
             </div>
             <div class="col-sm-4 col-xs-12">
               <div class="form-group">
                 <label>Middle Name</label>
-                <input class="form-control" type="text" name="buyer-mname">
+                <input class="form-control" type="text" [formControl]="buyMiddleName" name="buyer-mname">
+                <span *ngIf="buyMiddleName.invalid && buyMiddleName.touched" style="color:red;font-size: 11px">Enter your middle name</span>
               </div>
             </div>
             <div class="col-sm-4 col-xs-12">
               <div class="form-group">
                 <label>Last Name</label>
-                <input class="form-control" type="text" name="buyer-lname">
+                <input class="form-control" type="text" [formControl]="buyLastName" name="buyer-lname">
+                <span *ngIf="buyLastName.invalid && buyLastName.touched" style="color:red;font-size: 11px">Enter your last name</span>
               </div>
             </div>
           </div>
@@ -211,25 +227,29 @@
             <div class="col-sm-12 col-xs-12">
               <div class="form-group">
                 <label>Address - Number and Street</label>
-                <input class="form-control" type="text" name="buy-add" required="">
+                <input class="form-control" type="text" [formControl]="buyAddress" name="buy-add" >
+                <span *ngIf="buyAddress.invalid && buyAddress.touched" style="color:red;font-size: 11px">Enter a valid address</span>
               </div>
             </div>
             <div class="col-sm-4 col-xs-12">
               <div class="form-group">
                 <label>City</label>
-                <input class="form-control" type="text" name="buyer-city" required="">
+                <input class="form-control" type="text" [formControl]="buyCity" name="buyer-city" >
+                <span *ngIf="buyCity.invalid && buyCity.touched" style="color:red;font-size: 11px">Enter a valid city name</span>
               </div>
             </div>
             <div class="col-sm-4 col-xs-12">
               <div class="form-group">
                 <label>Province</label>
-                <input class="form-control" type="text" name="buyer-province" required="">
+                <input class="form-control" type="text" [formControl]="buyProvince" name="buyer-province">
+                <span *ngIf="buyProvince.invalid && buyProvince.touched" style="color:red;font-size: 11px">Enter a valid province name</span>
               </div>
             </div>
             <div class="col-sm-4 col-xs-12">
               <div class="form-group">
                 <label>Country</label>
-                <input class="form-control" type="text" name="buyer-country" required="">
+                <input class="form-control" type="text" [formControl]="buyCountry" name="buyer-country">
+                <span *ngIf="buyCountry.invalid && buyCountry.touched" style="color:red;font-size: 11px">Enter a valid country name</span>
               </div>
             </div>
           </div>
@@ -237,19 +257,22 @@
             <div class="col-sm-4 col-xs-12">
               <div class="form-group">
                 <label>Email</label>
-                <input class="form-control" type="email" name="buyer-email" required="">
+                <input class="form-control" type="email" [formControl]="buyEmail" name="buyer-email">
+                <span *ngIf="buyEmail.invalid && buyEmail.touched" style="color:red;font-size: 11px">Enter a valid email id</span>
               </div>
             </div>
             <div class="col-sm-4 col-xs-12">
               <div class="form-group">
                 <label>Tel</label>
-                <input class="form-control" type="tel" name="buyer-tel">
+                <input class="form-control" type="tel" [formControl]="buyTel" name="buyer-tel">
+                <span *ngIf="buyTel.invalid && buyTel.touched" style="color:red;font-size: 11px">Enter a valid phone number</span>
               </div>
             </div>
             <div class="col-sm-4 col-xs-12">
               <div class="form-group">
                 <label>Postcode</label>
-                <input class="form-control" type="text" name="buyer-postcode">
+                <input class="form-control" type="text" [formControl]="buyPostCode" name="buyer-postcode">
+                <span *ngIf="buyPostCode.invalid && buyPostCode.touched" style="color:red;font-size: 11px">Enter a valid postalcode</span>
               </div>
             </div>
           </div>
@@ -258,13 +281,15 @@
             <div class="col-sm-8 col-xs-12">
               <div class="form-group">
                 <label>Paying Bank Name and Address</label>
-                <input class="form-control" type="text" name="bank-name" required="">
+                <input class="form-control" type="text" [formControl]="buyBank" name="bank-name">
+                <span *ngIf="buyBank.invalid && buyBank.touched" style="color:red;font-size: 11px">Enter the bank name </span>
               </div>
             </div>
             <div class="col-sm-4 col-xs-12">
               <div class="form-group">
                 <label>Sending Party</label>
-                <input class="form-control" type="text" name="sending-party" required="">
+                <input class="form-control" type="text" [formControl]="buyParty" name="sending-party">
+                <span *ngIf="buyParty.invalid && buyParty.touched" style="color:red;font-size: 11px">Enter the buying party name </span>
               </div>
             </div>
           </div>
@@ -274,7 +299,7 @@
             </div>
             <div class="col-sm-3">
               <div class="form-submit">
-                <button type="submit" class="btn btn-danger btn-lg" data-dismiss="modal">Submit</button>
+                <button type="submit" class="btn btn-danger btn-lg" [disabled]="buyForm.invalid" (click)="buyRequest()" data-dismiss="modal">Submit</button>
               </div>
             </div>
           </div>
@@ -284,27 +309,28 @@
   </div>
 </div>
 
-<div class="modal fade" id="redeem-pop" role="dialog">
+<div class="modal fade" id="redeem-pop" data-backdrop="static" role="dialog">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-body">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <form action="">
+        <button type="button" class="close" data-dismiss="modal" (click)="closeModal()">&times;</button>
+        <form action="" [formGroup]="redeemForm">
           <h3>Redeem</h3>
           <div class="row">
             <div class="col-sm-6 col-xs-12">
               <div class="form-group">
                 <label>Redeem</label>
                 <div class="input-group">
-                  <input class="form-control" type="text" name="red-pod" required="">
+                  <input class="form-control" type="text" (keyup)="keyRedeem($event)" [formControl]="redeemToken" name="red-pod">
                   <span class="input-group-addon">Pods</span>
                 </div>
+                <span *ngIf="redeemToken.invalid && redeemToken.touched" style="color:red;font-size: 11px">Enter tokens to redeem</span>
               </div>
             </div>
             <div class="col-sm-6 col-xs-12">
               <div class="form-group">
                 <label>Redemption Fee</label>
-                <input class="form-control" type="text" name="red-fee" required="">
+                <input class="form-control" type="text" [formControl]="redeemFee" readonly name="red-fee">
               </div>
             </div>  
             <div class="col-sm-12 col-xs-12">
@@ -312,7 +338,7 @@
                 <label>Net to you</label>
                 <div class="input-group">
                   <span class="input-group-addon"><i class="fa fa-usd" aria-hidden="true"></i></span>
-                  <input class="form-control" type="text" name="net-amnt" required="">
+                  <input class="form-control" type="text" name="net-amnt" readonly [(ngModel)]="redeemTotal" [ngModelOptions]="{standalone: true}" >
                 </div>
               </div>
             </div>
@@ -322,19 +348,22 @@
             <div class="col-sm-6 col-xs-12">
               <div class="form-group">
                 <label>Receiving Bank Name and Address</label>
-                <input class="form-control" type="text" name="receive-bank-name" required="">
+                <input class="form-control" type="text" [formControl]="redeemBank" name="receive-bank-name">
+                <span *ngIf="redeemBank.invalid && redeemBank.touched" style="color:red;font-size: 11px">Enter valid bank name and address</span>
               </div>
             </div>
             <div class="col-sm-3 col-xs-12">
               <div class="form-group">
                 <label>Account Number</label>
-                <input class="form-control" type="text" name="acc-number" required="">
+                <input class="form-control" type="text" [formControl]="redeemAccountNumber" name="acc-number">
+                <span *ngIf="redeemAccountNumber.invalid && redeemAccountNumber.touched" style="color:red;font-size: 11px">Enter valid bank number</span>
               </div>
             </div>
             <div class="col-sm-3 col-xs-12">
               <div class="form-group">
                 <label>Swift Code</label>
-                <input class="form-control" type="text" name="swift-code" required="">
+                <input class="form-control" type="text" [formControl]="redeemSwiftCode" name="swift-code">
+                <span *ngIf="redeemSwiftCode.invalid && redeemSwiftCode.touched" style="color:red;font-size: 11px">Enter swift code</span>
               </div>
             </div>
           </div>
@@ -342,20 +371,22 @@
             <div class="col-sm-8 col-xs-12">
               <div class="form-group">
                 <label>Beneficiary Name and Address</label>
-                <input class="form-control" type="text" name="ben-name-add" required="">
+                <input class="form-control" type="text" [formControl]="redeemBeneficiary" name="ben-name-add">
+                <span *ngIf="redeemBeneficiary.invalid && redeemBeneficiary.touched" style="color:red;font-size: 11px">Enter swift code</span>
               </div>
             </div>
             <div class="col-sm-4 col-xs-12">
               <div class="form-group">
                 <label>Email</label>
-                <input class="form-control" type="email" name="ben-email" required="">
+                <input class="form-control" type="email" [formControl]="redeemEmail" name="ben-email">
+                <span *ngIf="redeemEmail.invalid && redeemEmail.touched" style="color:red;font-size: 11px">Enter a valid email</span>
               </div>
             </div>
           </div>
           <div class="row">
             <div class="col-sm-12">
               <div class="form-submit">
-                <button type="submit" class="btn btn-danger btn-lg" data-dismiss="modal">Submit</button>
+                <button type="submit" class="btn btn-danger btn-lg" [disabled]="redeemForm.invalid" (click)="redeemRequest()" data-dismiss="modal">Submit</button>
               </div>
             </div>
           </div>
@@ -365,31 +396,33 @@
   </div>
 </div>
 
-<div class="modal fade" id="transfer-pop" role="dialog">
+<div class="modal fade" id="transfer-pop" role="dialog" data-backdrop="static">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-body">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <form action="">
+        <button type="button" class="close" data-dismiss="modal" (click)="closeModal()">&times;</button>
+        <form action="" [formGroup]="transferForm">
           <h3>Transfer To</h3>
           <div class="row">
             <div class="col-sm-12">
               <div class="form-group">
                 <label>To Address</label>
-                <input class="form-control" type="text" name="to-add" required="">
+                <input class="form-control" [formControl]="transferAddr" type="text" name="to-add">
+                <span *ngIf="transferAddr.invalid && transferAddr.touched" style="color:red;font-size: 11px">Enter tokens to transfer</span>
               </div>
             </div>
             <div class="col-sm-12">
               <div class="form-group">
                 <label>Quantity</label>
-                <input class="form-control" type="text" name="qty-transfer" required="">
+                <input class="form-control" type="text" [formControl]="transferToken" name="qty-transfer">
+                <span *ngIf="transferToken.invalid && transferToken.touched" style="color:red;font-size: 11px">Enter receiver address</span>
               </div>
             </div>
             </div>
           <div class="row">
             <div class="col-sm-12">
               <div class="form-submit">
-                <button type="submit" class="btn btn-danger btn-lg" data-dismiss="modal">Execute</button>
+                <button type="submit" class="btn btn-danger btn-lg" data-dismiss="modal" [disabled]="transferForm.invalid" (click)="transferTokens()">Execute</button>
               </div>
             </div>
           </div>
@@ -403,7 +436,7 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-body">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <button type="button" class="close" data-dismiss="modal" (click)="closeModal()">&times;</button>
         <form action="">
           <h3>Approve</h3>
           <div class="row">

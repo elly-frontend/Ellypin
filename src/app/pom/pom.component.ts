@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { DataService } from '../../services/data.service';
-import { Data } from '@angular/router';
 declare var window:any;
 declare const InstallTrigger: any;
 

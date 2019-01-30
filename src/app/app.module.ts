@@ -8,6 +8,7 @@ import { FormsModule ,ReactiveFormsModule } from '@angular/forms';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 import { ServiceComponent } from './service/service.component';
+import { ContractService } from '../services/contract.service';
 import { DataService } from '../services/data.service';
 import { HttpClientModule } from '@angular/common/http';
 import { PodComponent } from './pod/pod.component';
@@ -33,7 +34,7 @@ import { CustomerComponent } from './customer/customer.component';
     ReactiveFormsModule,
     routing
   ],
-  providers: [DataService],
+  providers: [DataService,ContractService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

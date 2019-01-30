@@ -1,0 +1,172 @@
+exports = async function(payload) {
+    const stringifiedExtendedJson = payload.body.text();
+    let payloadData = EJSON.parse(stringifiedExtendedJson);
+    
+    const mongodb = context.services.get("mongodb-atlas");
+    
+    const custodianMessage =  mongodb.db("elly_db").collection("custodian_msg");
+    const custMsg = await custodianMessage.insertOne(payloadData.custodian);
+    const adminMessage =  mongodb.db("elly_db").collection("admin_msg");
+    if(payloadData.admin.type == 'BUY' || payloadData.admin.type == 'REDEEM' ){
+      payloadData.admin._id =  custMsg.insertedId;
+    }
+    
+    const adminMsg = await adminMessage.insertOne(payloadData.admin);
+    
+    return "successfully send";
+};
+
+
+
+
+exports = function(payload) {
+  
+  let query = {};
+
+   const mongodb = context.services.get("mongodb-atlas");
+  
+  if(payload.query.messageType == 'send'){
+  
+  query.type = {};
+    if(payload.query.role == 'CUSTODIAN'){
+      query.type['$in'] = ['SEND_TOKEN_REQUEST','BURN_TOKEN_REQUEST'];
+    } else {
+      query.type['$in'] = ['SEND_TOKEN_ACKNOWLEDGE','BURN_TOKEN_ACKNOWLEDGE','KYC'];
+    } 
+  } else if (payload.query.messageType == 'receive'){
+    query.type = {};
+    if(payload.query.role == 'CUSTODIAN'){
+      query.type['$in'] = ['BUY','KYC','REDEEM','SEND_TOKEN_ACKNOWLEDGE','BURN_TOKEN_ACKNOWLEDGE'];
+    } else {
+      query.type['$in'] = ['SEND_TOKEN_REQUEST','BURN_TOKEN_REQUEST','KYC'];
+    }
+  } else {
+    query = {};
+  }
+  let msg = null;
+  
+  if(payload.query.role !== 'ADMIN'){
+      msg = mongodb.db("elly_db").collection("custodian_msg");
+  } else {
+      msg = mongodb.db("elly_db").collection("admin_msg");
+  }
+  
+  console.log(JSON.stringify(query))
+  
+  return msg.find(query).toArray();
+  
+  
+};
+
+
+
+
+exports = async function(payload) {
+    const stringifiedExtendedJson = payload.body.text();
+    let payloadData = EJSON.parse(stringifiedExtendedJson);
+    
+    const mongodb = context.services.get("mongodb-atlas");
+    
+    const custodianMessage =  mongodb.db("elly_db").collection("custodian_msg");
+    const custMsg = await custodianMessage.insertOne(payloadData.custodian);
+    const adminMessage =  mongodb.db("elly_db").collection("admin_msg");
+    if(payloadData.admin.type == 'BUY' || payloadData.admin.type == 'REDEEM' ){
+      payloadData.admin._id =  custMsg.insertedId;
+    }
+    
+    const adminMsg = await adminMessage.insertOne(payloadData.admin);
+    
+    return "successfully send";
+};
+
+
+
+
+exports = function(payload) {
+  var queryArg = payload.query.arg || '';
+  var body = {
+    'podList':[
+        {
+          'description':'Fiat Currency POD',
+          'symbol':'POD',
+          'custodian':'ABC',
+          'location':'Singapore',
+          'remarks':''
+        },
+        {
+          'description':'Gold POD',
+          'symbol':'Podg',
+          'custodian':'xyz',
+          'location':'Singapore',
+          'remarks':''
+        }
+      ],
+     'pomList':[
+       {
+          'description':'Certificate of Deposit',
+          'symbol':'POM',
+          'location':'Singapore',
+          'custodian':'ABC Trust Co',
+          'remarks':''
+       }
+      ],
+      'custData':{
+        'asset':'Fiat Currency',
+        'rate':'1-for-1',
+        'maturity':'Cash',
+        'custodian':'ABC Bank',
+        'location':'Singapore',
+        'mint':'Burned when Redeemed',
+        'owner':'Ellypin',
+        'contractType':'Ethereum ERC20'
+      }
+      
+  };
+  //body = EJSON.parse(body);
+  return body;
+};
+
+
+
+
+
+exports = async function(payload) {
+  
+    const stringifiedExtendedJson = payload.body.text();
+    let payloadData = EJSON.parse(stringifiedExtendedJson);
+    const mongodb = context.services.get("mongodb-atlas");
+    
+    const metadata =  mongodb.db("elly_db").collection("metadata");
+    if(!payloadData.buyFee || !isNaN(payloadData.buyFee) || !payloadData.redeemFee || !isNaN(payloadData.redeemFee) || !payloadData.transferFee || !isNaN(payloadData.transferFee) || !payloadData.assetBalance || !isNaN(payloadData.assetBalance)){
+      return "Invalid payload";
+    }
+    
+    const custMsg = await metadata.updateOne({},payloadData);
+    
+    return "successfully updated";
+};
+
+
+
+
+exports = function(payload) {
+  const mongodb = context.services.get("mongodb-atlas");
+  const metadata = mongodb.db("elly_db").collection("metadata");
+  return metadata.findOne({})
+};
+
+
+
+
+
+  
+exports = function(payload) {
+  var queryArg = payload.query.arg || '';
+  var body = {};
+  if (payload.body) {
+    body = EJSON.parse(payload.body.text());
+  }
+  return queryArg + ' ' + body.msg;
+};
+
+
