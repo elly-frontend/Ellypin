@@ -1,0 +1,10 @@
+.fees-wrapper table tbody tr td input {
+    outline: none;
+    border: none;
+    box-shadow: none;
+    background: none;
+}
+
+tr.noBorder td {
+    border: 0;
+  }

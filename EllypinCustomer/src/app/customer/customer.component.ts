@@ -49,6 +49,7 @@ export class CustomerComponent implements OnInit {
   public ethereumAccount:any;
   public intervalId:any;
   public fees:any;
+  public buyFeePercent:any;
   public userBalance:any;
   public loading:boolean=false;
   public custData = {};
@@ -171,8 +172,9 @@ export class CustomerComponent implements OnInit {
 
   getAllFees(){
     this.dataService.getAllFees().subscribe(
-      data => {
-        console.log(data);
+      (data:any) => {
+        // console.log('Fees',data.buyFee);
+        this.buyFeePercent = data.buyFee;
       },
       error => {
         console.log(error);
@@ -214,7 +216,7 @@ export class CustomerComponent implements OnInit {
   }
 
   keyBuy(event){
-    this.buyForm.controls['buyFee'].patchValue(((this.buyForm.value.buyToken)/10).toFixed(0));
+    this.buyForm.controls['buyFee'].patchValue((((this.buyForm.value.buyToken)*this.buyFeePercent)/100).toFixed(0));
     this.buyAmount = parseInt(this.buyForm.value.buyToken) + parseInt(this.buyForm.value.buyFee);
     if(isNaN(this.buyAmount)){
       this.buyAmount = "";
