@@ -225,17 +225,17 @@
                   <th>Serial No</th>
                   <th>Pods Received</th>
                   <th>Custodian Paid?</th>
-                  <th>KYC Yes</th>
+                  <th>KYC</th>
                   <th>burn</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
                     <td>1.</td>
-                    <td><input type="text" [(ngModel)]="redeemObjectSet.kyc" class="form-control"></td>
-                    <td>{{redeemObjectSet.redeemCustodian}}</td>
-                    <td><input type="text" [(ngModel)]="redeemObjectSet.kyc" class="form-control"></td>
-                    <td><input type="text" [(ngModel)]="redeemObjectSet.burn" class="form-control"></td>
+                    <td><input type="text" [(ngModel)]="redeemObjectSet.BURN_TOKEN_REQUEST.tokenReceived" class="form-control"></td>
+                    <td><input type="text" [(ngModel)]="redeemObjectSet.BURN_TOKEN_REQUEST.redeemAmount" class="form-control"></td>
+                    <td><input type="text" [(ngModel)]="redeemObjectSet.KYC" class="form-control"></td>
+                    <td></td>
                 </tr>
               </tbody>
             </table>
@@ -283,7 +283,7 @@
             </table>
           </div>
         </div>
-        <div class="col-sm-6 col-xs-12" *ngIf="buyObjectSet.name">
+        <div class="col-sm-6 col-xs-12" *ngIf="buyObjectSet.buyFirstName">
           <h3>Admin UI</h3>
           <div class="table-responsive buy-wrapper">
             <table class="table table-striped table-bordered text-center" id="podtable">
@@ -300,8 +300,8 @@
                 <tr>
                     <td>1.</td>
                     <td>{{buyObjectSet.publicKey}}</td>
-                    <td>{{buyObjectSet.}}</td>
-                    <td><input type="text" [(ngModel)]="buyObjectSet.kyc" class="form-control"></td>
+                    <td><input type="text" [(ngModel)]="buyObjectSet.SEND_TOKEN_REQUEST.receivedAmount" readonly class="form-control"></td>
+                    <td><input type="text" [(ngModel)]="buyObjectSet.KYC" class="form-control"></td>
                     <td>&nbsp;</td>
                 </tr>
               </tbody>

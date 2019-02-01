@@ -173,9 +173,7 @@ export class AdminComponent implements OnInit {
              if(indexBuy<5){
                var buyObject = await this.decrypt(buyMsg.message,'admin');  
                buyObject['_id']=buyMsg['_id'].$oid;    
-               if(buyObject.type== Message_Type.BUY || buyObject.type==Message_Type.SEND_TOKEN_REQUEST || buyObject.type == Message_Type.BURN_TOKEN_REQUEST)
                this.buyMessageDisplay.push(buyObject);
-               ++indexBuy;
              }
            }
          )
@@ -184,9 +182,7 @@ export class AdminComponent implements OnInit {
              if(indexRedeem<5){
                var redeemObject = await this.decrypt(buyMsg.message,'admin'); 
                redeemObject['_id']=buyMsg['_id'].$oid;
-               if(redeemObject.type== Message_Type.REDEEM || redeemObject.type==Message_Type.SEND_TOKEN_REQUEST || redeemObject.type == Message_Type.BURN_TOKEN_REQUEST)           
                this.redeemMessageDisplay.push(redeemObject);
-               ++indexRedeem
              }
            }
          )
@@ -263,13 +259,16 @@ export class AdminComponent implements OnInit {
     console.log(index);
     this.redeemIndex = index;
     console.log('displayRedem',this.redeemMessageDisplay);
-    this.redeemObjectSet = {
-      'redeemBank' : this.redeemMessageDisplay[index].redeemBank,
-      'redeemSwiftCode' : this.redeemMessageDisplay[index].redeemSwiftCode,
-      'redeemAccountNumber':this.redeemMessageDisplay[index].redeemAccountNumber,
-      'redeemBeneficiary':this.redeemMessageDisplay[index].redeemBeneficiary,
-      'redeemCustodian':this.redeemMessageDisplay[index].redeemCustodian ? this.redeemMessageDisplay[index].redeemCustodian : 'Not Yet Paid'
-    }
+    this.redeemObjectSet = this.redeemMessageDisplay[this.redeemIndex];
+    this.buyObjectSet.BURN_TOKEN_REQUEST = this.buyObjectSet.BURN_TOKEN_REQUEST || {};
+
+    // this.redeemObjectSet = {
+    //   'redeemBank' : this.redeemMessageDisplay[index].redeemBank,
+    //   'redeemSwiftCode' : this.redeemMessageDisplay[index].redeemSwiftCode,
+    //   'redeemAccountNumber':this.redeemMessageDisplay[index].redeemAccountNumber,
+    //   'redeemBeneficiary':this.redeemMessageDisplay[index].redeemBeneficiary,
+    //   'redeemCustodian':this.redeemMessageDisplay[index].redeemCustodian ? this.redeemMessageDisplay[index].redeemCustodian : 'Not Yet Paid'
+    // }
   }
 
   buyClicked(index){
@@ -279,53 +278,47 @@ export class AdminComponent implements OnInit {
     
     
     this.buyIndex = index;
-    this.buyObjectSet = {
-      'name': this.buyMessageDisplay[this.buyIndex].buyFirstName,
-      'publicKey':this.buyMessageDisplay[this.buyIndex].publicKey,
-      'amountReceived':this.buyMessageDisplay[index].amountReceived ? this.buyMessageDisplay[index].amountReceived : 'Not Received Yet',
-      'time':this.buyMessageDisplay[this.buyIndex],
-      '_id':this.buyMessageDisplay[this.buyIndex]._id
-    }
+    this.buyObjectSet = this.buyMessageDisplay[this.buyIndex];
+    console.log('BUY OBJECT',this.buyObjectSet);
+    
+    this.buyObjectSet.SEND_TOKEN_REQUEST = this.buyObjectSet.SEND_TOKEN_REQUEST || {};
+
+    // this.buyObjectSet = {
+    //   'name': this.buyMessageDisplay[this.buyIndex].buyFirstName,
+    //   'publicKey':this.buyMessageDisplay[this.buyIndex].publicKey,
+    //   'amountReceived':this.buyMessageDisplay[index].amountReceived ? this.buyMessageDisplay[index].amountReceived : 'Not Received Yet',
+    //   'time':this.buyMessageDisplay[this.buyIndex],
+    //   '_id':this.buyMessageDisplay[this.buyIndex]._id
+    // }
   }
 
   public async updateBuyMessage(){
       // console.log(JSON.stringify(this.buyForm.value));
-      let messageToSend:Message = {} as any;
-      // messageToSend.parentMessage = null;
-      messageToSend.type = Message_Type.BUY;
-      messageToSend.publicKey = this.buyObjectSet.publicKey;
 
-
-      let admin_message = Object.assign({}, messageToSend);
-      let custodian_message = Object.assign({}, messageToSend);
-
-      let message_object = this.buyMessageDisplay[this.buyIndex];
-      message_object['type']=Message_Type.KYC;
-      message_object['kycStatus']=this.buyObjectSet['kyc'];
-      console.log('Messageobject',message_object);
-      
-
-      admin_message.message= [];
-      admin_message.message.push(await this.encrypt(JSON.stringify(message_object),'admin'));
-      custodian_message.message=[];
-      custodian_message.message.push(await this.encrypt(JSON.stringify(message_object),'custodian'));
-      console.log('ADmin:',admin_message,'Custodian:',custodian_message);
-
-      // this.loading = true;
-      this.dataService.sendMessage(admin_message,custodian_message,this.buyObjectSet._id).subscribe(
+      console.log('BUYOBJECT:',this.buyObjectSet);
+      let admin_message:Message = {} as any;
+      admin_message.type = Message_Type.BUY;
+      admin_message.publicKey = this.buyMessageArray[this.buyIndex].publicKey;
+       admin_message.message=await this.encrypt(JSON.stringify(this.buyObjectSet),'admin');
+      let custodian_message:Message = {} as any;
+      custodian_message.type = Message_Type.BUY;
+      custodian_message.publicKey = this.buyMessageArray[this.buyIndex].publicKey;
+      custodian_message.message=await this.encrypt(JSON.stringify(this.buyObjectSet),'custodian');
+      let _id = this.buyMessageArray[this.buyIndex]['_id'].$oid;
+      this.dataService.sendMessage(admin_message,custodian_message,_id).subscribe(
         (data:any) => {
           console.log(data);
           // swal('Request Created Successfully');
-          // this.buyForm.reset();
         },
         error => {
           console.log(error);
-          // this.loading = false;
         },
         () => {
-          // this.loading = false;
         }
-      )
+      )    // this.dataService.sendMessage()
+  
+
+
   }
 
 }
