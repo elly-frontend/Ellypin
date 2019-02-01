@@ -15,16 +15,16 @@ export class DataService {;
 
   public sendMessage(admin_payload, custodian_payload){
     let Data = {
-      custodian: custodian_payload,
-      admin: admin_payload
+      custodianMessage: custodian_payload,
+      adminMessage: admin_payload
     }
     return this.httpClient.post('https://webhooks.mongodb-stitch.com/api/client/v2.0/app/ellypin-wysik/service/http/incoming_webhook/sendMessage',Data)
   }
 
   public redeemToken(admin_payload, custodian_payload){
     let Data = {
-      custodian: custodian_payload,
-      admin: admin_payload
+      custodianMessage: custodian_payload,
+      adminMessage: admin_payload
     }
     return this.httpClient.post('https://webhooks.mongodb-stitch.com/api/client/v2.0/app/ellypin-wysik/service/http/incoming_webhook/sendMessage',Data)
   }

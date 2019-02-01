@@ -250,7 +250,7 @@ export class CustomerComponent implements OnInit {
         return accounts;
       });
       let messageToSend:Message = {} as any;
-      messageToSend.parentMessage = null;
+      // messageToSend.parentMessage = null;
       messageToSend.type = Message_Type.BUY;
       messageToSend.time = new Date().getTime();
       messageToSend.email = this.buyForm.value.buyEmail;
@@ -258,12 +258,19 @@ export class CustomerComponent implements OnInit {
 
       let message_object = Object.assign({}, this.buyForm.value);
       message_object.publicKey = sender;
+      message_object.type = Message_Type.BUY;
+      message_object.KYC="NOT SET";
+      message_object[Message_Type.SEND_TOKEN_REQUEST] = null;
+      message_object[Message_Type.SEND_TOKEN_ACKNOWLEDGE] = null;
+
+
       delete message_object['email'];   
 
       let admin_message = Object.assign({}, messageToSend);
       let custodian_message = Object.assign({}, messageToSend);
-      custodian_message.message = await this.encrypt(JSON.stringify(message_object),'custodian');
-      admin_message.message = await this.encrypt(JSON.stringify(message_object),'admin');
+      admin_message.message=await this.encrypt(JSON.stringify(message_object),'admin');
+      custodian_message.message=await this.encrypt(JSON.stringify(message_object),'custodian');
+console.log('ADmin:',admin_message,'Custodian:',custodian_message);
 
       this.loading = true;
       this.dataService.sendMessage(admin_message,custodian_message).subscribe(
@@ -274,6 +281,7 @@ export class CustomerComponent implements OnInit {
         },
         error => {
           console.log(error);
+          this.loading = false;
         },
         () => {
           this.loading = false;
@@ -296,23 +304,26 @@ export class CustomerComponent implements OnInit {
           return accounts;
         });
         let messageToSend:Message = {} as any;
-        messageToSend.parentMessage = null;
+        // messageToSend.parentMessage = null;
         messageToSend.type = Message_Type.REDEEM;
         messageToSend.time = new Date().getTime();
         messageToSend.email = this.redeemForm.value.redeemEmail;
         messageToSend.publicKey = sender;
         
         let message_object = Object.assign({}, this.redeemForm.value);
-        message_object.publicKey = sender;    
+        message_object.publicKey = sender; 
+        message_object.type = Message_Type.REDEEM;   
         delete message_object['email'];
-  
+        message_object[Message_Type.KYC] = "NOT SET";
+        message_object[Message_Type.BURN_TOKEN_REQUEST] = null;
+        message_object[Message_Type.BURN_TOKEN_ACKNOWLEDGE] = null;
         let admin_message = Object.assign({}, messageToSend);
-        let custodian_message = Object.assign({}, messageToSend);
-        custodian_message.message = await this.encrypt(JSON.stringify(message_object),'custodian');
-        admin_message.message = await this.encrypt(JSON.stringify(message_object),'admin');
+      let custodian_message = Object.assign({}, messageToSend);
+      admin_message.message=[];
+      admin_message.message.push(await this.encrypt(JSON.stringify(message_object),'admin'));
+      custodian_message.message=[];
+      custodian_message.message.push(await this.encrypt(JSON.stringify(message_object),'custodian'));
   
-        console.log('Admin_Message:',admin_message);
-        console.log('Custodian_message:',custodian_message);
         this.loading = true;
         this.dataService.redeemToken(admin_message,custodian_message).subscribe(
           (data:any) => {
@@ -323,6 +334,7 @@ export class CustomerComponent implements OnInit {
           },
           error => {
             console.log(error);
+            this.loading = false;
           },
           () => {
             this.loading = false;
