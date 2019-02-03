@@ -6,10 +6,14 @@ import { SidebarComponent } from './sidebar/sidebar.component';
 import { PodComponent } from './pod/pod.component';
 import { PomComponent } from './pom/pom.component';
 import { CustomerComponent } from './customer/customer.component';
+import { AdminComponent } from './admin/admin.component';
+import { CustodianComponent } from './custodian/custodian.component';
 
 export const routes: Routes = [
   { path: 'home', component: HomeComponent,  },
   { path: 'service', component:ServiceComponent   },
+  {path: 'admin', component:AdminComponent},
+  {path:'custodian', component:CustodianComponent},
   { path: 'common', component: SidebarComponent, children : [
     { path:'pod', component:PodComponent },
     { path:'pom', component:PomComponent },

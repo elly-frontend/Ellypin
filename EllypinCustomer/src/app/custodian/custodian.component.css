@@ -1,0 +1,36 @@
+.fees-wrapper table tbody tr td input {
+    outline: none;
+    border: none;
+    box-shadow: none;
+    background: none;
+}
+
+.buy-wrapper table tbody tr td input {
+    outline: none;
+    border: none;
+    box-shadow: none;
+    background: none;
+}
+
+.redeem-wrapper table tbody tr td input {
+    outline: none;
+    border: none;
+    box-shadow: none;
+    background: none;
+}
+
+tr.noBorder td {
+    border: 0;
+  }
+
+.redeem-section .button-wrapper {
+    padding: 10px;
+    text-align: right;
+    background: #fff;
+}
+
+.buy-section .button-wrapper {
+    padding: 10px;
+    text-align: right;
+    background: #fff;
+}

@@ -205,6 +205,8 @@ export class ContractService {
   }
 
   public async mintToken(address:string, amount:number){
+    console.log('Address:',address,'Amount:',amount);
+    
     this._tokenContract.mint( address, amount,(err,result) => {
       if(err != null){
         console.log(err);

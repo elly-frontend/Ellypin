@@ -15,6 +15,8 @@ import { PodComponent } from './pod/pod.component';
 import { PomComponent } from './pom/pom.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { CustomerComponent } from './customer/customer.component';
+import { CustodianComponent } from './custodian/custodian.component';
+import { AdminComponent } from './admin/admin.component';
 
 @NgModule({
   declarations: [
@@ -25,6 +27,8 @@ import { CustomerComponent } from './customer/customer.component';
     PomComponent,
     SidebarComponent,
     CustomerComponent,
+    CustodianComponent,
+    AdminComponent
   ],
   imports: [
     BrowserModule,
