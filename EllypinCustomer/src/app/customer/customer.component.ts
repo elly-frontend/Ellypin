@@ -66,7 +66,7 @@ export class CustomerComponent implements OnInit {
       'buyFirstName':['', Validators.compose([Validators.required,Validators.pattern(/^[a-zA-Z ]{1,40}$/)])],
       'buyMiddleName':['', Validators.compose([Validators.pattern(/^[a-zA-Z ]{1,40}$/)])],
       'buyLastName':['', Validators.compose([Validators.required,Validators.pattern(/^[a-zA-Z ]{1,40}$/)])],
-      'buyAddress':['', Validators.compose([Validators.required,Validators.pattern(/^[a-zA-Z ]{1,40}$/)])],
+      'buyAddress':['', Validators.compose([Validators.required])],
       'buyCity':['', Validators.compose([Validators.required,Validators.pattern(/^[a-zA-Z ]{1,40}$/)])],
       'buyProvince':['', Validators.compose([Validators.required,Validators.pattern(/^[a-zA-Z ]{1,40}$/)])],
       'buyCountry':['', Validators.compose([Validators.required,Validators.pattern(/^[a-zA-Z ]{1,40}$/)])],
