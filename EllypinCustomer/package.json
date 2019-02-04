@@ -32,6 +32,7 @@
     "mongodb-stitch": "^3.2.13",
     "mongodb-stitch-browser-sdk": "^4.1.2",
     "ngx-loading": "^3.0.1",
+    "ngx-pagination": "^3.2.1",
     "openpgp": "^4.4.1",
     "rxjs": "~6.2.0",
     "sweetalert2": "^7.33.1",

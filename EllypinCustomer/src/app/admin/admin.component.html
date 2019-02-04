@@ -141,8 +141,7 @@
               <div class="col-sm-4 asset-wrapper">
                 <h4>Asset Account Balance</h4>  
                 <div class="asset-inner">
-                  <input type="text" name="" readonly [(ngModel)]="assetBalance" class="form-control">
-                  <button class="btn btn-primary btn-sm">Save</button>
+                  <span style="text-align:center">{{assetBalance}}</span>
                 </div>
               </div>
               <div class="col-sm-4 podbal-wrapper">
@@ -202,7 +201,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr style="cursor: pointer" (click)="redeemClicked(i)" *ngFor="let obj of redeemMessageDisplay;let i=index">
+                <tr style="cursor: pointer" (click)="redeemClicked(i)" *ngFor="let obj of redeemMessageDisplay | paginate: {id: 'redeem', itemsPerPage: 5, currentPage: redeemCurrentPage };let i=index ">
                   <td>{{i+1}}</td>
                   <td>{{obj.redeemBeneficiary}}</td>
                   <td>{{obj.redeemEmail}}</td>
@@ -211,9 +210,12 @@
                   <td>{{obj.publicKey}}</td>
                   <td>{{obj.redeemBank}}</td>
                   <td>{{obj.redeemAccountNumber}}</td>
-              </tr>
+                </tr>
               </tbody>
             </table>
+          </div>
+          <div style="background-color: #f9f9f9">
+            <pagination-controls id="redeem" (pageChange)="redeemCurrentPage = $event" responsive="true"></pagination-controls>
           </div>
         </div>
         <div class="col-sm-6 col-xs-12" *ngIf="redeemObjectSet.redeemBank">
@@ -232,19 +234,29 @@
               <tbody>
                 <tr>
                     <td>1.</td>
-                    <td><input type="text" [(ngModel)]="redeemObjectSet.BURN_TOKEN_REQUEST.tokenReceived" [readonly]="!redeemObjectSet.BURN_TOKEN_REQUEST.redeemAmount" class="form-control"></td>
+                    <td><input type="text" [(ngModel)]="redeemObjectSet.redeemToken" [readonly]="redeemObjectSet.BURN_TOKEN_REQUEST.tokenSet" class="form-control"></td>
                     <td><input type="text" readonly [(ngModel)]="redeemObjectSet.BURN_TOKEN_REQUEST.redeemAmount" class="form-control"></td>
-                    <td><input type="text" [(ngModel)]="redeemObjectSet.KYC" class="form-control"></td>
-                    <td><button (click)="burnTokens()" [disabled]="!redeemObjectSet.BURN_TOKEN_REQUEST.redeemAmount">Burn Tokens</button></td>
+                    <td>
+                      <span *ngIf="redeemObjectSet.KYC == 'Approve'">Approved</span>
+                      <span *ngIf="redeemObjectSet.KYC != 'Approve'">
+                        <select [(ngModel)]="redeemObjectSet.KYC">
+                          <option value="" disabled>Set KYC</option>
+                          <option value="Approve">Approve</option>
+                          <option value="Not Approved">Do Not Approve</option>
+                        </select>
+                      </span>
+                    </td>
+                    <td><button (click)="burnTokens()" class="btn btn-primary" [disabled]="!redeemObjectSet.BURN_TOKEN_REQUEST.custodianSet || redeemObjectSet.BURN_TOKEN_ACKNOWLEDGE">Burn Tokens</button></td>
                 </tr>
               </tbody>
             </table>
           </div>
-          <div class="button-wrapper">
+          <div class="button-wrapper" [hidden]="redeemObjectSet.BURN_TOKEN_REQUEST.custodianSet">
             <button class="btn btn-primary" (click)="updateRedeemObject()">Update</button>
           </div>
         </div>
       </div>
+      <ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px',fullScreenBackdrop:true, animationType:'circleSwish' }" [template]="customLoadingTemplate"></ngx-loading>
 
       <div class="row buy-section">
         <div class="col-sm-2 col-xs-12">
@@ -269,7 +281,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr style="cursor: pointer" (click)="buyClicked(i)" *ngFor="let obj of buyMessageDisplay;let i=index">
+                <tr style="cursor: pointer" (click)="buyClicked(i)" *ngFor="let obj of buyMessageDisplay | paginate: {id: 'buy', itemsPerPage: 5, currentPage: buyCurrentPage };let i=index">
                   <td>{{i+1}}</td>
                   <td>{{obj.buyFirstName+' '+obj.buyLastName}}</td>
                   <td>{{obj.buyEmail}}</td>
@@ -282,6 +294,9 @@
               </tbody>
             </table>
           </div>
+          <div style="background-color: #f9f9f9">
+              <pagination-controls id="buy" (pageChange)="buyCurrentPage = $event" responsive="true"></pagination-controls>
+            </div>
         </div>
         <div class="col-sm-6 col-xs-12" *ngIf="buyObjectSet.buyFirstName">
           <h3>Admin UI</h3>
@@ -292,7 +307,7 @@
                   <th>Serial No</th>
                   <th>Customer Public Key</th>
                   <th>Amount Received by Custodian</th>
-                  <th>KYC Yes</th>
+                  <th>KYC</th>
                   <th>Mint And Assign</th>
                 </tr>
               </thead> 
@@ -301,14 +316,23 @@
                     <td>1.</td>
                     <td>{{buyObjectSet.publicKey}}</td>
                     <td><input type="text" [(ngModel)]="buyObjectSet.SEND_TOKEN_REQUEST.receivedAmount" readonly class="form-control"></td>
-                    <td><input type="text" [(ngModel)]="buyObjectSet.KYC" class="form-control" [readOnly]="buyObjectSet.KYC == 'YES'"></td>
-                    <td><button (click)="mintToken()" [disabled]="!buyObjectSet.SEND_TOKEN_REQUEST.receivedAmount">Click to  Mint</button></td>
+                    <td>
+                        <span *ngIf="buyObjectSet.KYC == 'Approve'">Approved</span>
+                        <span *ngIf="buyObjectSet.KYC != 'Approve'">
+                          <select [(ngModel)]="buyObjectSet.KYC">
+                            <option disabled value="">Set KYC</option>
+                            <option value="Approve">Approve</option>
+                            <option value="Not Approved">Do Not Approve</option>
+                          </select>
+                        </span>
+                    </td>                    
+                    <td><button (click)="mintToken()" class="btn btn-primary" [disabled]="!buyObjectSet.SEND_TOKEN_REQUEST.custodianSet || buyObjectSet.SEND_TOKEN_ACKNOWLEDGE">Click to  Mint</button></td>
                 </tr>
               </tbody>
             </table>
           </div>
-          <div class="button-wrapper">
-            <button class="btn btn-primary" (click)="updateBuyMessage()">Update</button>
+          <div class="button-wrapper" [hidden]="buyObjectSet.SEND_TOKEN_REQUEST.custodianSet">
+            <button class="btn btn-primary"    (click)="updateBuyMessage()">Update</button>
           </div>
         </div>
       </div>

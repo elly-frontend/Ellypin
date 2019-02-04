@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { ContractService } from '../../services/contract.service';
 import {Message, Message_Type} from '../sharedData/message.interface';
 import { FormBuilder, AbstractControl, FormGroup, Validators } from '@angular/forms';
@@ -7,6 +7,7 @@ import adminPrivateKey from '../sharedData/adminPrivateKey';
 import custodianPrivateKey from '../sharedData/custodianPrivateKey';
 import custodianPublicKey from '../sharedData/custodianPublic';
 import swal from 'sweetalert2';
+declare var $:any;
 import * as openpgp from 'openpgp';
 import { DataService } from '../../services/data.service';
 
@@ -54,6 +55,9 @@ export class CustomerComponent implements OnInit {
   public loading:boolean=false;
   public custData = {};
   public contractDetails={};
+  public assetBalance:any;
+  public buyFees:any;
+  public transferFees:any;
 
   constructor( public contractService:ContractService,public dataService:DataService, public fb:FormBuilder ) {
     this.buyForm = fb.group({
@@ -116,16 +120,25 @@ export class CustomerComponent implements OnInit {
    }
 
   ngOnInit() {
-    this.getContractData();
-    this.getCustomerData();
-    this.getContractFees();
+    
     this.intervalId = setInterval(() => {
       this.getAccounts();
      console.log('Printing every 5 seconds');
     }, 5000);
-    this.getBalance();
-    this.getAllFees();
+    
   }
+
+  // @HostListener('click', ['$event'])
+  //   onClick(event: MouseEvent) {
+  //     console.log('Clicked');
+  //     if(this.ethereumAccount){
+  //       console.log('Present');
+        
+  //     }else{
+  //       console.log('Not Present');
+        
+  //     }
+  // }
 
   public async getCustomerData(){
     await this.dataService.getCustomerData().subscribe(
@@ -170,7 +183,7 @@ export class CustomerComponent implements OnInit {
       });
   }
 
-  getAllFees(){
+  getFees(){
     this.dataService.getAllFees().subscribe(
       (data:any) => {
         // console.log('Fees',data.buyFee);
@@ -182,11 +195,40 @@ export class CustomerComponent implements OnInit {
     )
   }
 
+  public getAllFees(){
+    this.dataService.getAllFees().subscribe(
+      (data:any)  => {
+        console.log(data);
+        this.assetBalance = data.assetBalance;
+        this.buyFees = data.buyFee;
+        this.transferFees = data.transferFee;
+      },
+      err => {
+        console.log(err);
+        
+      }
+    )
+  }
+
+  // openPopup(popupId){
+  //   console.log('POPID:',popupId);
+    
+  //   if(this.ethereumAccount){
+  //     $(`#${popupId}`).modal('show');
+  //   }
+  // }
+
   public async getAccounts(){
     this.contractService.getAccount().then(async accounts => {
       this.ethereumAccount=accounts;
       if(this.ethereumAccount != null){
         await this.getBalance();
+        this.getContractData();
+        this.getCustomerData();
+        this.getContractFees();
+        this.getBalance();
+        this.getAllFees();
+        this.getFees();
         if(this.intervalId){
           clearInterval(this.intervalId);
           // console.log('Interval Id:',this.intervalId);
@@ -259,7 +301,7 @@ export class CustomerComponent implements OnInit {
       let message_object = Object.assign({}, this.buyForm.value);
       message_object.publicKey = sender;
       message_object.type = Message_Type.BUY;
-      message_object.KYC="NOT SET";
+      message_object.KYC="Not Approved";
       message_object[Message_Type.SEND_TOKEN_REQUEST] = null;
       message_object[Message_Type.SEND_TOKEN_ACKNOWLEDGE] = null;
 
@@ -314,7 +356,7 @@ console.log('ADmin:',admin_message,'Custodian:',custodian_message);
         message_object.publicKey = sender; 
         message_object.type = Message_Type.REDEEM;   
         delete message_object['email'];
-        message_object[Message_Type.KYC] = "NOT SET";
+        message_object[Message_Type.KYC] = "Not Approved";
         message_object[Message_Type.BURN_TOKEN_REQUEST] = null;
         message_object[Message_Type.BURN_TOKEN_ACKNOWLEDGE] = null;
         let admin_message = Object.assign({}, messageToSend);

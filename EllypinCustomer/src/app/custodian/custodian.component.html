@@ -153,7 +153,7 @@
                     <tbody>
                       <tr>
                         <td>Total</td>
-                        <td></td>
+                        <td>{{userBalance}}</td>
                       </tr>
                       <tr>
                         <td>Burned</td>
@@ -198,7 +198,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr style="cursor: pointer" (click)="buyClicked(i)" *ngFor="let obj of buyMessageDisplay;let i=index">
+                <tr style="cursor: pointer" (click)="buyClicked(i)" *ngFor="let obj of buyMessageDisplay  | paginate: {id: 'buy', itemsPerPage: 5, currentPage: buyCurrentPage };let i=index">
                     <td>{{i+1}}</td>
                     <td>{{obj.buyFirstName+' '+obj.buyLastName}}</td>
                     <td>{{obj.buyEmail}}</td>
@@ -211,6 +211,9 @@
               </tbody>
             </table>
           </div>
+          <div style="background-color: #f9f9f9">
+              <pagination-controls id="buy" (pageChange)="buyCurrentPage = $event" responsive="true"></pagination-controls>
+            </div>
         </div>
         <div class="col-sm-5 col-xs-12" *ngIf="buyObjectSet.buyFirstName">
           <h3>Custodian UI</h3>
@@ -223,21 +226,26 @@
                   <th>Amount Received</th>
                   <th>update Account balance</th>
                   <th>KYC</th>
+                  <th>Request Status</th>
                 </tr>
               </thead> 
               <tbody>
                 <tr>
                     <td>1</td>
                     <td>{{buyObjectSet.buyFirstName}}</td>
-                    <td><input type="text" [(ngModel)]="buyObjectSet.SEND_TOKEN_REQUEST.receivedAmount" [readonly]="buyObjectSet.KYC != 'YES' || buyObjectSet.SEND_TOKEN_ACKNOWLEDGE" class="form-control"></td>
-                    <td><input type="text" [(ngModel)]="buyObjectSet.SEND_TOKEN_REQUEST.updateBalance" [readonly]="buyObjectSet.KYC != 'YES' || buyObjectSet.SEND_TOKEN_ACKNOWLEDGE" class="form-control"></td>
-                    <td><input type="text" [(ngModel)]="buyObjectSet.KYC" readonly class="form-control"></td>
+                    <td><input type="text" [(ngModel)]="buyObjectSet.SEND_TOKEN_REQUEST.receivedAmount" [readonly]="buyObjectSet.KYC != 'Approve' || buyObjectSet.SEND_TOKEN_REQUEST.custodianSet" class="form-control"></td>
+                    <td><input type="text" [(ngModel)]="buyObjectSet.SEND_TOKEN_REQUEST.updateBalance" [readonly]="buyObjectSet.KYC != 'Approve' || buyObjectSet.SEND_TOKEN_REQUEST.custodianSet" class="form-control"></td>
+                    <td>{{buyObjectSet.KYC}}</td>
+                    <td>
+                      <span *ngIf="buyObjectSet.SEND_TOKEN_ACKNOWLEDGE">TOKENS SENT</span>
+                      <span *ngIf="!buyObjectSet.SEND_TOKEN_ACKNOWLEDGE">TOKENS NOT SENT YET</span>
+                    </td>
                 </tr>
               </tbody>
             </table>
           </div>
           <div class="button-wrapper">
-            <button class="btn btn-primary" [disabled]="this.buyObjectSet.SEND_TOKEN_ACKNOWLEDGE" (click)="updateBuyObject()">Update</button>
+            <button class="btn btn-primary" [disabled]="buyObjectSet.SEND_TOKEN_REQUEST.custodianSet" (click)="updateBuyObject()">Update</button>
           </div>
         </div>
       </div>
@@ -265,7 +273,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr style="cursor: pointer" (click)="redeemClicked(i)" *ngFor="let obj of redeemMessageDisplay;let i=index">
+                <tr style="cursor: pointer" (click)="redeemClicked(i)" *ngFor="let obj of redeemMessageDisplay | paginate: {id: 'redeem', itemsPerPage: 5, currentPage: redeemCurrentPage };let i=index">
                     <td>{{i+1}}</td>
                     <td>{{obj.redeemBeneficiary}}</td>
                     <td>{{obj.redeemEmail}}</td>
@@ -278,6 +286,9 @@
               </tbody>
             </table>
           </div>
+          <div style="background-color: #f9f9f9">
+              <pagination-controls id="redeem" (pageChange)="redeemCurrentPage = $event" responsive="true"></pagination-controls>
+            </div>
         </div>
         <div class="col-sm-6 col-xs-12" *ngIf="redeemObjectSet.redeemBank">
           <h3>Custodian UI</h3>
@@ -290,9 +301,11 @@
                   <th>Swift</th>
                   <th>Bank Account No</th>
                   <th>Beneficiary</th>
+                  <th>Tokens to Redeem</th>
                   <th>Amount to pay</th>
                   <th>KYC</th>
                   <th>update Account balance</th>
+                  <th>Request Status</th>
                 </tr>
               </thead>
               <tbody>
@@ -302,9 +315,14 @@
                     <td>{{redeemObjectSet.redeemSwiftCode}}</td>
                     <td>{{redeemObjectSet.redeemAccountNumber}}</td>
                     <td>{{redeemObjectSet.redeemBeneficiary}}</td>
-                    <td><input type="text" [(ngModel)]="redeemObjectSet.BURN_TOKEN_REQUEST.redeemAmount" [readonly]="redeemObjectSet.KYC != 'YES' || redeemObjectSet.BURN_TOKEN_ACKNOWLEDGE" class="form-control"></td>
-                    <td><input type="text" [(ngModel)]="redeemObjectSet.KYC" readonly class="form-control"></td>
-                    <td><input type="text" [(ngModel)]="redeemObjectSet.BURN_TOKEN_REQUEST.assetBalance" [readonly]="redeemObjectSet.KYC != 'YES' || redeemObjectSet.BURN_TOKEN_ACKNOWLEDGE" class="form-control"></td>
+                    <td>{{redeemObjectSet.redeemToken}}</td>
+                    <td><input type="text" [(ngModel)]="redeemObjectSet.BURN_TOKEN_REQUEST.redeemAmount" [readonly]="redeemObjectSet.KYC != 'Approve' || redeemObjectSet.BURN_TOKEN_REQUEST.custodianSet" class="form-control"></td>
+                    <td>{{redeemObjectSet.KYC}}</td>
+                    <td><input type="text" [(ngModel)]="redeemObjectSet.BURN_TOKEN_REQUEST.assetBalance" [readonly]="redeemObjectSet.KYC != 'Approve' || redeemObjectSet.BURN_TOKEN_REQUEST.custodianSet" class="form-control"></td>
+                    <td>
+                        <span *ngIf="redeemObjectSet.BURN_TOKEN_ACKNOWLEDGE">TOKENS BURNED</span>
+                        <span *ngIf="!redeemObjectSet.BURN_TOKEN_ACKNOWLEDGE">TOKENS NOT BURNED YET</span>
+                    </td>
                 </tr>
               </tbody>
             </table>

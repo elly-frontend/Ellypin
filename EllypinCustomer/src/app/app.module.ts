@@ -15,8 +15,10 @@ import { PodComponent } from './pod/pod.component';
 import { PomComponent } from './pom/pom.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { CustomerComponent } from './customer/customer.component';
+import {NgxPaginationModule} from 'ngx-pagination';
 import { CustodianComponent } from './custodian/custodian.component';
 import { AdminComponent } from './admin/admin.component';
+import { CustodianService } from '../services/custodian.service';
 
 @NgModule({
   declarations: [
@@ -36,9 +38,10 @@ import { AdminComponent } from './admin/admin.component';
     HttpClientModule,
     NgxLoadingModule.forRoot({}),
     ReactiveFormsModule,
+    NgxPaginationModule,
     routing
   ],
-  providers: [DataService,ContractService],
+  providers: [DataService,ContractService, CustodianService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

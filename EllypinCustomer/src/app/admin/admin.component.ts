@@ -7,7 +7,9 @@ import adminPublicKey from '../sharedData/adminPublicKey';
 import adminPrivateKey from '../sharedData/adminPrivateKey';
 import custodianPrivateKey from '../sharedData/custodianPrivateKey';
 import custodianPublicKey from '../sharedData/custodianPublic';
+import swal from 'sweetalert2';
 import * as openpgp from 'openpgp';
+import { load } from '@angular/core/src/render3/instructions';
 declare var $:any
 
 @Component({
@@ -38,6 +40,9 @@ export class AdminComponent implements OnInit {
   public ethereumAccount:any;
   public intervalId:any;
   public userBalance:any;
+  public redeemCurrentPage: number = 1;
+  public buyCurrentPage: number = 1;
+  public loading=false;
 
   constructor(public fb:FormBuilder, public dataService:DataService, public contractService:ContractService) {
     this.loginForm = fb.group({
@@ -181,11 +186,14 @@ export class AdminComponent implements OnInit {
   }
 
   public async getMessage(){
+    this.loading = true;
     this.dataService.getMessages('ADMIN').subscribe(
        async (data:any) => {
          console.log('MESSAGEDATA:',data);
          
          if(data.length > 0){
+          this.buyMessageArray = [];
+          this.redeemMessageArray = [];
            data.forEach(
              message => {
                if(message.type == 'BUY'){
@@ -204,28 +212,28 @@ export class AdminComponent implements OnInit {
          
          let messageToSend:Message = {} as any;
 
-
+         this.buyMessageDisplay = [];
          this.buyMessageArray.forEach(
            async buyMsg => {
-             if(indexBuy<5){
                var buyObject = await this.decrypt(buyMsg.message,'admin');  
                buyObject['_id']=buyMsg['_id'].$oid;    
                this.buyMessageDisplay.push(buyObject);
-             }
            }
          )
+         this.redeemMessageDisplay=[];
          this.redeemMessageArray.forEach(
            async buyMsg => {
-             if(indexRedeem<5){
                var redeemObject = await this.decrypt(buyMsg.message,'admin'); 
                redeemObject['_id']=buyMsg['_id'].$oid;
                this.redeemMessageDisplay.push(redeemObject);
-             }
            }
          )
+
+         this.loading = false;
        },
        error => {
          console.log(error);
+         this.loading = false;
        }
      )
  
@@ -359,7 +367,10 @@ export class AdminComponent implements OnInit {
       this.dataService.sendMessage(admin_message,custodian_message,_id).subscribe(
         (data:any) => {
           console.log(data);
-          // swal('Request Created Successfully');
+          swal('Updated Details Successfully');
+          this.buyIndex = null;
+          this.buyObjectSet = {};
+          this.getMessage();
         },
         error => {
           console.log(error);
@@ -374,6 +385,11 @@ export class AdminComponent implements OnInit {
 
   public async updateRedeemObject(){
     console.log('REDEEMOBJECT:',this.redeemObjectSet);
+    if(this.redeemObjectSet.BURN_TOKEN_REQUEST){
+      if(!this.redeemObjectSet.BURN_TOKEN_REQUEST.tokenSet){
+        this.redeemObjectSet.BURN_TOKEN_REQUEST.tokenSet = true;
+      }
+    }
     let admin_message:Message = {} as any;
     admin_message.type = Message_Type.REDEEM;
     admin_message.publicKey = this.redeemMessageArray[this.redeemIndex].publicKey;
@@ -386,7 +402,10 @@ export class AdminComponent implements OnInit {
     this.dataService.sendMessage(admin_message,custodian_message,_id).subscribe(
       (data:any) => {
         console.log(data);
-        // swal('Request Created Successfully');
+        swal('Updated Details Successfully');
+        this.redeemIndex = null;
+        this.redeemObjectSet = {};
+        this.getMessage();
       },
       error => {
         console.log(error);
@@ -400,14 +419,20 @@ export class AdminComponent implements OnInit {
     console.log('In mintToken');
     if(this.buyObjectSet.SEND_TOKEN_ACKNOWLEDGE != true){
       this.buyObjectSet.SEND_TOKEN_ACKNOWLEDGE = true;
-        // this.contractService.mintToken(this.buyObjectSet.publicKey,parseInt(this.buyObjectSet.buyToken));
+      this.contractService.mintToken(this.buyObjectSet.publicKey,parseInt(this.buyObjectSet.buyToken));
+      this.updateBuyMessage();
     }
   }
 
   burnTokens(){
     if(this.redeemObjectSet.BURN_TOKEN_ACKNOWLEDGE != true){
       this.redeemObjectSet.BURN_TOKEN_ACKNOWLEDGE = true;
+      console.log('REDEEMOBJECT',this.redeemObjectSet);
+      
+      this.contractService.burnTokenFrom(this.redeemObjectSet.publicKey,parseInt(this.redeemObjectSet.redeemToken));
+      this.updateRedeemObject();
     }
   }
 
+ 
 }

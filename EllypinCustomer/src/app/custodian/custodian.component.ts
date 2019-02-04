@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, AbstractControl, FormGroup, Validators } from '@angular/forms';
-import { DataService } from '../../services/data.service';
-import { ContractService } from '../../services/contract.service';
+import { CustodianService } from '../../services/custodian.service';
 import {Message, Message_Type} from '../sharedData/message.interface';
 import adminPublicKey from '../sharedData/adminPublicKey';
 import adminPrivateKey from '../sharedData/adminPrivateKey';
@@ -33,12 +32,16 @@ export class CustodianComponent implements OnInit {
   public custData={};
   public contractDetails={};
   public buyObjectSet:any={};
-  public redeemObjectSet={};
+  public redeemObjectSet:any={};
   buyIndex :any;
   redeemIndex:any;
+  public redeemCurrentPage: number = 1;
+  public buyCurrentPage: number = 1;
+  public userBalance:any;
+  public loading=false;
 
 
-  constructor(public fb:FormBuilder, public dataService:DataService, public contractService:ContractService) {
+  constructor(public fb:FormBuilder, public custodianService:CustodianService) {
     this.loginForm = fb.group({
       'email':['', Validators.compose([Validators.required, Validators.pattern(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)])],
       'password':['',Validators.compose([Validators.required])]
@@ -63,12 +66,13 @@ export class CustodianComponent implements OnInit {
         'role':'CUSTODIAN'
       }
       this.error = null;
-      this.dataService.login(payload).subscribe(
+      this.custodianService.login(payload).subscribe(
         async (data:any) => {
           // console.log(data);
           if(!data.$undefined){
             $('#login-pop').modal('hide');
             this.getContractData();
+            this.getBalance();
             await this.getMessage();
             this.getAllFees();
           }
@@ -87,7 +91,7 @@ export class CustodianComponent implements OnInit {
   }
 
   public async getCustomerData(){
-    await this.dataService.getCustomerData().subscribe(
+    await this.custodianService.getCustomerData().subscribe(
       (data:any) => {
         // console.log('Data:',data);
         this.custData = data.custData;
@@ -98,8 +102,16 @@ export class CustodianComponent implements OnInit {
     )
   }
 
+  public getBalance(){
+    this.custodianService.getUserBalance('0x1b66a326183A0b67F723A201ED3643b0cd29b40D').then((balance:any) => {
+      this.userBalance = balance.c[0];
+      console.log('UserBalance:',this.userBalance);
+      
+      });
+  }
+
   public getAllFees(){
-    this.dataService.getAllFees().subscribe(
+    this.custodianService.getAllFees().subscribe(
       (data:any)  => {
         console.log(data);
         this.assetBalance = data.assetBalance;
@@ -114,26 +126,26 @@ export class CustodianComponent implements OnInit {
   }
 
   public async getContractData(){
-    await this.contractService.getName().then(
+    await this.custodianService.getName().then(
       name => {
         // console.log(name);
         this.contractDetails['contractName'] = name;
       }
     )
 
-    await this.contractService.getSymbol().then(
+    await this.custodianService.getSymbol().then(
       symbol => {
         this.contractDetails['symbol'] = symbol;
       }
     )
 
-    await this.contractService.getDecimal().then(
+    await this.custodianService.getDecimal().then(
       symbol => {
         this.contractDetails['decimal'] = symbol;
       }
     )
 
-    await this.contractService.getFees().then(
+    await this.custodianService.getFees().then(
       (data:any) => {
         this.fees = data.c[0];        
       }
@@ -154,7 +166,7 @@ export class CustodianComponent implements OnInit {
       'transferFee':this.transferFees.toString(),
       'assetBalance':this.assetBalance.toString()
     }
-    this.dataService.saveFees(payload).subscribe(
+    this.custodianService.saveFees(payload).subscribe(
       data => {
         console.log(data);
       },
@@ -165,11 +177,13 @@ export class CustodianComponent implements OnInit {
   }
 
   public async getMessage(){
-   this.dataService.getMessages('CUSTODIAN').subscribe(
+   this.custodianService.getMessages('CUSTODIAN').subscribe(
       async (data:any) => {
         console.log('MESSAGEDATA:',data);
         
         if(data.length > 0){
+          this.buyMessageArray = [];
+          this.redeemMessageArray = [];
           data.forEach(
             message => {
               if(message.type == 'BUY'){
@@ -183,6 +197,7 @@ export class CustodianComponent implements OnInit {
           )
         }
         let indexBuy=0,indexRedeem=0;
+        this.buyMessageDisplay = [];
         this.buyMessageArray.forEach(
           async buyMsg => {
             if(indexBuy<5){
@@ -193,6 +208,7 @@ export class CustodianComponent implements OnInit {
             }
           }
         )
+        this.redeemMessageDisplay = [];
         this.redeemMessageArray.forEach(
           async buyMsg => {
             if(indexRedeem<5){
@@ -244,6 +260,11 @@ export class CustodianComponent implements OnInit {
 
   public async updateBuyObject(){
     console.log('BUYOBJECT:',this.buyObjectSet);
+    if(this.buyObjectSet.SEND_TOKEN_REQUEST){
+      if(this.buyObjectSet.SEND_TOKEN_REQUEST.receivedAmount && this.buyObjectSet.SEND_TOKEN_REQUEST.updateBalance){
+        this.buyObjectSet.SEND_TOKEN_REQUEST.custodianSet = true;
+      }
+    }
     let admin_message:Message = {} as any;
     admin_message.type = Message_Type.BUY;
     admin_message.publicKey = this.buyMessageArray[this.buyIndex].publicKey;
@@ -253,10 +274,13 @@ export class CustodianComponent implements OnInit {
     custodian_message.publicKey = this.buyMessageArray[this.buyIndex].publicKey;
     custodian_message.message=await this.encrypt(JSON.stringify(this.buyObjectSet),'custodian');
     let _id = this.buyMessageArray[this.buyIndex]['_id'].$oid;
-    this.dataService.sendMessage(admin_message,custodian_message,_id).subscribe(
+    this.custodianService.sendMessage(admin_message,custodian_message,_id).subscribe(
       (data:any) => {
         console.log(data);
-        // swal('Request Created Successfully');
+        swal('Request Created Successfully');
+        this.buyIndex = null;
+        this.buyObjectSet = {};
+        this.getMessage();
       },
       error => {
         console.log(error);
@@ -264,12 +288,15 @@ export class CustodianComponent implements OnInit {
       () => {
       }
     )    // this.dataService.sendMessage()
-
-    
   }
 
   public async updateRedeemObject(){
     console.log('REDEEMOBJECT:',this.redeemObjectSet);
+    if(this.redeemObjectSet.BURN_TOKEN_REQUEST){
+      if(this.redeemObjectSet.BURN_TOKEN_REQUEST.assetBalance && this.redeemObjectSet.BURN_TOKEN_REQUEST.redeemAmount){
+        this.redeemObjectSet.BURN_TOKEN_REQUEST.custodianSet = true;
+      }
+    }
     let admin_message:Message = {} as any;
     admin_message.type = Message_Type.REDEEM;
     admin_message.publicKey = this.redeemMessageArray[this.redeemIndex].publicKey;
@@ -279,10 +306,13 @@ export class CustodianComponent implements OnInit {
     custodian_message.publicKey = this.redeemMessageArray[this.redeemIndex].publicKey;
     custodian_message.message=await this.encrypt(JSON.stringify(this.redeemObjectSet),'custodian');
     let _id = this.redeemMessageArray[this.redeemIndex]['_id'].$oid;
-    this.dataService.sendMessage(admin_message,custodian_message,_id).subscribe(
+    this.custodianService.sendMessage(admin_message,custodian_message,_id).subscribe(
       (data:any) => {
         console.log(data);
-        // swal('Request Created Successfully');
+        swal('Updated Successfully');
+        this.redeemIndex = null;
+        this.redeemObjectSet = {};
+        this.getMessage();
       },
       error => {
         console.log(error);

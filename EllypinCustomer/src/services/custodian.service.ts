@@ -10,7 +10,7 @@ declare let window: any;
 let tokenAbi = require('../tokenContract.json');
 
 @Injectable()
-export class ContractService {
+export class CustodianService {
   // clientPromise = StitchClientFactory.create('ifakebook-eqvwi');
   // client;
   // db;
@@ -27,20 +27,15 @@ export class ContractService {
   //     this.db = this.client.service('mongodb', 'mongodb-atlas').db('ifakebook_db');
   // });
 
-    if (typeof window.web3 !== 'undefined') {
       // Use Mist/MetaMask's provider
-      this._web3 = new Web3(window.web3.currentProvider);
+      this._web3 = new Web3(window.web3.currentProvider || `https://ropsten.infura.io/v3/d251bbea9b4e47ebb10ea863b6d8fdd3`);
       
-      window.ethereum.enable(); 
+    //   window.ethereum.enable(); 
       this._tokenContract = this._web3.eth.contract(tokenAbi).at(this._tokenContractAddress);
       // if (this._web3.version.network !== '4') {
       //   alert('Please connect to the Rinkeby network');
       // }
-    } else {
-      alert(
-        'Please install MetaMask extension for your browser'
-      );
-    }
+    
   }
 
   setHeader():Object {
@@ -92,12 +87,12 @@ export class ContractService {
     return Promise.resolve(this._account);
   }
 
-  public async getUserBalance(): Promise<number> {
-    let account = await this.getAccount();
+  public async getUserBalance(address:string): Promise<number> {
+    // let account = await this.getAccount();
 
     return new Promise((resolve, reject) => {
       let _web3 = this._web3;
-      this._tokenContract.balanceOf.call(account,  (err, result) => {
+      this._tokenContract.balanceOf.call(address,  (err, result) => {
         if(err != null) {
           reject(err);
         }
@@ -275,20 +270,52 @@ export class ContractService {
     })as Promise<number>;
   }
 
-  public async burnTokenFrom(address:string,token){
-   console.log('address:',address,'token:',token);
-    
-    var send = this._tokenContract.burnFrom( address,token,(err, result) => {
-      if(err != null){
-        console.log(err);
-        
+
+  public sendMessage(admin_payload:any, custodian_payload:any, _id?:any){
+    let Data:any;
+    if(_id){
+      Data = {
+        _id:_id,
+        custodianMessage: custodian_payload,
+        adminMessage: admin_payload
+      }  
+    }else{
+      Data = {
+        custodianMessage: custodian_payload,
+        adminMessage: admin_payload
       }
-      else{
-        console.log(result);
-        
-      }
-    });
+    }
+    return this.httpClient.post('https://webhooks.mongodb-stitch.com/api/client/v2.0/app/ellypin-wysik/service/http/incoming_webhook/sendMessage',Data)
   }
+
+  public redeemToken(admin_payload, custodian_payload){
+    let Data = {
+      custodianMessage: custodian_payload,
+      adminMessage: admin_payload
+    }
+    return this.httpClient.post('https://webhooks.mongodb-stitch.com/api/client/v2.0/app/ellypin-wysik/service/http/incoming_webhook/sendMessage',Data)
+  }
+
+  public getMessages(role){ 
+    return this.httpClient.get(`https://webhooks.mongodb-stitch.com/api/client/v2.0/app/ellypin-wysik/service/http/incoming_webhook/getMessage?role=${role}&messageType=receive`)
+  }
+
+  public getCustomerData(){
+    return this.httpClient.get(`https://webhooks.mongodb-stitch.com/api/client/v2.0/app/ellypin-wysik/service/http/incoming_webhook/ellypinData`)
+  }
+
+  public getAllFees(){
+    return this.httpClient.get(`https://webhooks.mongodb-stitch.com/api/client/v2.0/app/ellypin-wysik/service/http/incoming_webhook/metadata`)
+  }
+
+  public login(payload){
+    return this.httpClient.post('https://webhooks.mongodb-stitch.com/api/client/v2.0/app/ellypin-wysik/service/http/incoming_webhook/login',payload)
+  }
+
+  public saveFees(payload){
+    return this.httpClient.post('https://webhooks.mongodb-stitch.com/api/client/v2.0/app/ellypin-wysik/service/http/incoming_webhook/post_metadata',payload)
+  }
+
   
 
 }
