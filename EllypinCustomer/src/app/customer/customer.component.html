@@ -24,7 +24,7 @@
                       </tr>
                       <tr>
                         <td>Asset tokenized / Rate</td>
-                        <td>{{custData.asset}} / {{custData.rate}}</td>
+                        <td>{{custData.asset}} <span *ngIf="custData.asset">/</span> {{custData.rate}}</td>
                       </tr>
                       <tr>
                         <td>Maturity</td>
@@ -65,8 +65,8 @@
 
               <div class="bottom-link-wrapper">
                 <a >Fee Schedule</a>
-                <a >Terms and Condition</a>
-                <a >MyEtherScan</a>
+                <a routerLink='/terms'>Terms and Condition</a>
+                <a (click)="toMyetherScan()" style="cursor: pointer">MyEtherScan</a>
               </div>
 
               <div class="clearfix">
@@ -137,15 +137,15 @@
               <div class="pop-links clearfix">
                 <div class="col-sm-6 external-link-wrapper">
                   <h3>External Transactions</h3>
-                  <a  data-toggle="modal" data-target="#approve-pop">Approve</a>
-                  <a  data-toggle="modal" data-target="#transfer-pop">Transfer</a>
+                  <a (click)="openPopup('approve-pop')">Approve</a>
+                  <a  (click)="openPopup('transfer-pop')">Transfer</a>
                   <a >Market Place</a>
                   <a >Link To Exchanges</a>
                 </div>
                 <div class="col-sm-6 interact-link-wrapper">
                     <h3>Interact With Ellypin</h3>
-                    <a  data-toggle="modal" data-target="#buy-pop">Buy</a>
-                    <a  data-toggle="modal" data-target="#redeem-pop">Redeem</a>
+                    <a  (click)="openPopup('buy-pop')">Buy</a>
+                    <a  (click)="openPopup('redeem-pop')">Redeem</a>
                     <a >Pod Faucet</a>
                 </div>
               </div>

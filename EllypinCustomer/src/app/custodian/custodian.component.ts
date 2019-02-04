@@ -105,7 +105,7 @@ export class CustodianComponent implements OnInit {
   public getBalance(){
     this.custodianService.getUserBalance('0x1b66a326183A0b67F723A201ED3643b0cd29b40D').then((balance:any) => {
       this.userBalance = balance.c[0];
-      console.log('UserBalance:',this.userBalance);
+      // console.log('UserBalance:',this.userBalance);
       
       });
   }
@@ -113,7 +113,7 @@ export class CustodianComponent implements OnInit {
   public getAllFees(){
     this.custodianService.getAllFees().subscribe(
       (data:any)  => {
-        console.log(data);
+        // console.log(data);
         this.assetBalance = data.assetBalance;
         this.buyFees = data.buyFee;
         this.transferFees = data.transferFee;
@@ -168,7 +168,7 @@ export class CustodianComponent implements OnInit {
     }
     this.custodianService.saveFees(payload).subscribe(
       data => {
-        console.log(data);
+        // console.log(data);
       },
       error => {
         console.log(error);
@@ -179,7 +179,7 @@ export class CustodianComponent implements OnInit {
   public async getMessage(){
    this.custodianService.getMessages('CUSTODIAN').subscribe(
       async (data:any) => {
-        console.log('MESSAGEDATA:',data);
+        // console.log('MESSAGEDATA:',data);
         
         if(data.length > 0){
           this.buyMessageArray = [];
@@ -228,14 +228,14 @@ export class CustodianComponent implements OnInit {
   }
 
   buyClicked(index){
-    console.log('Index:',index);
+    // console.log('Index:',index);
     if(this.buyIndex == index){
       this.buyObjectSet = {};
       this.buyIndex = null;
     }
     else{
       this.buyIndex = index;
-      console.log('BUYMESSGE:',this.buyMessageDisplay[index]);
+      // console.log('BUYMESSGE:',this.buyMessageDisplay[index]);
       
   
       this.buyObjectSet = this.buyMessageDisplay[this.buyIndex];
@@ -244,14 +244,14 @@ export class CustodianComponent implements OnInit {
   }
 
   redeemClicked(index){
-    console.log(index);
+    // console.log(index);
     if(this.redeemIndex == index){
       this.redeemObjectSet = {};
       this.redeemIndex = null
     }
     else{
       this.redeemIndex = index;
-      console.log('displayRedem',this.redeemMessageDisplay);
+      // console.log('displayRedem',this.redeemMessageDisplay);
       
       this.redeemObjectSet = this.redeemMessageDisplay[this.redeemIndex];
       this.redeemObjectSet[Message_Type.BURN_TOKEN_REQUEST] = this.redeemObjectSet[Message_Type.BURN_TOKEN_REQUEST] || {};
@@ -259,7 +259,7 @@ export class CustodianComponent implements OnInit {
   }
 
   public async updateBuyObject(){
-    console.log('BUYOBJECT:',this.buyObjectSet);
+    // console.log('BUYOBJECT:',this.buyObjectSet);
     if(this.buyObjectSet.SEND_TOKEN_REQUEST){
       if(this.buyObjectSet.SEND_TOKEN_REQUEST.receivedAmount && this.buyObjectSet.SEND_TOKEN_REQUEST.updateBalance){
         this.buyObjectSet.SEND_TOKEN_REQUEST.custodianSet = true;
@@ -276,7 +276,7 @@ export class CustodianComponent implements OnInit {
     let _id = this.buyMessageArray[this.buyIndex]['_id'].$oid;
     this.custodianService.sendMessage(admin_message,custodian_message,_id).subscribe(
       (data:any) => {
-        console.log(data);
+        // console.log(data);
         swal('Request Created Successfully');
         this.buyIndex = null;
         this.buyObjectSet = {};
@@ -291,7 +291,7 @@ export class CustodianComponent implements OnInit {
   }
 
   public async updateRedeemObject(){
-    console.log('REDEEMOBJECT:',this.redeemObjectSet);
+    // console.log('REDEEMOBJECT:',this.redeemObjectSet);
     if(this.redeemObjectSet.BURN_TOKEN_REQUEST){
       if(this.redeemObjectSet.BURN_TOKEN_REQUEST.assetBalance && this.redeemObjectSet.BURN_TOKEN_REQUEST.redeemAmount){
         this.redeemObjectSet.BURN_TOKEN_REQUEST.custodianSet = true;
@@ -308,7 +308,7 @@ export class CustodianComponent implements OnInit {
     let _id = this.redeemMessageArray[this.redeemIndex]['_id'].$oid;
     this.custodianService.sendMessage(admin_message,custodian_message,_id).subscribe(
       (data:any) => {
-        console.log(data);
+        // console.log(data);
         swal('Updated Successfully');
         this.redeemIndex = null;
         this.redeemObjectSet = {};
@@ -326,7 +326,7 @@ export class CustodianComponent implements OnInit {
   public async encrypt(message,encryptionFor){
 
     openpgp.initWorker({ path:'node_modules/openpgp/dist/openpgp.worker.min.js' });
-    console.log('In encrypt');
+    // console.log('In encrypt');
     
 
     let pubkey:any;

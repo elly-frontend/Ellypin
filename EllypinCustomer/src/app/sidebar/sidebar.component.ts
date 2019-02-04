@@ -17,7 +17,7 @@ export class SidebarComponent implements OnInit {
   }
 
   ngDoCheck(){
-    if(this.currentUrl == "/common"){
+    if(this.currentUrl == "/services"){
       this.router.navigate(['/home']);
     }
   }

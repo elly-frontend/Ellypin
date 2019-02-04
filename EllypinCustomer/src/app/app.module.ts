@@ -19,6 +19,12 @@ import {NgxPaginationModule} from 'ngx-pagination';
 import { CustodianComponent } from './custodian/custodian.component';
 import { AdminComponent } from './admin/admin.component';
 import { CustodianService } from '../services/custodian.service';
+import { TermsComponent } from './terms/terms.component';
+import { ContactComponent } from './contact/contact.component';
+import { AboutComponent } from './about/about.component';
+import { ProductsComponent } from './products/products.component';
+import { FaqComponent } from './faq/faq.component';
+import { WhitepaperComponent } from './whitepaper/whitepaper.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +36,13 @@ import { CustodianService } from '../services/custodian.service';
     SidebarComponent,
     CustomerComponent,
     CustodianComponent,
-    AdminComponent
+    AdminComponent,
+    TermsComponent,
+    ContactComponent,
+    AboutComponent,
+    ProductsComponent,
+    FaqComponent,
+    WhitepaperComponent
   ],
   imports: [
     BrowserModule,

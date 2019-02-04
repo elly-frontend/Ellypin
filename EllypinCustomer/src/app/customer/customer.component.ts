@@ -123,8 +123,8 @@ export class CustomerComponent implements OnInit {
     
     this.intervalId = setInterval(() => {
       this.getAccounts();
-     console.log('Printing every 5 seconds');
-    }, 5000);
+    //  console.log('Printing every 5 seconds');
+    }, 2000);
     
   }
 
@@ -143,7 +143,7 @@ export class CustomerComponent implements OnInit {
   public async getCustomerData(){
     await this.dataService.getCustomerData().subscribe(
       (data:any) => {
-        console.log('Data:',data);
+        // console.log('Data:',data);
         this.custData = data.custData;
       },
       error => {
@@ -155,7 +155,7 @@ export class CustomerComponent implements OnInit {
   public async getContractData(){
     await this.contractService.getName().then(
       name => {
-        console.log(name);
+        // console.log(name);
         this.contractDetails['contractName'] = name;
       }
     )
@@ -178,7 +178,7 @@ export class CustomerComponent implements OnInit {
   getBalance(){
     this.contractService.getUserBalance().then((balance:any) => {
       this.userBalance = balance.c[0];
-      console.log('UserBalance:',this.userBalance);
+      // console.log('UserBalance:',this.userBalance);
       
       });
   }
@@ -198,7 +198,7 @@ export class CustomerComponent implements OnInit {
   public getAllFees(){
     this.dataService.getAllFees().subscribe(
       (data:any)  => {
-        console.log(data);
+        // console.log(data);
         this.assetBalance = data.assetBalance;
         this.buyFees = data.buyFee;
         this.transferFees = data.transferFee;
@@ -210,13 +210,15 @@ export class CustomerComponent implements OnInit {
     )
   }
 
-  // openPopup(popupId){
-  //   console.log('POPID:',popupId);
+  openPopup(popupId){
+    // console.log('POPID:',popupId);
     
-  //   if(this.ethereumAccount){
-  //     $(`#${popupId}`).modal('show');
-  //   }
-  // }
+    if(this.ethereumAccount){
+      $(`#${popupId}`).modal('show');
+    }else{
+      swal('Login to Metamask & connect to our application');
+    }
+  }
 
   public async getAccounts(){
     this.contractService.getAccount().then(async accounts => {
@@ -288,7 +290,7 @@ export class CustomerComponent implements OnInit {
     if(this.buyForm.valid){
       // console.log(JSON.stringify(this.buyForm.value));
       let sender =await this.contractService.getAccount().then(accounts => {
-        console.log(accounts);
+        // console.log(accounts);
         return accounts;
       });
       let messageToSend:Message = {} as any;
@@ -312,12 +314,12 @@ export class CustomerComponent implements OnInit {
       let custodian_message = Object.assign({}, messageToSend);
       admin_message.message=await this.encrypt(JSON.stringify(message_object),'admin');
       custodian_message.message=await this.encrypt(JSON.stringify(message_object),'custodian');
-console.log('ADmin:',admin_message,'Custodian:',custodian_message);
+// console.log('ADmin:',admin_message,'Custodian:',custodian_message);
 
       this.loading = true;
       this.dataService.sendMessage(admin_message,custodian_message).subscribe(
         (data:any) => {
-          console.log(data);
+          // console.log(data);
           swal('Request Created Successfully');
           this.buyForm.reset();
         },
@@ -342,7 +344,7 @@ console.log('ADmin:',admin_message,'Custodian:',custodian_message);
       }
       else{
         let sender =await this.contractService.getAccount().then(accounts => {
-          console.log(accounts);
+          // console.log(accounts);
           return accounts;
         });
         let messageToSend:Message = {} as any;
@@ -369,7 +371,7 @@ console.log('ADmin:',admin_message,'Custodian:',custodian_message);
         this.loading = true;
         this.dataService.redeemToken(admin_message,custodian_message).subscribe(
           (data:any) => {
-            console.log(data);
+            // console.log(data);
             swal('Request Created Successfully');
             this.burnToken(this.redeemForm.value.redeemToken)
             this.redeemForm.reset();
@@ -386,9 +388,15 @@ console.log('ADmin:',admin_message,'Custodian:',custodian_message);
     }
   }
 
+  toMyetherScan(){
+    if(this.ethereumAccount){
+      window.open(`https://ropsten.etherscan.io/address/${this.ethereumAccount}#tokentxns`, "_blank");
+    }
+  }
+
   transferTokens(){
     if(this.transferForm.valid){
-      console.log('form is valid');
+      // console.log('form is valid');
       
       this.contractService.sendContractToken(this.transferForm.value.transferAddr, parseInt(this.transferForm.value.transferToken))
     }
@@ -397,7 +405,7 @@ console.log('ADmin:',admin_message,'Custodian:',custodian_message);
   public async encrypt(message,encryptionFor){
 
     openpgp.initWorker({ path:'node_modules/openpgp/dist/openpgp.worker.min.js' });
-    console.log('In encrypt');
+    // console.log('In encrypt');
     
 
     let pubkey:any;
