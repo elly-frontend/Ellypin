@@ -103,6 +103,30 @@ export class CustodianService {
     }) as Promise<number>;
   }
 
+  public async getTotalSupply(): Promise<string>{
+    return new Promise((resolve, reject) => {
+      this._tokenContract.totalSupply.call((err, result) => {
+        if(err != null){
+          reject(err);
+        }
+        // console.log(result);
+        resolve(result);
+      });
+    })as Promise<string>;
+  }
+
+  public async getTotalBurn(): Promise<string>{
+    return new Promise((resolve, reject) => {
+      this._tokenContract.getTotalBurn.call((err, result) => {
+        if(err != null){
+          reject(err);
+        }
+        // console.log(result);
+        resolve(result);
+      });
+    })as Promise<string>;
+  }
+
   public async getName(): Promise<string>{
     return new Promise((resolve, reject) => {
       this._tokenContract.name.call((err, result) => {

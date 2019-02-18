@@ -155,19 +155,19 @@
                     <tbody>
                       <tr>
                         <td>Total</td>
-                        <td>{{userBalance}}</td>
+                        <td>{{totalSupply}}</td>
                       </tr>
                       <tr>
                         <td>Burned</td>
-                        <td></td>
+                        <td>{{totalBurn}}</td>
                       </tr>
                       <tr>
                         <td>Redeemed</td>
-                        <td></td>
+                        <td>{{totalRedeem}}</td>
                       </tr>
                       <tr>
                         <td>Net</td>
-                        <td></td>
+                        <td>{{netToken}}</td>
                       </tr>
                     </tbody>
                   </table>
@@ -215,7 +215,7 @@
             </table>
           </div>
           <div style="background-color: #f9f9f9">
-            <pagination-controls id="redeem" (pageChange)="redeemCurrentPage = $event" responsive="true"></pagination-controls>
+            <pagination-controls id="redeem" (pageChange)="redeemCurrentPage = $event" [(ngModel)]="currentRedeemPage" responsive="true"></pagination-controls>
           </div>
         </div>
         <div class="col-sm-6 col-xs-12" *ngIf="redeemObjectSet.redeemBank">
@@ -282,7 +282,7 @@
               </thead>
               <tbody>
                 <tr style="cursor: pointer" (click)="buyClicked(i)" *ngFor="let obj of buyMessageDisplay | paginate: {id: 'buy', itemsPerPage: 5, currentPage: buyCurrentPage };let i=index">
-                  <td>{{i+1}}</td>
+                  <td>{{(itemsPerPage * currentAdminPage) + i + 1 }}</td>
                   <td>{{obj.buyFirstName+' '+obj.buyLastName}}</td>
                   <td>{{obj.buyEmail}}</td>
                   <td>{{obj.buyToken}}</td>
@@ -295,7 +295,7 @@
             </table>
           </div>
           <div style="background-color: #f9f9f9">
-              <pagination-controls id="buy" (pageChange)="buyCurrentPage = $event" responsive="true"></pagination-controls>
+              <pagination-controls id="buy" (pageChange)="buyCurrentPage = $event" [(ngModel)]="currentAdminPage" responsive="true"></pagination-controls>
             </div>
         </div>
         <div class="col-sm-6 col-xs-12" *ngIf="buyObjectSet.buyFirstName">

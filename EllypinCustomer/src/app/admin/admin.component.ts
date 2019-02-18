@@ -9,7 +9,6 @@ import custodianPrivateKey from '../sharedData/custodianPrivateKey';
 import custodianPublicKey from '../sharedData/custodianPublic';
 import swal from 'sweetalert2';
 import * as openpgp from 'openpgp';
-import { load } from '@angular/core/src/render3/instructions';
 declare var $:any
 
 @Component({
@@ -43,6 +42,13 @@ export class AdminComponent implements OnInit {
   public redeemCurrentPage: number = 1;
   public buyCurrentPage: number = 1;
   public loading=false;
+  public totalSupply:any;
+  public totalBurn:any;
+  public totalRedeem:any;
+  public netToken:any;
+  public currentRedeemPage:any=0;
+  public currentAdminPage:any=0;
+  public itemsPerPage:number=5;
 
   constructor(public fb:FormBuilder, public dataService:DataService, public contractService:ContractService) {
     this.loginForm = fb.group({
@@ -168,6 +174,25 @@ export class AdminComponent implements OnInit {
     await this.contractService.getDecimal().then(
       symbol => {
         this.contractDetails['decimal'] = symbol;
+      }
+    )
+
+    await this.contractService.getTotalSupply().then(
+      (supply:any) => {
+        this.totalSupply = supply.c[0];
+      }
+    )
+
+    await this.contractService.getTotalBurn().then(
+      (burn:any) => {
+        this.totalBurn = burn.c[0];
+      }
+    )
+
+    await this.contractService.getUserBalance('0xbd49F20F816C8ff831832F20fF0509A6176F9902').then(
+      (redeem:any) => {
+        this.totalRedeem = parseInt(redeem.c[0]) + parseInt(this.totalBurn);
+        this.netToken = parseInt(this.totalSupply) + parseInt(this.totalRedeem);
       }
     )
 
@@ -301,6 +326,8 @@ export class AdminComponent implements OnInit {
   }
 
   redeemClicked(index){
+    console.log('cUrrentPage',this.currentRedeemPage);
+    
     console.log(index);
     if(this.redeemIndex == index){
       this.redeemObjectSet = {};
@@ -325,6 +352,8 @@ export class AdminComponent implements OnInit {
   }
 
   buyClicked(index){
+    console.log('AdminPage:',this.currentAdminPage);
+    
     if(this.buyIndex == index){
       this.buyObjectSet = {};
       this.buyIndex = null;

@@ -58,6 +58,10 @@ export class CustomerComponent implements OnInit {
   public assetBalance:any;
   public buyFees:any;
   public transferFees:any;
+  public totalSupply:any;
+  public totalBurn:any;
+  public totalRedeem:any;
+  public netToken:any;
 
   constructor( public contractService:ContractService,public dataService:DataService, public fb:FormBuilder ) {
     this.buyForm = fb.group({
@@ -169,6 +173,25 @@ export class CustomerComponent implements OnInit {
     await this.contractService.getDecimal().then(
       symbol => {
         this.contractDetails['decimal'] = symbol;
+      }
+    )
+
+    await this.contractService.getTotalSupply().then(
+      (supply:any) => {
+        this.totalSupply = supply.c[0];
+      }
+    )
+
+    await this.contractService.getTotalBurn().then(
+      (burn:any) => {
+        this.totalBurn = burn.c[0];
+      }
+    )
+
+    await this.contractService.getUserBalance('0xbd49F20F816C8ff831832F20fF0509A6176F9902').then(
+      (redeem:any) => {
+        this.totalRedeem = parseInt(redeem.c[0]) + parseInt(this.totalBurn);
+        this.netToken = parseInt(this.totalSupply) + parseInt(this.totalRedeem);
       }
     )
 

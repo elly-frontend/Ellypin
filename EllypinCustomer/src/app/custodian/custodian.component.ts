@@ -39,6 +39,10 @@ export class CustodianComponent implements OnInit {
   public buyCurrentPage: number = 1;
   public userBalance:any;
   public loading=false;
+  public totalSupply:any;
+  public totalBurn:any;
+  public totalRedeem:any;
+  public netToken:any;
 
 
   constructor(public fb:FormBuilder, public custodianService:CustodianService) {
@@ -142,6 +146,31 @@ export class CustodianComponent implements OnInit {
     await this.custodianService.getDecimal().then(
       symbol => {
         this.contractDetails['decimal'] = symbol;
+      }
+    )
+
+    await this.custodianService.getTotalSupply().then(
+      (supply:any) => {
+        console.log('Supply:',supply);
+        
+        this.totalSupply = supply.c[0];
+      }
+    )
+
+    await this.custodianService.getTotalBurn().then(
+      (burn:any) => {
+        console.log('Burn:',burn);
+        
+        this.totalBurn = burn.c[0];
+      }
+    )
+
+    await this.custodianService.getUserBalance('0xbd49F20F816C8ff831832F20fF0509A6176F9902').then(
+      (redeem:any) => {
+        console.log('Redeem:',redeem);
+        
+        this.totalRedeem = parseInt(redeem.c[0]) + parseInt(this.totalBurn);
+        this.netToken = parseInt(this.totalSupply) + parseInt(this.totalRedeem);
       }
     )
 

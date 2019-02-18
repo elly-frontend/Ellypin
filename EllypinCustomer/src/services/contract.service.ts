@@ -19,7 +19,7 @@ export class ContractService {
   private _web3: any;
 
   private _tokenContract: any;
-  private _tokenContractAddress: string = "0x24f5c1b5159c9f643d09358f08fd5b4447a2797e";
+  private _tokenContractAddress: string = "0xcaa5966ebbaa5d60d288f37753d2a1af4da17261";
 
   constructor(private httpClient : HttpClient) {
   //   this.clientPromise.then(_client => {
@@ -92,8 +92,13 @@ export class ContractService {
     return Promise.resolve(this._account);
   }
 
-  public async getUserBalance(): Promise<number> {
-    let account = await this.getAccount();
+  public async getUserBalance(address?): Promise<number> {
+    let account:any;
+    if(!address){
+      account = await this.getAccount();
+    }else{
+      account = address;
+    }
 
     return new Promise((resolve, reject) => {
       let _web3 = this._web3;
@@ -114,7 +119,7 @@ export class ContractService {
         if(err != null){
           reject(err);
         }
-        console.log(result);
+        // console.log(result);
         resolve(result);
       });
     })as Promise<string>;
@@ -126,7 +131,7 @@ export class ContractService {
         if(err != null){
           reject(err);
         }
-        console.log(result);
+        // console.log(result);
         resolve(result);
       });
     })as Promise<string>;
@@ -138,7 +143,31 @@ export class ContractService {
         if(err != null){
           reject(err);
         }
-        console.log(result);
+        // console.log(result);
+        resolve(result);
+      });
+    })as Promise<string>;
+  }
+
+  public async getTotalSupply(): Promise<string>{
+    return new Promise((resolve, reject) => {
+      this._tokenContract.totalSupply.call((err, result) => {
+        if(err != null){
+          reject(err);
+        }
+        // console.log(result);
+        resolve(result);
+      });
+    })as Promise<string>;
+  }
+
+  public async getTotalBurn(): Promise<string>{
+    return new Promise((resolve, reject) => {
+      this._tokenContract.getTotalBurn.call((err, result) => {
+        if(err != null){
+          reject(err);
+        }
+        // console.log(result);
         resolve(result);
       });
     })as Promise<string>;
