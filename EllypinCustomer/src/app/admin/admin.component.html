@@ -201,8 +201,8 @@
                 </tr>
               </thead>
               <tbody>
-                <tr style="cursor: pointer" (click)="redeemClicked(i)" *ngFor="let obj of redeemMessageDisplay | paginate: {id: 'redeem', itemsPerPage: 5, currentPage: redeemCurrentPage };let i=index ">
-                  <td>{{i+1}}</td>
+                <tr style="cursor: pointer" (click)="redeemClicked((itemsPerPage * (redeemCurrentPage-1)) + i)" *ngFor="let obj of redeemMessageDisplay | paginate: {id: 'redeem', itemsPerPage: 5, currentPage: redeemCurrentPage };let i=index ">
+                  <td>{{(itemsPerPage * (redeemCurrentPage-1)) + i + 1 }}</td>
                   <td>{{obj.redeemBeneficiary}}</td>
                   <td>{{obj.redeemEmail}}</td>
                   <td>{{obj.redeemToken}}</td>
@@ -215,7 +215,7 @@
             </table>
           </div>
           <div style="background-color: #f9f9f9">
-            <pagination-controls id="redeem" (pageChange)="redeemCurrentPage = $event" [(ngModel)]="currentRedeemPage" responsive="true"></pagination-controls>
+            <pagination-controls id="redeem" (pageChange)="redeemCurrentPage = $event" responsive="true"></pagination-controls>
           </div>
         </div>
         <div class="col-sm-6 col-xs-12" *ngIf="redeemObjectSet.redeemBank">
@@ -281,8 +281,8 @@
                 </tr>
               </thead>
               <tbody>
-                <tr style="cursor: pointer" (click)="buyClicked(i)" *ngFor="let obj of buyMessageDisplay | paginate: {id: 'buy', itemsPerPage: 5, currentPage: buyCurrentPage };let i=index">
-                  <td>{{(itemsPerPage * currentAdminPage) + i + 1 }}</td>
+                <tr style="cursor: pointer" (click)="buyClicked((itemsPerPage * (buyCurrentPage-1)) + i)" *ngFor="let obj of buyMessageDisplay | paginate: {id: 'buy', itemsPerPage: 5, currentPage: buyCurrentPage };let i=index">
+                  <td>{{(itemsPerPage * (buyCurrentPage-1)) + i + 1 }}</td>
                   <td>{{obj.buyFirstName+' '+obj.buyLastName}}</td>
                   <td>{{obj.buyEmail}}</td>
                   <td>{{obj.buyToken}}</td>
@@ -295,7 +295,7 @@
             </table>
           </div>
           <div style="background-color: #f9f9f9">
-              <pagination-controls id="buy" (pageChange)="buyCurrentPage = $event" [(ngModel)]="currentAdminPage" responsive="true"></pagination-controls>
+              <pagination-controls id="buy" (pageChange)="buyCurrentPage = $event"  responsive="true"></pagination-controls>
             </div>
         </div>
         <div class="col-sm-6 col-xs-12" *ngIf="buyObjectSet.buyFirstName">
@@ -363,6 +363,78 @@
               <div class="form-group">
                 <label>Password</label>
                 <input type="password" name="usr-pass" [formControl]="password" class="form-control">
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="form-submit">
+                <button type="submit" class="btn btn-success btn-lg" [disabled]="loginForm.invalid" (click)="loginSubmit()" >Submit</button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="approve-kyc" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-body">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <form action="" class="form-inline" [formGroup]="loginForm">
+          <h3>Serial Number:  <span>123456789</span></h3>
+          <div *ngIf="error">
+            <div  class="alert alert-danger">
+              {{error}}
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="form-group">
+                <label>KYC &nbsp;&nbsp;</label>
+                <select class="form-control">
+                  <option>Yes</option>
+                  <option>No</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="form-submit">
+                <button type="submit" class="btn btn-success btn-lg" [disabled]="loginForm.invalid" (click)="loginSubmit()" >Submit</button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="redeem-kyc" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-body">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <form action="" class="form-inline" [formGroup]="loginForm">
+          <h3>Serial Number:  <span>123456789</span></h3>
+          <div *ngIf="error">
+            <div  class="alert alert-danger">
+              {{error}}
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="form-group">
+                <label>KYC &nbsp;&nbsp;</label>
+                <select class="form-control">
+                  <option>Yes</option>
+                  <option>No</option>
+                </select>
               </div>
             </div>
           </div>

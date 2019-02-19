@@ -46,8 +46,8 @@ export class AdminComponent implements OnInit {
   public totalBurn:any;
   public totalRedeem:any;
   public netToken:any;
-  public currentRedeemPage:any=0;
-  public currentAdminPage:any=0;
+  // public currentRedeemPage:any=0;
+  // public currentAdminPage:any=0;
   public itemsPerPage:number=5;
 
   constructor(public fb:FormBuilder, public dataService:DataService, public contractService:ContractService) {
@@ -326,7 +326,7 @@ export class AdminComponent implements OnInit {
   }
 
   redeemClicked(index){
-    console.log('cUrrentPage',this.currentRedeemPage);
+    console.log('cUrrentPage',this.redeemCurrentPage);
     
     console.log(index);
     if(this.redeemIndex == index){
@@ -352,7 +352,7 @@ export class AdminComponent implements OnInit {
   }
 
   buyClicked(index){
-    console.log('AdminPage:',this.currentAdminPage);
+    console.log('AdminPage:',this.buyCurrentPage);
     
     if(this.buyIndex == index){
       this.buyObjectSet = {};
