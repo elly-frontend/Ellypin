@@ -207,7 +207,7 @@ export class AdminComponent implements OnInit {
       }
     )
 
-    this.contractDetails['contractAddress'] = "0xd60b94da7ac581352bf6aefff355d1072bc13910";
+    this.contractDetails['contractAddress'] = "0xd9cdabaa9b94e52ac8f20875b2f614e1a2cbb654";
   }
 
 

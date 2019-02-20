@@ -19,7 +19,7 @@ export class CustodianService {
   private _web3: any;
 
   private _tokenContract: any;
-  private _tokenContractAddress: string = "0xd60b94da7ac581352bf6aefff355d1072bc13910";
+  private _tokenContractAddress: string = "0xd9cdabaa9b94e52ac8f20875b2f614e1a2cbb654";
 
   constructor(private httpClient : HttpClient) {
   //   this.clientPromise.then(_client => {
