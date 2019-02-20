@@ -19,7 +19,7 @@ export class ContractService {
   private _web3: any;
 
   private _tokenContract: any;
-  private _tokenContractAddress: string = "0xcaa5966ebbaa5d60d288f37753d2a1af4da17261";
+  private _tokenContractAddress: string = "0xd60b94da7ac581352bf6aefff355d1072bc13910";
 
   constructor(private httpClient : HttpClient) {
   //   this.clientPromise.then(_client => {
@@ -163,7 +163,7 @@ export class ContractService {
 
   public async getTotalBurn(): Promise<string>{
     return new Promise((resolve, reject) => {
-      this._tokenContract.getTotalBurn.call((err, result) => {
+      this._tokenContract.totalBurn.call((err, result) => {
         if(err != null){
           reject(err);
         }
@@ -233,19 +233,82 @@ export class ContractService {
     });
   }
 
+  public setTransferFees(fees){
+    return new Promise((resolve, reject) => {
+      this._tokenContract.setTransferFee(fees,(err, result) => {
+        if(err != null){
+          reject(err);
+        }
+        // console.log(result);
+        resolve(result);
+      });
+    })as Promise<string>;
+    
+  }
+
+  public setRedeemFees(fees){
+    return new Promise((resolve, reject) => {
+      this._tokenContract.setFee(fees,(err, result) => {
+        if(err != null){
+          reject(err);
+        }
+        // console.log(result);
+        resolve(result);
+      });
+    })as Promise<string>;
+    
+  }
+
+  public setBuyFees(fees){
+    return new Promise((resolve, reject) => {
+      this._tokenContract.setBuyFee(fees,(err, result) => {
+        if(err != null){
+          reject(err);
+        }
+        // console.log(result);
+        resolve(result);
+      });
+    })as Promise<string>;
+  }
+
+  public getAllFees(){
+    return new Promise( (resolve, reject) => {
+      let fee:any = {}
+      this._tokenContract.getTransferFee.call((err, f1) => {
+        if(err != null){
+          reject(err);
+        }
+        // console.log(result);
+        this._tokenContract.getFee.call((err, f2) => {
+          if(err != null){
+            reject(err);
+          }
+          this._tokenContract.getBuyFee.call((err, f3) => {
+            if(err != null){
+              reject(err);
+            }
+            resolve({transfer: f1, redeem: f2, buy: f3})
+          });
+        });
+      });
+    })as Promise<any>;
+  }
+
+
   public async mintToken(address:string, amount:number){
     console.log('Address:',address,'Amount:',amount);
-    
-    this._tokenContract.mint( address, amount,(err,result) => {
-      if(err != null){
-        console.log(err);
-      }
-      else{
-        console.log(result);
-      }
-    }
 
-    )
+    return new Promise((resolve, reject) => {
+      this._tokenContract.mint(address, amount,(err,result)=>{
+        if(err != null){
+          reject(err);
+        }
+
+        resolve(result);
+      });
+
+    })as Promise<number>;
+    
   }
 
   public async sendContractToken(address,token){
@@ -265,16 +328,20 @@ export class ContractService {
     });
   }
 
-  burnToken(token){
-    this._tokenContract.redeem(token,(err,result) => {
-      if(err != null){
-        console.log(err);
-      }
-      else{
-        console.log(result);
-      }
-    }
-    )
+  
+
+  async burnToken(token){
+
+    return new Promise((resolve, reject) => {
+      this._tokenContract.redeem(token,(err,result)=>{
+        if(err != null){
+          reject(err);
+        }
+
+        resolve(result);
+      });
+
+    })as Promise<number>;
   }
 
   public async getRedeemBalance(){
@@ -306,17 +373,17 @@ export class ContractService {
 
   public async burnTokenFrom(address:string,token){
    console.log('address:',address,'token:',token);
-    
-    var send = this._tokenContract.burnFrom( address,token,(err, result) => {
+
+   return new Promise((resolve, reject) => {
+    this._tokenContract.burnFrom(address,token,(err,result)=>{
       if(err != null){
-        console.log(err);
-        
+        reject(err);
       }
-      else{
-        console.log(result);
-        
-      }
+
+      resolve(result);
     });
+
+  })as Promise<number>;
   }
   
 

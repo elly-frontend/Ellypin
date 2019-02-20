@@ -76,9 +76,9 @@ export class CustomerComponent implements OnInit {
       'buyCountry':['', Validators.compose([Validators.required,Validators.pattern(/^[a-zA-Z ]{1,40}$/)])],
       'buyEmail':['', Validators.compose([Validators.pattern(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)])],
       'buyTel':['', Validators.compose([Validators.required])],
-      'buyBank':['', Validators.compose([Validators.required])],
+      // 'buyBank':['', Validators.compose([Validators.required])],
       'buyPostCode':['', Validators.compose([Validators.required,Validators.maxLength(6), Validators.pattern('[0-9]*$')])],
-      'buyParty':['', Validators.compose([Validators.required,Validators.pattern(/^[a-zA-Z ]{1,40}$/)])],
+      // 'buyParty':['', Validators.compose([Validators.required,Validators.pattern(/^[a-zA-Z ]{1,40}$/)])],
     }) 
 
     this.redeemForm = fb.group({
@@ -107,9 +107,9 @@ export class CustomerComponent implements OnInit {
     this.buyCountry = this.buyForm.controls['buyCountry'];
     this.buyEmail = this.buyForm.controls['buyEmail'];
     this.buyTel = this.buyForm.controls['buyTel'];
-    this.buyBank = this.buyForm.controls['buyBank'];
+    // this.buyBank = this.buyForm.controls['buyBank'];
     this.buyPostCode = this.buyForm.controls['buyPostCode'];
-    this.buyParty = this.buyForm.controls['buyParty'];
+    // this.buyParty = this.buyForm.controls['buyParty'];
 
     this.redeemToken = this.redeemForm.controls['redeemToken'];
     this.redeemFee = this.redeemForm.controls['redeemFee'];
@@ -195,7 +195,7 @@ export class CustomerComponent implements OnInit {
       }
     )
 
-    this.contractDetails['contractAddress'] = "0x24f5c1b5159c9f643d09358f08fd5b4447a2797e";
+    this.contractDetails['contractAddress'] = "0xd60b94da7ac581352bf6aefff355d1072bc13910";
   }
 
   getBalance(){
@@ -219,12 +219,12 @@ export class CustomerComponent implements OnInit {
   }
 
   public getAllFees(){
-    this.dataService.getAllFees().subscribe(
+    this.contractService.getAllFees().then(
       (data:any)  => {
-        // console.log(data);
-        this.assetBalance = data.assetBalance;
-        this.buyFees = data.buyFee;
-        this.transferFees = data.transferFee;
+        console.log('Data: ',data);
+        this.transferFees = data.transfer;
+        this.fees = data.redeem;
+        this.buyFees = data.buy;
       },
       err => {
         console.log(err);
@@ -250,7 +250,6 @@ export class CustomerComponent implements OnInit {
         await this.getBalance();
         this.getContractData();
         this.getCustomerData();
-        this.getContractFees();
         this.getBalance();
         this.getAllFees();
         this.getFees();
@@ -268,22 +267,8 @@ export class CustomerComponent implements OnInit {
     )
   }
 
-  public getContractFees(){
-    this.contractService.getFees().then(
-      (data:any) => {
-        // console.log(data);
-        this.fees = data.c[0];        
-      }
-    )
-    .catch(
-      (error) => {
-        console.log(error);
-      }
-    )
-  }
-
   keyBuy(event){
-    this.buyForm.controls['buyFee'].patchValue((((this.buyForm.value.buyToken)*this.buyFeePercent)/100).toFixed(0));
+    this.buyForm.controls['buyFee'].patchValue(this.buyFees);
     this.buyAmount = parseInt(this.buyForm.value.buyToken) + parseInt(this.buyForm.value.buyFee);
     if(isNaN(this.buyAmount)){
       this.buyAmount = "";
@@ -292,7 +277,7 @@ export class CustomerComponent implements OnInit {
 
   keyRedeem(event){
     this.redeemForm.controls['redeemFee'].patchValue(this.fees);
-    this.redeemTotal = parseInt(this.redeemForm.value.redeemToken) + parseInt(this.redeemForm.value.redeemFee);
+    this.redeemTotal = parseInt(this.redeemForm.value.redeemToken) - parseInt(this.redeemForm.value.redeemFee);
     if(isNaN(this.redeemTotal)){
       this.redeemTotal = "";
     } 
@@ -305,8 +290,12 @@ export class CustomerComponent implements OnInit {
     this.buyAmount='';
   }
 
-  burnToken(redeemAmount:number){
-    this.contractService.burnToken(redeemAmount);
+  burnToken(redeemAmount:number,id){
+    this.contractService.burnToken(redeemAmount).then(() =>{
+      swal({
+        html:'Request Created Successfully </br> Request Id: '+ id
+      });
+    });
   }
 
   public async buyRequest(){
@@ -340,10 +329,14 @@ export class CustomerComponent implements OnInit {
 // console.log('ADmin:',admin_message,'Custodian:',custodian_message);
 
       this.loading = true;
+      let a= 5;
       this.dataService.sendMessage(admin_message,custodian_message).subscribe(
         (data:any) => {
           // console.log(data);
-          swal('Request Created Successfully');
+          this.buyAmount = "";
+          swal({
+            html:'Request Created Succesfully</br>Request Id:'+data
+          });
           this.buyForm.reset();
         },
         error => {
@@ -360,7 +353,9 @@ export class CustomerComponent implements OnInit {
   public async redeemRequest(){
     if(this.redeemForm.valid){
       console.log(JSON.stringify(this.redeemForm.value));
-      if(parseInt(this.redeemForm.value.redeemToken)+this.fees > this.userBalance){
+      console.log('UserBalance:',this.userBalance);
+      
+      if(parseInt(this.redeemForm.value.redeemToken)+parseInt(this.fees) > parseInt(this.userBalance)){
         swal('Insufficient no. of tokens',);
         console.log(parseInt(this.redeemForm.value.redeemToken)+this.fees);
         
@@ -395,8 +390,8 @@ export class CustomerComponent implements OnInit {
         this.dataService.redeemToken(admin_message,custodian_message).subscribe(
           (data:any) => {
             // console.log(data);
-            swal('Request Created Successfully');
-            this.burnToken(this.redeemForm.value.redeemToken)
+            this.redeemTotal = "";
+            this.burnToken(this.redeemForm.value.redeemToken,data)
             this.redeemForm.reset();
           },
           error => {
@@ -427,7 +422,7 @@ export class CustomerComponent implements OnInit {
 
   public async encrypt(message,encryptionFor){
 
-    openpgp.initWorker({ path:'node_modules/openpgp/dist/openpgp.worker.min.js' });
+    openpgp.initWorker({ path:'assets/openpgp/dist/openpgp.worker.min.js' });
     // console.log('In encrypt');
     
 

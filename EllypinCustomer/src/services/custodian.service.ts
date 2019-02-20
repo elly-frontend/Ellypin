@@ -19,7 +19,7 @@ export class CustodianService {
   private _web3: any;
 
   private _tokenContract: any;
-  private _tokenContractAddress: string = "0x24f5c1b5159c9f643d09358f08fd5b4447a2797e";
+  private _tokenContractAddress: string = "0xd60b94da7ac581352bf6aefff355d1072bc13910";
 
   constructor(private httpClient : HttpClient) {
   //   this.clientPromise.then(_client => {
@@ -117,7 +117,7 @@ export class CustodianService {
 
   public async getTotalBurn(): Promise<string>{
     return new Promise((resolve, reject) => {
-      this._tokenContract.getTotalBurn.call((err, result) => {
+      this._tokenContract.totalBurn.call((err, result) => {
         if(err != null){
           reject(err);
         }
@@ -294,6 +294,28 @@ export class CustodianService {
     })as Promise<number>;
   }
 
+  public getAllFees(){
+    return new Promise( (resolve, reject) => {
+      let fee:any = {}
+      this._tokenContract.getTransferFee.call((err, f1) => {
+        if(err != null){
+          reject(err);
+        }
+        // console.log(result);
+        this._tokenContract.getFee.call((err, f2) => {
+          if(err != null){
+            reject(err);
+          }
+          this._tokenContract.getBuyFee.call((err, f3) => {
+            if(err != null){
+              reject(err);
+            }
+            resolve({transfer: f1, redeem: f2, buy: f3})
+          });
+        });
+      });
+    })as Promise<any>;
+  }
 
   public sendMessage(admin_payload:any, custodian_payload:any, _id?:any){
     let Data:any;
@@ -328,9 +350,7 @@ export class CustodianService {
     return this.httpClient.get(`https://webhooks.mongodb-stitch.com/api/client/v2.0/app/ellypin-wysik/service/http/incoming_webhook/ellypinData`)
   }
 
-  public getAllFees(){
-    return this.httpClient.get(`https://webhooks.mongodb-stitch.com/api/client/v2.0/app/ellypin-wysik/service/http/incoming_webhook/metadata`)
-  }
+  
 
   public login(payload){
     return this.httpClient.post('https://webhooks.mongodb-stitch.com/api/client/v2.0/app/ellypin-wysik/service/http/incoming_webhook/login',payload)

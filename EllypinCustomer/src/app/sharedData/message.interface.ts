@@ -5,7 +5,8 @@ export interface Message  {
     publicKey: string,
     email:string,
     message: any,
-    time:number
+    time:number,
+    counter:string
 }
 
 export enum Message_Type {

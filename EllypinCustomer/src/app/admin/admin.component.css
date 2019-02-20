@@ -23,3 +23,15 @@
     text-align: right;
     background: #fff;
 }
+
+tr.noBorder td {
+    border: 0;
+  }
+
+.mintAndBurn {
+    background-color: aqua
+}
+
+.toBurn{
+    background-color: red
+}

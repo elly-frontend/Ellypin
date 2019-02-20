@@ -64,7 +64,7 @@ export class AdminComponent implements OnInit {
     $('#login-pop').modal('show');
     this.intervalId = setInterval(() => {
       this.getAccounts();
-     console.log('Printing every 5 seconds');
+     //console.log('Printing every 5 seconds');
     }, 5000);
     this.getCustomerData();
     // 
@@ -72,7 +72,7 @@ export class AdminComponent implements OnInit {
 
   public async loginSubmit(){
     if(this.loginForm.valid){
-      // console.log('Login:',this.loginForm.value);
+      // //console.log('Login:',this.loginForm.value);
       let payload = {
         'loginId':this.loginForm.value.email,
         'loginPin':this.loginForm.value.password,
@@ -81,7 +81,7 @@ export class AdminComponent implements OnInit {
       this.error = null;
       this.dataService.login(payload).subscribe(
         async (data:any) => {
-          // console.log(data);
+          // //console.log(data);
           if(!data.$undefined){
             $('#login-pop').modal('hide');
             this.getContractData();
@@ -93,7 +93,7 @@ export class AdminComponent implements OnInit {
           }
         },
         error => {
-          console.log(error);
+          //console.log(error);
         },
         () => {
           this.loginForm.reset();
@@ -110,14 +110,14 @@ export class AdminComponent implements OnInit {
         await this.getBalance();
         if(this.intervalId){
           clearInterval(this.intervalId);
-          // console.log('Interval Id:',this.intervalId);
+          // //console.log('Interval Id:',this.intervalId);
         }
       }
       
     })
     .catch(
       (error) => {
-        console.log(error);
+        //console.log(error);
       }
     )
   }
@@ -125,7 +125,7 @@ export class AdminComponent implements OnInit {
   public getBalance(){
     this.contractService.getUserBalance().then((balance:any) => {
       this.userBalance = balance.c[0];
-      console.log('UserBalance:',this.userBalance);
+      //console.log('UserBalance:',this.userBalance);
       
       });
   }
@@ -133,25 +133,25 @@ export class AdminComponent implements OnInit {
   public async getCustomerData(){
     await this.dataService.getCustomerData().subscribe(
       (data:any) => {
-        // console.log('Data:',data);
+        // //console.log('Data:',data);
         this.custData = data.custData;
       },
       error => {
-        console.log(error);
+        //console.log(error);
       }
     )
   }
 
   public getAllFees(){
-    this.dataService.getAllFees().subscribe(
+    this.contractService.getAllFees().then(
       (data:any)  => {
-        console.log(data);
-        this.assetBalance = data.assetBalance;
-        this.buyFees = data.buyFee;
-        this.transferFees = data.transferFee;
+        //console.log(data);
+        this.transferFees = data.transfer;
+        this.fees = data.redeem;
+        this.buyFees = data.buy;
       },
       err => {
-        console.log(err);
+        //console.log(err);
         
       }
     )
@@ -160,7 +160,7 @@ export class AdminComponent implements OnInit {
   public async getContractData(){
     await this.contractService.getName().then(
       name => {
-        // console.log(name);
+        // //console.log(name);
         this.contractDetails['contractName'] = name;
       }
     )
@@ -203,18 +203,55 @@ export class AdminComponent implements OnInit {
     )
     .catch(
       (error) => {
-        console.log(error);
+        //console.log(error);
       }
     )
 
-    this.contractDetails['contractAddress'] = "0x24f5c1b5159c9f643d09358f08fd5b4447a2797e";
+    this.contractDetails['contractAddress'] = "0xd60b94da7ac581352bf6aefff355d1072bc13910";
   }
+
+
+  
+
+  setTransferFees(){
+    this.contractService.setTransferFees(this.transferFees).then(
+      data => {
+        //console.log(data);
+      },
+      error => {
+        //console.log(error);
+      }
+    )
+  }
+
+  setRedeemFees(){
+    this.contractService.setRedeemFees(this.fees).then(
+      data => {
+        //console.log(data);
+      },
+      error => {
+        //console.log(error);
+      }
+    )
+  }
+
+  setBuyFees(){
+    this.contractService.setBuyFees(this.buyFees).then(
+      data => {
+        //console.log(data);
+      },
+      error => {
+        //console.log(error);
+      }
+    )
+  }
+
 
   public async getMessage(){
     this.loading = true;
     this.dataService.getMessages('ADMIN').subscribe(
        async (data:any) => {
-         console.log('MESSAGEDATA:',data);
+         //console.log('MESSAGEDATA:',data);
          
          if(data.length > 0){
           this.buyMessageArray = [];
@@ -232,17 +269,19 @@ export class AdminComponent implements OnInit {
            )
          }
          let indexBuy=0,indexRedeem=0;
-         console.log('REDEEMMESSAGE:',this.redeemMessageArray);
-         console.log('BUYMESSAGEARRAY:',this.buyMessageArray);
+         //console.log('REDEEMMESSAGE:',this.redeemMessageArray);
+         //console.log('BUYMESSAGEARRAY:',this.buyMessageArray);
          
          let messageToSend:Message = {} as any;
-
+         let buyIndex=0, redeemIndex=0;
          this.buyMessageDisplay = [];
          this.buyMessageArray.forEach(
            async buyMsg => {
                var buyObject = await this.decrypt(buyMsg.message,'admin');  
                buyObject['_id']=buyMsg['_id'].$oid;    
                this.buyMessageDisplay.push(buyObject);
+               this.buyMessageDisplay[buyIndex]['counter']=this.buyMessageArray[buyIndex]['counter']
+               ++buyIndex;
            }
          )
          this.redeemMessageDisplay=[];
@@ -251,13 +290,15 @@ export class AdminComponent implements OnInit {
                var redeemObject = await this.decrypt(buyMsg.message,'admin'); 
                redeemObject['_id']=buyMsg['_id'].$oid;
                this.redeemMessageDisplay.push(redeemObject);
+               this.redeemMessageDisplay[redeemIndex]['counter']=this.redeemMessageArray[redeemIndex]['counter']
+               ++redeemIndex;
            }
          )
 
          this.loading = false;
        },
        error => {
-         console.log(error);
+         //console.log(error);
          this.loading = false;
        }
      )
@@ -266,8 +307,8 @@ export class AdminComponent implements OnInit {
 
    public async encrypt(message,encryptionFor){
 
-    openpgp.initWorker({ path:'node_modules/openpgp/dist/openpgp.worker.min.js' });
-    console.log('In encrypt');
+    openpgp.initWorker({ path:'assets/openpgp/dist/openpgp.worker.min.js' });
+    //console.log('In encrypt');
     
 
     let pubkey:any;
@@ -311,7 +352,7 @@ export class AdminComponent implements OnInit {
     // const { workers } = openpgp.getWorker();
     
     await privKeyObj.decrypt('super long and hard to guess secret');
-    // console.log(privKeyObj);
+    // //console.log(privKeyObj);
 
       const options = {
           message: await openpgp.message.readArmored(encryptedData),    // parse armored message
@@ -319,90 +360,56 @@ export class AdminComponent implements OnInit {
           privateKeys: [privKeyObj]                                 // for decryption
       }
       var decryptedMsg = openpgp.decrypt(options).then(plaintext => {
-          // console.log(JSON.parse(plaintext.data.toString()))
+          // //console.log(JSON.parse(plaintext.data.toString()))
           return (JSON.parse(plaintext.data.toString()))
       })
       return decryptedMsg;
   }
 
   redeemClicked(index){
-    console.log('cUrrentPage',this.redeemCurrentPage);
-    
-    console.log(index);
-    if(this.redeemIndex == index){
-      this.redeemObjectSet = {};
-      this.redeemIndex = null;
-    }
-    else{
       this.redeemIndex = index;
-      console.log('displayRedem',this.redeemMessageDisplay);
+      //console.log('displayRedem',this.redeemMessageDisplay);
       this.redeemObjectSet = this.redeemMessageDisplay[this.redeemIndex];
       this.redeemObjectSet.BURN_TOKEN_REQUEST = this.redeemObjectSet.BURN_TOKEN_REQUEST || {};
-      console.log('RedeemObjecSet:',this.redeemObjectSet);
-    }
-    
-
-    // this.redeemObjectSet = {
-    //   'redeemBank' : this.redeemMessageDisplay[index].redeemBank,
-    //   'redeemSwiftCode' : this.redeemMessageDisplay[index].redeemSwiftCode,
-    //   'redeemAccountNumber':this.redeemMessageDisplay[index].redeemAccountNumber,
-    //   'redeemBeneficiary':this.redeemMessageDisplay[index].redeemBeneficiary,
-    //   'redeemCustodian':this.redeemMessageDisplay[index].redeemCustodian ? this.redeemMessageDisplay[index].redeemCustodian : 'Not Yet Paid'
-    // }
+      this.redeemObjectSet['serialNo']=this.redeemMessageArray[this.redeemIndex]['counter'];
   }
 
   buyClicked(index){
-    console.log('AdminPage:',this.buyCurrentPage);
-    
-    if(this.buyIndex == index){
-      this.buyObjectSet = {};
-      this.buyIndex = null;
-    }
-    else{
-      console.log('Index:',index);
-      console.log('BUYMESSAGEDISPLAY:',this.buyMessageDisplay);
-      console.log(this.buyMessageArray[this.buyIndex]);
-      
-      
       this.buyIndex = index;
       this.buyObjectSet = this.buyMessageDisplay[this.buyIndex];
-      console.log('BUY OBJECT',this.buyObjectSet);
+      this.buyObjectSet['serialNo'] = this.buyMessageArray[this.buyIndex]['counter']
+      //console.log('BUY OBJECT',this.buyObjectSet);
+      
       
       this.buyObjectSet.SEND_TOKEN_REQUEST = this.buyObjectSet.SEND_TOKEN_REQUEST || {};
-    }
-
-    // this.buyObjectSet = {
-    //   'name': this.buyMessageDisplay[this.buyIndex].buyFirstName,
-    //   'publicKey':this.buyMessageDisplay[this.buyIndex].publicKey,
-    //   'amountReceived':this.buyMessageDisplay[index].amountReceived ? this.buyMessageDisplay[index].amountReceived : 'Not Received Yet',
-    //   'time':this.buyMessageDisplay[this.buyIndex],
-    //   '_id':this.buyMessageDisplay[this.buyIndex]._id
-    // }
   }
 
   public async updateBuyMessage(){
-      // console.log(JSON.stringify(this.buyForm.value));
+      // //console.log(JSON.stringify(this.buyForm.value));
 
-      console.log('BUYOBJECT:',this.buyObjectSet);
+      //console.log('BUYOBJECT:',this.buyObjectSet);
       let admin_message:Message = {} as any;
       admin_message.type = Message_Type.BUY;
+      admin_message.counter = this.buyObjectSet['serialNo'];
       admin_message.publicKey = this.buyMessageArray[this.buyIndex].publicKey;
        admin_message.message=await this.encrypt(JSON.stringify(this.buyObjectSet),'admin');
       let custodian_message:Message = {} as any;
       custodian_message.type = Message_Type.BUY;
+      custodian_message.counter = this.buyObjectSet['serialNo'];
       custodian_message.publicKey = this.buyMessageArray[this.buyIndex].publicKey;
       custodian_message.message=await this.encrypt(JSON.stringify(this.buyObjectSet),'custodian');
       let _id = this.buyMessageArray[this.buyIndex]['_id'].$oid;
       this.dataService.sendMessage(admin_message,custodian_message,_id).subscribe(
         (data:any) => {
-          console.log(data);
+          //console.log(data);
+          $('#buy-kyc').modal('hide');
           swal('Updated Details Successfully');
           this.buyIndex = null;
           this.buyObjectSet = {};
           this.getMessage();
         },
         error => {
-          console.log(error);
+          //console.log(error);
         },
         () => {
         }
@@ -413,7 +420,7 @@ export class AdminComponent implements OnInit {
   }
 
   public async updateRedeemObject(){
-    console.log('REDEEMOBJECT:',this.redeemObjectSet);
+    //console.log('REDEEMOBJECT:',this.redeemObjectSet);
     if(this.redeemObjectSet.BURN_TOKEN_REQUEST){
       if(!this.redeemObjectSet.BURN_TOKEN_REQUEST.tokenSet){
         this.redeemObjectSet.BURN_TOKEN_REQUEST.tokenSet = true;
@@ -421,23 +428,26 @@ export class AdminComponent implements OnInit {
     }
     let admin_message:Message = {} as any;
     admin_message.type = Message_Type.REDEEM;
+    admin_message.counter = this.redeemObjectSet['serialNo'];
     admin_message.publicKey = this.redeemMessageArray[this.redeemIndex].publicKey;
      admin_message.message=await this.encrypt(JSON.stringify(this.redeemObjectSet),'admin');
     let custodian_message:Message = {} as any;
     custodian_message.type = Message_Type.REDEEM;
+    custodian_message.counter = this.redeemObjectSet['serialNo'];
     custodian_message.publicKey = this.redeemMessageArray[this.redeemIndex].publicKey;
     custodian_message.message=await this.encrypt(JSON.stringify(this.redeemObjectSet),'custodian');
     let _id = this.redeemMessageArray[this.redeemIndex]['_id'].$oid;
     this.dataService.sendMessage(admin_message,custodian_message,_id).subscribe(
       (data:any) => {
-        console.log(data);
+        //console.log(data);
+        $('#redeem-kyc').modal('hide');
         swal('Updated Details Successfully');
         this.redeemIndex = null;
         this.redeemObjectSet = {};
         this.getMessage();
       },
       error => {
-        console.log(error);
+        //console.log(error);
       },
       () => {
       }
@@ -445,10 +455,10 @@ export class AdminComponent implements OnInit {
   }
 
   mintToken(){
-    console.log('In mintToken');
+    //console.log('In mintToken');
     if(this.buyObjectSet.SEND_TOKEN_ACKNOWLEDGE != true){
       this.buyObjectSet.SEND_TOKEN_ACKNOWLEDGE = true;
-      this.contractService.mintToken(this.buyObjectSet.publicKey,parseInt(this.buyObjectSet.buyToken));
+      this.contractService.mintToken(this.buyObjectSet.publicKey,parseInt(this.buyObjectSet.SEND_TOKEN_REQUEST.updateBalance));
       this.updateBuyMessage();
     }
   }
@@ -456,10 +466,11 @@ export class AdminComponent implements OnInit {
   burnTokens(){
     if(this.redeemObjectSet.BURN_TOKEN_ACKNOWLEDGE != true){
       this.redeemObjectSet.BURN_TOKEN_ACKNOWLEDGE = true;
-      console.log('REDEEMOBJECT',this.redeemObjectSet);
-      
-      this.contractService.burnTokenFrom(this.redeemObjectSet.publicKey,parseInt(this.redeemObjectSet.redeemToken));
-      this.updateRedeemObject();
+      //console.log('REDEEMOBJECT',this.redeemObjectSet);
+      $('#redeem-kyc').modal('hide');
+      this.contractService.burnTokenFrom(this.redeemObjectSet.publicKey,parseInt(this.redeemObjectSet.BURN_TOKEN_REQUEST.assetBalance)).then(data => {
+        this.updateRedeemObject();
+      })
     }
   }
 
