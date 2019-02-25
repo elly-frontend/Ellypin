@@ -217,6 +217,7 @@ export class AdminComponent implements OnInit {
     this.contractService.setTransferFees(this.transferFees).then(
       data => {
         //console.log(data);
+        this.getAllFees();
       },
       error => {
         //console.log(error);
@@ -238,7 +239,7 @@ export class AdminComponent implements OnInit {
   setBuyFees(){
     this.contractService.setBuyFees(this.buyFees).then(
       data => {
-        //console.log(data);
+        // console.log(data);
       },
       error => {
         //console.log(error);

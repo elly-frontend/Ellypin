@@ -22,16 +22,14 @@ export class ContractService {
   private _tokenContractAddress: string = "0xd9cdabaa9b94e52ac8f20875b2f614e1a2cbb654";
 
   constructor(private httpClient : HttpClient) {
-  //   this.clientPromise.then(_client => {
-  //     this.client = _client;
-  //     this.db = this.client.service('mongodb', 'mongodb-atlas').db('ifakebook_db');
-  // });
 
     if (typeof window.web3 !== 'undefined') {
       // Use Mist/MetaMask's provider
       this._web3 = new Web3(window.web3.currentProvider);
       
       window.ethereum.enable(); 
+      // let account = this.getAccount();
+      
       this._tokenContract = this._web3.eth.contract(tokenAbi).at(this._tokenContractAddress);
       // if (this._web3.version.network !== '4') {
       //   alert('Please connect to the Rinkeby network');
@@ -235,7 +233,7 @@ export class ContractService {
 
   public setTransferFees(fees){
     return new Promise((resolve, reject) => {
-      this._tokenContract.setTransferFee(fees,(err, result) => {
+      this._tokenContract.setTransferFee(fees,{ gasPrice: this._web3.toWei(0.000000001, "ether"), gas: 600073 },(err, result) => {
         if(err != null){
           reject(err);
         }
@@ -248,7 +246,7 @@ export class ContractService {
 
   public setRedeemFees(fees){
     return new Promise((resolve, reject) => {
-      this._tokenContract.setFee(fees,(err, result) => {
+      this._tokenContract.setFee(fees,{ gasPrice: this._web3.toWei(0.000000001, "ether"), gas: 600073 },(err, result) => {
         if(err != null){
           reject(err);
         }
@@ -259,17 +257,52 @@ export class ContractService {
     
   }
 
-  public setBuyFees(fees){
+  public async setBuyFees(fees){
     return new Promise((resolve, reject) => {
-      this._tokenContract.setBuyFee(fees,(err, result) => {
+      this._tokenContract.setBuyFee(fees,{ gasPrice: this._web3.toWei(0.000000001, "ether"), gas: 600073 },(err, result) => {
         if(err != null){
+          console.log(err);
+          
           reject(err);
         }
-        // console.log(result);
+        console.log(result);
         resolve(result);
       });
     })as Promise<string>;
   }
+
+  getGasPrice(){
+    return new Promise((resolve, reject) => {
+      this._web3.eth.getGasPrice(function(error, result){
+        if(!error){
+          console.log("price is:");
+          console.log(result);
+          resolve(Number(result));
+        }
+        else{
+          console.log(error);
+          reject(Number(0));
+        } 
+      })
+    })
+  }
+
+  // getEstimateGas(orderId: string, message: string){
+  //   return new Promise((resolve, reject) => {
+  //      this._tokenContract.setBuyFee.estimateGas(orderId, message,{from: this._web3.eth.accounts[0], value:this._web3.toWei(0.1, "ether")}, function(error, result){
+  //        if(!error){
+  //          console.log("estimate gas is:");
+  //          console.log(result);
+  //          resolve(Number(result));
+  //        }
+  //        else{
+  //         console.log(error);
+  //         reject(Number(0));
+  //       }
+  //     })
+  //   })
+  // }
+
 
   public getAllFees(){
     return new Promise( (resolve, reject) => {
