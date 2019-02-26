@@ -100,6 +100,7 @@
                 </table>
               </div>
             </div>
+            <ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px',fullScreenBackdrop:true, animationType:'circleSwish' }" [template]="customLoadingTemplate"></ngx-loading>
             <div class="bottom-link-wrapper">
               <a data-toggle="modal" data-target="#buy-custodian">Fee Schedule</a>
               <a href="javascript:void(0);">Terms and Condition</a>
@@ -395,12 +396,12 @@
                 <input type="text" [(ngModel)]="buyObjectSet.SEND_TOKEN_REQUEST.receivedAmount" [ngModelOptions]="{standalone: true}"  [readonly]="buyObjectSet?.KYC != 'Approve' || buyObjectSet?.SEND_TOKEN_REQUEST?.custodianSet" class="form-control">
               </div>
             </div>
-            <div class="col-sm-12">
+            <!-- <div class="col-sm-12">
               <div class="form-group">
                 <label>Update Account Balance &nbsp;&nbsp;</label>
                 <input type="text" [ngModelOptions]="{standalone: true}" [(ngModel)]="buyObjectSet.SEND_TOKEN_REQUEST.updateBalance" [readonly]="buyObjectSet?.KYC != 'Approve' || buyObjectSet?.SEND_TOKEN_REQUEST?.custodianSet" class="form-control">
               </div>
-            </div>
+            </div> -->
           </div>
           <div class="row">
             <div class="col-sm-12">
@@ -443,11 +444,6 @@
                 <div class="form-group">
                   <label>Amount Received &nbsp;&nbsp;</label>
                   <input type="text" [(ngModel)]="redeemObjectSet.BURN_TOKEN_REQUEST.redeemAmount" [ngModelOptions]="{standalone: true}" [readonly]="redeemObjectSet.KYC != 'Approve' || redeemObjectSet.BURN_TOKEN_REQUEST.custodianSet" class="form-control">                </div>
-              </div>
-              <div class="col-sm-12">
-                <div class="form-group">
-                  <label>Update Account Balance &nbsp;&nbsp;</label>
-                  <input type="text" [(ngModel)]="redeemObjectSet.BURN_TOKEN_REQUEST.assetBalance" [ngModelOptions]="{standalone: true}" [readonly]="redeemObjectSet.KYC != 'Approve' || redeemObjectSet.BURN_TOKEN_REQUEST.custodianSet" class="form-control">                </div>
               </div>
             </div>
             <div class="row">

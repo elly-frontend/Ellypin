@@ -352,10 +352,7 @@ export class CustomerComponent implements OnInit {
 
   public async redeemRequest(){
     if(this.redeemForm.valid){
-      console.log(JSON.stringify(this.redeemForm.value));
-      console.log('UserBalance:',this.userBalance);
-      
-      if(parseInt(this.redeemForm.value.redeemToken)+parseInt(this.fees) > parseInt(this.userBalance)){
+      if(parseInt(this.redeemForm.value.redeemToken)> parseInt(this.userBalance)){
         swal('Insufficient no. of tokens',);
         console.log(parseInt(this.redeemForm.value.redeemToken)+this.fees);
         

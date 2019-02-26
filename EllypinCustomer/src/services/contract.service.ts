@@ -19,7 +19,7 @@ export class ContractService {
   private _web3: any;
 
   private _tokenContract: any;
-  private _tokenContractAddress: string = "0xd9cdabaa9b94e52ac8f20875b2f614e1a2cbb654";
+  private _tokenContractAddress: string = "0x07ee1948ff4dfa7b4b45a1023f9c92e528468eb8";
 
   constructor(private httpClient : HttpClient) {
 
@@ -233,7 +233,7 @@ export class ContractService {
 
   public setTransferFees(fees){
     return new Promise((resolve, reject) => {
-      this._tokenContract.setTransferFee(fees,{ gasPrice: this._web3.toWei(0.000000001, "ether"), gas: 600073 },(err, result) => {
+      this._tokenContract.setTransferFee(fees,(err, result) => {
         if(err != null){
           reject(err);
         }
@@ -246,7 +246,7 @@ export class ContractService {
 
   public setRedeemFees(fees){
     return new Promise((resolve, reject) => {
-      this._tokenContract.setFee(fees,{ gasPrice: this._web3.toWei(0.000000001, "ether"), gas: 600073 },(err, result) => {
+      this._tokenContract.setFee(fees,(err, result) => {
         if(err != null){
           reject(err);
         }
@@ -259,7 +259,7 @@ export class ContractService {
 
   public async setBuyFees(fees){
     return new Promise((resolve, reject) => {
-      this._tokenContract.setBuyFee(fees,{ gasPrice: this._web3.toWei(0.000000001, "ether"), gas: 600073 },(err, result) => {
+      this._tokenContract.setBuyFee(fees,(err, result) => {
         if(err != null){
           console.log(err);
           

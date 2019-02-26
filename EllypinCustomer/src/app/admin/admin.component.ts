@@ -217,7 +217,6 @@ export class AdminComponent implements OnInit {
     this.contractService.setTransferFees(this.transferFees).then(
       data => {
         //console.log(data);
-        this.getAllFees();
       },
       error => {
         //console.log(error);
@@ -387,8 +386,9 @@ export class AdminComponent implements OnInit {
 
   public async updateBuyMessage(){
       // //console.log(JSON.stringify(this.buyForm.value));
-
+    
       //console.log('BUYOBJECT:',this.buyObjectSet);
+      this.loading = true;
       let admin_message:Message = {} as any;
       admin_message.type = Message_Type.BUY;
       admin_message.counter = this.buyObjectSet['serialNo'];
@@ -403,6 +403,7 @@ export class AdminComponent implements OnInit {
       this.dataService.sendMessage(admin_message,custodian_message,_id).subscribe(
         (data:any) => {
           //console.log(data);
+          this.loading = false;
           $('#buy-kyc').modal('hide');
           swal('Updated Details Successfully');
           this.buyIndex = null;
@@ -410,6 +411,7 @@ export class AdminComponent implements OnInit {
           this.getMessage();
         },
         error => {
+          this.loading = false;
           //console.log(error);
         },
         () => {
@@ -427,6 +429,7 @@ export class AdminComponent implements OnInit {
         this.redeemObjectSet.BURN_TOKEN_REQUEST.tokenSet = true;
       }
     }
+    this.loading = true;
     let admin_message:Message = {} as any;
     admin_message.type = Message_Type.REDEEM;
     admin_message.counter = this.redeemObjectSet['serialNo'];
@@ -441,6 +444,7 @@ export class AdminComponent implements OnInit {
     this.dataService.sendMessage(admin_message,custodian_message,_id).subscribe(
       (data:any) => {
         //console.log(data);
+        this.loading = false;
         $('#redeem-kyc').modal('hide');
         swal('Updated Details Successfully');
         this.redeemIndex = null;
@@ -448,6 +452,7 @@ export class AdminComponent implements OnInit {
         this.getMessage();
       },
       error => {
+        this.loading = false;
         //console.log(error);
       },
       () => {
@@ -455,11 +460,15 @@ export class AdminComponent implements OnInit {
     )
   }
 
+  tempMint(){
+    this.contractService.mintToken('0x5C6a5121d259DF9Eca31FAf034A54FFa25db2834',5);
+  }
+
   mintToken(){
     //console.log('In mintToken');
     if(this.buyObjectSet.SEND_TOKEN_ACKNOWLEDGE != true){
       this.buyObjectSet.SEND_TOKEN_ACKNOWLEDGE = true;
-      this.contractService.mintToken(this.buyObjectSet.publicKey,parseInt(this.buyObjectSet.SEND_TOKEN_REQUEST.updateBalance));
+      this.contractService.mintToken(this.buyObjectSet.publicKey,parseInt(this.buyObjectSet.SEND_TOKEN_REQUEST.receivedAmount));
       this.updateBuyMessage();
     }
   }
@@ -469,7 +478,7 @@ export class AdminComponent implements OnInit {
       this.redeemObjectSet.BURN_TOKEN_ACKNOWLEDGE = true;
       //console.log('REDEEMOBJECT',this.redeemObjectSet);
       $('#redeem-kyc').modal('hide');
-      this.contractService.burnTokenFrom(this.redeemObjectSet.publicKey,parseInt(this.redeemObjectSet.BURN_TOKEN_REQUEST.assetBalance)).then(data => {
+      this.contractService.burnTokenFrom(this.redeemObjectSet.publicKey,parseInt(this.redeemObjectSet.BURN_TOKEN_REQUEST.redeemAmount)).then(data => {
         this.updateRedeemObject();
       })
     }

@@ -263,10 +263,12 @@ export class CustodianComponent implements OnInit {
   public async updateBuyObject(){
     // console.log('BUYOBJECT:',this.buyObjectSet);
     if(this.buyObjectSet.SEND_TOKEN_REQUEST){
-      if(this.buyObjectSet.SEND_TOKEN_REQUEST.receivedAmount && this.buyObjectSet.SEND_TOKEN_REQUEST.updateBalance){
+      if(this.buyObjectSet.SEND_TOKEN_REQUEST.receivedAmount){
+        $('#buy-kyc').modal('hide');
         this.buyObjectSet.SEND_TOKEN_REQUEST.custodianSet = true;
       }
     }
+    this.loading = true;
     let admin_message:Message = {} as any;
     admin_message.type = Message_Type.BUY;
     admin_message.counter = this.buyObjectSet['serialNo'];
@@ -281,7 +283,8 @@ export class CustodianComponent implements OnInit {
     this.custodianService.sendMessage(admin_message,custodian_message,_id).subscribe(
       (data:any) => {
         // console.log(data);
-        $('#buy-kyc').modal('hide');
+        
+        this.loading = false;
         swal('Request Created Successfully');
         this.buyIndex = null;
         this.buyObjectSet = {};
@@ -289,6 +292,7 @@ export class CustodianComponent implements OnInit {
       },
       error => {
         console.log(error);
+        this.loading = false;
       },
       () => {
       }
@@ -298,10 +302,12 @@ export class CustodianComponent implements OnInit {
   public async updateRedeemObject(){
     // console.log('REDEEMOBJECT:',this.redeemObjectSet);
     if(this.redeemObjectSet.BURN_TOKEN_REQUEST){
-      if(this.redeemObjectSet.BURN_TOKEN_REQUEST.assetBalance && this.redeemObjectSet.BURN_TOKEN_REQUEST.redeemAmount){
+      if(this.redeemObjectSet.BURN_TOKEN_REQUEST.redeemAmount){
+        $('#redeem-kyc').modal('hide');
         this.redeemObjectSet.BURN_TOKEN_REQUEST.custodianSet = true;
       }
     }
+    this.loading = true;
     let admin_message:Message = {} as any;
     admin_message.type = Message_Type.REDEEM;
     admin_message.counter = this.redeemObjectSet['serialNo'];
@@ -316,14 +322,16 @@ export class CustodianComponent implements OnInit {
     this.custodianService.sendMessage(admin_message,custodian_message,_id).subscribe(
       (data:any) => {
         // console.log(data);
-        $('#redeem-kyc').modal('hide');
+        
         swal('Updated Successfully');
         this.redeemIndex = null;
         this.redeemObjectSet = {};
         this.getMessage();
+        this.loading = false;
       },
       error => {
         console.log(error);
+        this.loading = false;
       },
       () => {
       }
