@@ -195,7 +195,7 @@ export class CustomerComponent implements OnInit {
       }
     )
 
-    this.contractDetails['contractAddress'] = "0xd9cdabaa9b94e52ac8f20875b2f614e1a2cbb654";
+    this.contractDetails['contractAddress'] = "0x44128f17132ae9aac62ce8a47c0cf5465e225c97";
   }
 
   getBalance(){
