@@ -172,7 +172,7 @@ export class CustodianComponent implements OnInit {
         console.log('Redeem:',redeem);
         
         this.totalRedeem = parseInt(redeem.c[0]) + parseInt(this.totalBurn);
-        this.netToken = parseInt(this.totalSupply) + parseInt(this.totalRedeem);
+        this.netToken = parseInt(this.totalSupply) + parseInt(this.totalBurn);
       }
     )
 
