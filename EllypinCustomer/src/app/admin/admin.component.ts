@@ -194,7 +194,7 @@ export class AdminComponent implements OnInit {
     await this.contractService.getUserBalance('0xbd49F20F816C8ff831832F20fF0509A6176F9902').then(
       (redeem:any) => {
         this.totalRedeem = parseInt(redeem.c[0]) + parseInt(this.totalBurn);
-        this.netToken = parseInt(this.totalSupply) + parseInt(this.totalRedeem);
+        this.netToken = parseInt(this.totalSupply) + parseInt(this.totalBurn);
       }
     )
 
@@ -209,7 +209,7 @@ export class AdminComponent implements OnInit {
       }
     )
 
-    this.contractDetails['contractAddress'] = "0xd9cdabaa9b94e52ac8f20875b2f614e1a2cbb654";
+    this.contractDetails['contractAddress'] = "0x44128f17132ae9aac62ce8a47c0cf5465e225c97";
   }
 
 
