@@ -157,7 +157,7 @@
                         <td>Total</td>
                         <td>{{totalSupply}}</td>
                       </tr>
-                      <tr>
+                      <!-- <tr>
                         <td>Burned</td>
                         <td>{{totalBurn}}</td>
                       </tr>
@@ -168,7 +168,7 @@
                       <tr>
                         <td>Net</td>
                         <td>{{netToken}}</td>
-                      </tr>
+                      </tr> -->
                     </tbody>
                   </table>
                 </div>
@@ -392,8 +392,8 @@
           <div class="row" *ngIf="buyObjectSet?.SEND_TOKEN_REQUEST">
             <div class="col-sm-12">
               <div class="form-group">
-                <label>Amount Received &nbsp;&nbsp;</label>
-                <input type="text" [(ngModel)]="buyObjectSet.SEND_TOKEN_REQUEST.receivedAmount" [ngModelOptions]="{standalone: true}"  [readonly]="buyObjectSet?.KYC != 'Approve' || buyObjectSet?.SEND_TOKEN_REQUEST?.custodianSet" class="form-control">
+                <label>Total Tokens &nbsp;&nbsp;</label>
+                <input type="text" [(ngModel)]="buyObjectSet.totalToken" [ngModelOptions]="{standalone: true}"  [readonly]="buyObjectSet?.KYC != 'Approve' || buyObjectSet?.SEND_TOKEN_REQUEST?.custodianSet" class="form-control">
               </div>
             </div>
             <!-- <div class="col-sm-12">
@@ -442,8 +442,8 @@
             <div class="row" *ngIf="redeemObjectSet.BURN_TOKEN_REQUEST">
               <div class="col-sm-12">
                 <div class="form-group">
-                  <label>Amount Received &nbsp;&nbsp;</label>
-                  <input type="text" [(ngModel)]="redeemObjectSet.BURN_TOKEN_REQUEST.redeemAmount" [ngModelOptions]="{standalone: true}" [readonly]="redeemObjectSet.KYC != 'Approve' || redeemObjectSet.BURN_TOKEN_REQUEST.custodianSet" class="form-control">                </div>
+                  <label>Tokens Received &nbsp;&nbsp;</label>
+                  <input type="text" [(ngModel)]="redeemObjectSet.totalToken" [ngModelOptions]="{standalone: true}" [readonly]="redeemObjectSet.KYC != 'Approve' || redeemObjectSet.BURN_TOKEN_REQUEST.custodianSet" class="form-control">                </div>
               </div>
             </div>
             <div class="row">

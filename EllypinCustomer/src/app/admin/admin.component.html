@@ -149,7 +149,7 @@
                         <td>Total</td>
                         <td>{{totalSupply}}</td>
                       </tr>
-                      <tr>
+                      <!-- <tr>
                         <td>Burned</td>
                         <td>{{totalBurn}}</td>
                       </tr>
@@ -160,7 +160,7 @@
                       <tr>
                         <td>Net</td>
                         <td>{{netToken}}</td>
-                      </tr>
+                      </tr> -->
                     </tbody>
                   </table>
                 </div>
@@ -377,8 +377,8 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-body">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <form action="" class="form-inline" [hidden]="buyObjectSet?.SEND_TOKEN_REQUEST?.receivedAmount">
+        <button type="button" class="close" data-dismiss="modal" (click)="closeModal()">&times;</button>
+        <form action="" class="form-inline" [hidden]="buyObjectSet?.SEND_TOKEN_REQUEST?.custodianSet">
           <h3 class="text-center">Serial Number:  <span>{{buyObjectSet.serialNo}}</span></h3>
           <div *ngIf="error">
             <div  class="alert alert-danger">
@@ -393,7 +393,7 @@
                 <span *ngIf="buyObjectSet?.KYC == 'Approve'">Approved</span>
                 
                 <span *ngIf="buyObjectSet?.KYC != 'Approve'">
-                  <select [(ngModel)]="buyObjectSet.KYC" [ngModelOptions]="{standalone: true}" class="form-control">
+                  <select [(ngModel)]="kycBuyValue" [ngModelOptions]="{standalone: true}" class="form-control">
                     <option disabled value="">Set KYC</option>
                     <option value="Approve">Approve</option>
                     <option value="Not Approved">Do Not Approve</option>
@@ -404,7 +404,7 @@
           </div>
           <div class="row">
             <div class="col-sm-12">
-              <div class="form-submit" >
+              <div class="form-submit" *ngIf="!(buyObjectSet?.KYC == 'Approve')">
                 <button type="submit" class="btn btn-success btn-lg"  (click)="updateBuyMessage()" >Update</button>
               </div>
             </div>
@@ -412,7 +412,7 @@
         </form>
 
 
-        <form action="" class="form-inline" [hidden]="!buyObjectSet?.SEND_TOKEN_REQUEST?.receivedAmount || buyObjectSet?.SEND_TOKEN_ACKNOWLEDGE">
+        <form action="" class="form-inline" [hidden]="!buyObjectSet?.SEND_TOKEN_REQUEST?.custodianSet || buyObjectSet?.SEND_TOKEN_ACKNOWLEDGE">
           <h3 class="text-center">Serial Number:  <span>{{buyObjectSet.serialNo}}</span></h3>
           <div class="row">
             <div class="col-sm-12">
@@ -447,8 +447,8 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-body">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <form action="" class="form-inline" [hidden]="redeemObjectSet?.BURN_TOKEN_REQUEST?.redeemAmount">
+        <button type="button" class="close" data-dismiss="modal" (close)="closeModal()">&times;</button>
+        <form action="" class="form-inline" [hidden]="redeemObjectSet?.BURN_TOKEN_REQUEST?.custodianSet">
           <h3 class="text-center">Serial Number:  <span>{{redeemObjectSet.serialNo}}</span></h3>
           <div *ngIf="error">
             <div  class="alert alert-danger">
@@ -462,7 +462,7 @@
 
                 <span *ngIf="redeemObjectSet.KYC == 'Approve'">Approved</span>
                 <span *ngIf="redeemObjectSet.KYC != 'Approve'">
-                  <select [(ngModel)]="redeemObjectSet.KYC" [ngModelOptions]="{standalone: true}" class="form-control">
+                  <select [(ngModel)]="kycRedeemValue" [ngModelOptions]="{standalone: true}" class="form-control">
                     <option value="" disabled>Set KYC</option>
                     <option value="Approve">Approve</option>
                     <option value="Not Approved">Do Not Approve</option>
@@ -473,7 +473,7 @@
           </div>
           <div class="row">
             <div class="col-sm-12">
-              <div class="form-submit">
+              <div class="form-submit" *ngIf="!(redeemObjectSet?.KYC == 'Approve')">
                 <button type="submit" class="btn btn-success btn-lg" (click)="updateRedeemObject()" >Update</button>
               </div>
             </div>
@@ -481,7 +481,7 @@
         </form>
 
 
-        <form action="" class="form-inline" [hidden]="!redeemObjectSet?.BURN_TOKEN_REQUEST?.redeemAmount || redeemObjectSet?.BURN_TOKEN_ACKNOWLEDGE">
+        <form action="" class="form-inline" [hidden]="!redeemObjectSet?.BURN_TOKEN_REQUEST?.custodianSet || redeemObjectSet?.BURN_TOKEN_ACKNOWLEDGE">
           <h3 class="text-center">Serial Number:  <span>{{redeemObjectSet.serialNo}}</span></h3>
           <div class="row">
             <div class="col-sm-12">

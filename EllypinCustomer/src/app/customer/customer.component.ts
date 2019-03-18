@@ -62,6 +62,7 @@ export class CustomerComponent implements OnInit {
   public totalBurn:any;
   public totalRedeem:any;
   public netToken:any;
+  public requestId:any;
 
   constructor( public contractService:ContractService,public dataService:DataService, public fb:FormBuilder ) {
     this.buyForm = fb.group({
@@ -221,7 +222,6 @@ export class CustomerComponent implements OnInit {
   public getAllFees(){
     this.contractService.getAllFees().then(
       (data:any)  => {
-        console.log('Data: ',data);
         this.transferFees = data.transfer;
         this.fees = data.redeem;
         this.buyFees = data.buy;
@@ -287,14 +287,16 @@ export class CustomerComponent implements OnInit {
     this.redeemForm.reset();
     this.redeemTotal = '';
     this.buyForm.reset();
+    this.requestId='';
     this.buyAmount='';
   }
 
   burnToken(redeemAmount:number,id){
     this.contractService.burnToken(redeemAmount).then(() =>{
-      swal({
-        html:'Request Created Successfully </br> Request Id: '+ id
-      });
+      this.requestId = id;
+      // swal({
+      //   html:'Request Created Successfully </br> Request Id: '+ id
+      // });
     });
   }
 
@@ -333,11 +335,12 @@ export class CustomerComponent implements OnInit {
       this.dataService.sendMessage(admin_message,custodian_message).subscribe(
         (data:any) => {
           // console.log(data);
-          this.buyAmount = "";
-          swal({
-            html:'Request Created Succesfully</br>Request Id:'+data
-          });
-          this.buyForm.reset();
+          // this.buyAmount = "";
+          this.requestId = data;
+          // swal({
+          //   html:'Request Created Succesfully</br>Request Id:'+data
+          // });
+          // this.buyForm.reset();
         },
         error => {
           console.log(error);
@@ -387,9 +390,7 @@ export class CustomerComponent implements OnInit {
         this.dataService.redeemToken(admin_message,custodian_message).subscribe(
           (data:any) => {
             // console.log(data);
-            this.redeemTotal = "";
             this.burnToken(this.redeemForm.value.redeemToken,data)
-            this.redeemForm.reset();
           },
           error => {
             console.log(error);

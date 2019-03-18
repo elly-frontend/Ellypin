@@ -244,11 +244,12 @@ export class CustodianComponent implements OnInit {
   }
 
   buyClicked(index){
-    console.log('Index:',index);
-      this.buyIndex = index;
-      this.buyObjectSet = this.buyMessageDisplay[this.buyIndex];
-      this.buyObjectSet.SEND_TOKEN_REQUEST = this.buyObjectSet.SEND_TOKEN_REQUEST || {};
-      this.buyObjectSet['serialNo']=this.buyMessageArray[this.buyIndex]['counter'];
+    this.buyIndex = index;
+    this.buyObjectSet = this.buyMessageDisplay[this.buyIndex];
+    this.buyObjectSet.SEND_TOKEN_REQUEST = this.buyObjectSet.SEND_TOKEN_REQUEST || {};
+    this.buyObjectSet['serialNo']=this.buyMessageArray[this.buyIndex]['counter'];
+    this.buyObjectSet['totalToken'] = parseInt(this.buyObjectSet['buyFee']) + parseInt(this.buyObjectSet['buyToken']);
+    console.log('Index:',this.buyObjectSet);
   }
 
   redeemClicked(index){
@@ -258,17 +259,22 @@ export class CustodianComponent implements OnInit {
       this.redeemObjectSet = this.redeemMessageDisplay[this.redeemIndex];
       this.redeemObjectSet[Message_Type.BURN_TOKEN_REQUEST] = this.redeemObjectSet[Message_Type.BURN_TOKEN_REQUEST] || {};
       this.redeemObjectSet['serialNo']=this.redeemMessageArray[this.redeemIndex]['counter'];
+      this.redeemObjectSet['totalToken'] = parseInt(this.redeemObjectSet['redeemFee']) + parseInt(this.redeemObjectSet['redeemToken']);
+      // console.log('REdeemObject:', this.redeemObjectSet);
+      
   }
 
   public async updateBuyObject(){
     // console.log('BUYOBJECT:',this.buyObjectSet);
     if(this.buyObjectSet.SEND_TOKEN_REQUEST){
-      if(this.buyObjectSet.SEND_TOKEN_REQUEST.receivedAmount){
+      if(this.buyObjectSet.totalToken){
         $('#buy-kyc').modal('hide');
         this.buyObjectSet.SEND_TOKEN_REQUEST.custodianSet = true;
       }
     }
     this.loading = true;
+    console.log('BUYOBJEECTSET:',this.buyObjectSet);
+    
     let admin_message:Message = {} as any;
     admin_message.type = Message_Type.BUY;
     admin_message.counter = this.buyObjectSet['serialNo'];
@@ -302,12 +308,14 @@ export class CustodianComponent implements OnInit {
   public async updateRedeemObject(){
     // console.log('REDEEMOBJECT:',this.redeemObjectSet);
     if(this.redeemObjectSet.BURN_TOKEN_REQUEST){
-      if(this.redeemObjectSet.BURN_TOKEN_REQUEST.redeemAmount){
+      if(this.redeemObjectSet.totalToken){
         $('#redeem-kyc').modal('hide');
         this.redeemObjectSet.BURN_TOKEN_REQUEST.custodianSet = true;
       }
     }
     this.loading = true;
+    // console.log('Updated Redeem Object:',this.redeemObjectSet);
+    
     let admin_message:Message = {} as any;
     admin_message.type = Message_Type.REDEEM;
     admin_message.counter = this.redeemObjectSet['serialNo'];

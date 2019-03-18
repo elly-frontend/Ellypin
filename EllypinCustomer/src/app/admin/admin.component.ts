@@ -46,6 +46,8 @@ export class AdminComponent implements OnInit {
   public totalBurn:any;
   public totalRedeem:any;
   public netToken:any;
+  public kycRedeemValue="";
+  public kycBuyValue="";
   // public currentRedeemPage:any=0;
   // public currentAdminPage:any=0;
   public itemsPerPage:number=5;
@@ -372,22 +374,27 @@ export class AdminComponent implements OnInit {
       this.redeemObjectSet = this.redeemMessageDisplay[this.redeemIndex];
       this.redeemObjectSet.BURN_TOKEN_REQUEST = this.redeemObjectSet.BURN_TOKEN_REQUEST || {};
       this.redeemObjectSet['serialNo']=this.redeemMessageArray[this.redeemIndex]['counter'];
+      console.log('RedeemObject:',this.redeemObjectSet);
+      
   }
 
   buyClicked(index){
       this.buyIndex = index;
       this.buyObjectSet = this.buyMessageDisplay[this.buyIndex];
-      this.buyObjectSet['serialNo'] = this.buyMessageArray[this.buyIndex]['counter']
-      //console.log('BUY OBJECT',this.buyObjectSet);
-      
-      
+      this.buyObjectSet['serialNo'] = this.buyMessageArray[this.buyIndex]['counter'];
       this.buyObjectSet.SEND_TOKEN_REQUEST = this.buyObjectSet.SEND_TOKEN_REQUEST || {};
+      
   }
 
   public async updateBuyMessage(){
       // //console.log(JSON.stringify(this.buyForm.value));
     
       //console.log('BUYOBJECT:',this.buyObjectSet);
+      
+      if(this.kycBuyValue == "Approve"){
+        this.buyObjectSet.KYC = this.kycBuyValue;
+      }
+      this.kycBuyValue = '';
       this.loading = true;
       let admin_message:Message = {} as any;
       admin_message.type = Message_Type.BUY;
@@ -424,6 +431,10 @@ export class AdminComponent implements OnInit {
 
   public async updateRedeemObject(){
     //console.log('REDEEMOBJECT:',this.redeemObjectSet);
+    if(this.kycRedeemValue == 'Approve'){
+      this.redeemObjectSet.KYC = this.kycRedeemValue;
+    }
+    this.kycRedeemValue = '';
     if(this.redeemObjectSet.BURN_TOKEN_REQUEST){
       if(!this.redeemObjectSet.BURN_TOKEN_REQUEST.tokenSet){
         this.redeemObjectSet.BURN_TOKEN_REQUEST.tokenSet = true;
@@ -460,6 +471,11 @@ export class AdminComponent implements OnInit {
     )
   }
 
+  closeModal(){
+    this.kycBuyValue = '';
+    this.kycRedeemValue = '';
+  }
+
   tempMint(){
     this.contractService.mintToken('0x5C6a5121d259DF9Eca31FAf034A54FFa25db2834',5);
   }
@@ -468,7 +484,7 @@ export class AdminComponent implements OnInit {
     //console.log('In mintToken');
     if(this.buyObjectSet.SEND_TOKEN_ACKNOWLEDGE != true){
       this.buyObjectSet.SEND_TOKEN_ACKNOWLEDGE = true;
-      this.contractService.mintToken(this.buyObjectSet.publicKey,parseInt(this.buyObjectSet.SEND_TOKEN_REQUEST.receivedAmount));
+      this.contractService.mintToken(this.buyObjectSet.publicKey,(parseInt(this.buyObjectSet.totalToken) - parseInt(this.buyObjectSet.buyFee)));
       this.updateBuyMessage();
     }
   }
@@ -478,7 +494,7 @@ export class AdminComponent implements OnInit {
       this.redeemObjectSet.BURN_TOKEN_ACKNOWLEDGE = true;
       //console.log('REDEEMOBJECT',this.redeemObjectSet);
       $('#redeem-kyc').modal('hide');
-      this.contractService.burnTokenFrom(this.redeemObjectSet.publicKey,parseInt(this.redeemObjectSet.BURN_TOKEN_REQUEST.redeemAmount)).then(data => {
+      this.contractService.burnTokenFrom(this.redeemObjectSet.publicKey,(parseInt(this.redeemObjectSet.totalToken) - parseInt(this.redeemObjectSet.redeemFee))).then(data => {
         this.updateRedeemObject();
       })
     }

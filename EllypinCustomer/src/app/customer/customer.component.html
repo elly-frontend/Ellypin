@@ -116,7 +116,7 @@
                           <td>Total</td>
                           <td>{{totalSupply}}</td>
                         </tr>
-                        <tr>
+                        <!-- <tr>
                           <td>Burned</td>
                           <td>{{totalBurn}}</td>
                         </tr>
@@ -127,7 +127,7 @@
                         <tr>
                           <td>Net</td>
                           <td>{{netToken}}</td>
-                        </tr>
+                        </tr> -->
                       </tbody>
                     </table>
                   </div>
@@ -161,7 +161,7 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-body">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <button type="button" class="close" data-dismiss="modal" (click)="closeModal()">&times;</button>
         <form action="" [formGroup]="buyForm">
           <h3>Buy</h3>
           <div class="row">
@@ -300,7 +300,16 @@
             </div> -->
             <div class="col-sm-12">
               <div class="form-submit">
-                <button type="submit" class="btn btn-danger btn-lg" [disabled]="buyForm.invalid" (click)="buyRequest()" data-dismiss="modal">Submit</button>
+                <button type="submit" class="btn btn-danger btn-lg" [disabled]="buyForm.invalid" (click)="buyRequest()">Submit</button>
+              </div>
+            </div>
+          </div>
+          <div class="row" *ngIf="requestId">
+            <div class="col-sm-12">
+              <div class="alert alert-success">
+                Request Created Succesfully
+                <br>
+                Request Id:{{requestId}}
               </div>
             </div>
           </div>
@@ -387,7 +396,16 @@
           <div class="row">
             <div class="col-sm-12">
               <div class="form-submit">
-                <button type="submit" class="btn btn-danger btn-lg" [disabled]="redeemForm.invalid" (click)="redeemRequest()" data-dismiss="modal">Submit</button>
+                <button type="submit" class="btn btn-danger btn-lg" [disabled]="redeemForm.invalid" (click)="redeemRequest()">Submit</button>
+              </div>
+            </div>
+          </div>
+          <div class="row" *ngIf="requestId">
+            <div class="col-sm-12">
+              <div class="alert alert-success">
+                Request Created Succesfully
+                <br>
+                Request Id:{{requestId}}
               </div>
             </div>
           </div>
