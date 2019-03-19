@@ -298,7 +298,7 @@
             <!-- <div class="col-sm-9">
               <p>Pay to ABC Bank, Singapore . SWIFT No xxxxxxxxxxxx Account Noaaaaaaaaaaaa Account Name: Ellypin EAD account</p>
             </div> -->
-            <div class="col-sm-12">
+            <div class="col-sm-12" *ngIf="!requestCreated">
               <div class="form-submit">
                 <button type="submit" class="btn btn-danger btn-lg" [disabled]="buyForm.invalid" (click)="buyRequest()">Submit</button>
               </div>
@@ -393,7 +393,7 @@
               </div>
             </div>
           </div>
-          <div class="row">
+          <div class="row" *ngIf="!requestCreated">
             <div class="col-sm-12">
               <div class="form-submit">
                 <button type="submit" class="btn btn-danger btn-lg" [disabled]="redeemForm.invalid" (click)="redeemRequest()">Submit</button>

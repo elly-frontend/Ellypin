@@ -63,6 +63,7 @@ export class CustomerComponent implements OnInit {
   public totalRedeem:any;
   public netToken:any;
   public requestId:any;
+  public requestCreated=false;
 
   constructor( public contractService:ContractService,public dataService:DataService, public fb:FormBuilder ) {
     this.buyForm = fb.group({
@@ -284,6 +285,7 @@ export class CustomerComponent implements OnInit {
   }
 
   closeModal(){
+    this.requestCreated = false;
     this.redeemForm.reset();
     this.redeemTotal = '';
     this.buyForm.reset();
@@ -336,6 +338,7 @@ export class CustomerComponent implements OnInit {
         (data:any) => {
           // console.log(data);
           // this.buyAmount = "";
+          this.requestCreated = true;
           this.requestId = data;
           // swal({
           //   html:'Request Created Succesfully</br>Request Id:'+data
@@ -390,6 +393,7 @@ export class CustomerComponent implements OnInit {
         this.dataService.redeemToken(admin_message,custodian_message).subscribe(
           (data:any) => {
             // console.log(data);
+            this.requestCreated = true;
             this.burnToken(this.redeemForm.value.redeemToken,data)
           },
           error => {
