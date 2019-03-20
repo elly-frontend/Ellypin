@@ -284,12 +284,13 @@ export class CustomerComponent implements OnInit {
     } 
   }
 
-  closeModal(){
+  closeModal(popupId){
+    $(`#${popupId}`).modal('hide');
     this.requestCreated = false;
+    this.requestId='';
     this.redeemForm.reset();
     this.redeemTotal = '';
     this.buyForm.reset();
-    this.requestId='';
     this.buyAmount='';
   }
 
