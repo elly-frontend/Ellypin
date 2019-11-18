@@ -20,7 +20,7 @@ export class DataService {;
         _id:_id,
         custodianMessage: custodian_payload,
         adminMessage: admin_payload
-      }  
+      }
     }else{
       Data = {
         custodianMessage: custodian_payload,
@@ -38,7 +38,7 @@ export class DataService {;
     return this.httpClient.post('https://webhooks.mongodb-stitch.com/api/client/v2.0/app/ellypin-wysik/service/http/incoming_webhook/sendMessage',Data)
   }
 
-  public getMessages(role){ 
+  public getMessages(role){
     return this.httpClient.get(`https://webhooks.mongodb-stitch.com/api/client/v2.0/app/ellypin-wysik/service/http/incoming_webhook/getMessage?role=${role}&messageType=receive`)
   }
 
@@ -56,6 +56,24 @@ export class DataService {;
 
   public saveFees(payload){
     return this.httpClient.post('https://webhooks.mongodb-stitch.com/api/client/v2.0/app/ellypin-wysik/service/http/incoming_webhook/post_metadata',payload)
+  }
+
+  /* registration API */
+  registerUser(data){
+    return this.httpClient.post<any>('https://webhooks.mongodb-stitch.com/api/client/v2.0/app/ellypin-wysik/service/http/incoming_webhook/adduser' , data, {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    });
+  }
+
+  /* Login API */
+  loginUser(data){
+    return this.httpClient.post<any>('https://webhooks.mongodb-stitch.com/api/client/v2.0/app/ellypin-wysik/service/http/incoming_webhook/loginUser' , data, {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    });
   }
 
 }
