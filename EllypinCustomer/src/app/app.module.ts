@@ -25,6 +25,8 @@ import { AboutComponent } from './about/about.component';
 import { ProductsComponent } from './products/products.component';
 import { FaqComponent } from './faq/faq.component';
 import { WhitepaperComponent } from './whitepaper/whitepaper.component';
+import { LoginComponent } from './login/login.component';
+import { RegisterComponent } from './register/register.component';
 
 @NgModule({
   declarations: [
@@ -42,7 +44,9 @@ import { WhitepaperComponent } from './whitepaper/whitepaper.component';
     AboutComponent,
     ProductsComponent,
     FaqComponent,
-    WhitepaperComponent
+    WhitepaperComponent,
+    LoginComponent,
+    RegisterComponent
   ],
   imports: [
     BrowserModule,

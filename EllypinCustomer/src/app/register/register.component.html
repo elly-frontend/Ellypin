@@ -1,0 +1,114 @@
+<div class="register-wrapper">
+  <div class="container">
+    <div class="card"></div>
+    <div class="card">
+      <h1 class="title">Register</h1>
+      <form (ngSubmit)="onRegister(registerForm)" #registerForm="ngForm" autocomplete="off">
+        <div class="input-container">
+          <select id="salutation" #salutation ="ngModel" ngModel name="salutation" required>
+            <option> Mr </option>
+            <option> Miss </option>
+            <option> Mrs </option>
+          </select>
+          <label for="salutation">Salutation</label>
+          <div class="bar"></div>
+          <span class="error" *ngIf="salutation.touched && salutation.invalid"> Salutation is Required </span>
+        </div>
+        <div class="input-container">
+          <input type="text" id="fName" #fName ="ngModel" ngModel name="fName" required="required" />
+          <label for="fName">First Name</label>
+          <div class="bar"></div>
+          <span class="error" *ngIf="fName.touched && fName.invalid"> First Name is Required </span>
+        </div>
+        <div class="input-container">
+          <input type="text" id="lName" #lName ="ngModel" ngModel name="lName" required="required" />
+          <label for="lName">Family Name</label>
+          <div class="bar"></div>
+          <span class="error" *ngIf="lName.touched && lName.invalid"> Family Name is Required </span>
+        </div>
+        <div class="input-container">
+          <input type="text" id="nationality" #nationality ="ngModel" ngModel name="nationality" required="required" />
+          <label for="nationality">Nationality</label>
+          <div class="bar"></div>
+          <span class="error" *ngIf="nationality.touched && nationality.invalid"> Nationality is Required </span>
+        </div>
+        <div class="input-container">
+          <input type="text" id="idProof" #idProof ="ngModel" ngModel name="idProof" required="required" />
+          <label for="idProof">ID Number/Documents</label>
+          <div class="bar"></div>
+          <span class="error" *ngIf="idProof.touched && idProof.invalid"> ID Proof is Required </span>
+        </div>
+        <div class="input-container">
+          <input type="text" id="address" #address ="ngModel" ngModel name="address" required="required" />
+          <label for="address">Address</label>
+          <div class="bar"></div>
+          <span class="error" *ngIf="address.touched && address.invalid"> Address is Required </span>
+        </div>
+        <div class="input-container">
+          <input type="email" id="email" #email ="ngModel" ngModel name="email" required="required" email/>
+          <label for="email">Email</label>
+          <div class="bar"></div>
+          <span class="error" *ngIf="email.touched && email.invalid"> Email Address is Required </span>
+        </div>
+        <div class="input-container">
+          <input type="number" id="telephone" #telephone ="ngModel" ngModel name="telephone" required="required" />
+          <label for="telephone">Telephone</label>
+          <div class="bar"></div>
+          <span class="error" *ngIf="telephone.touched && telephone.invalid"> Telephone is Required </span>
+        </div>
+        <div class="input-container">
+          <input type="text" id="social" #social ="ngModel" ngModel name="social" required="required" />
+          <label for="social">Telegram/Wechat/WhatsApp</label>
+          <div class="bar"></div>
+          <span class="error" *ngIf="social.touched && social.invalid"> Social is Required </span>
+        </div>
+        <div class="input-container">
+          <input type="text" id="walletAddress" #walletAddress ="ngModel" ngModel name="walletAddress" required="required" />
+          <label for="walletAddress">Wallet Public Address</label>
+          <div class="bar"></div>
+          <span class="error" *ngIf="walletAddress.touched && walletAddress.invalid"> Wallet Address is Required </span>
+        </div>
+        <div class="input-container">
+          <input type="text" id="ellypinID" #ellypinID ="ngModel" ngModel name="ellypinID" required="required" />
+          <label for="ellypinID">Ellypin ID</label>
+          <div class="bar"></div>
+          <span class="error" *ngIf="ellypinID.touched && ellypinID.invalid"> Ellypin ID is Required </span>
+        </div>
+        <div class="input-container">
+          <input type="password" id="password" #password ="ngModel" ngModel name="password" required="required" />
+          <label for="password">Password</label>
+          <div class="bar"></div>
+          <span class="error" *ngIf="password.touched && password.invalid"> Password is Required </span>
+        </div>
+        <div class="input-container">
+          <select id="kyc" required #kyc ="ngModel" ngModel name="kyc">
+            <option value="true"> Yes </option>
+            <option value="false"> No </option>
+          </select>
+          <label for="salutation">KYC</label>
+          <div class="bar"></div>
+          <span class="error" *ngIf="kyc.touched && kyc.invalid"> KYC is Required </span>
+        </div>
+        <div class="input-container">
+          <select id="category" #category ="ngModel" ngModel name="category" required>
+            <option> Finance Institution </option>
+            <option> Money Changer, remittance business </option>
+            <option> Business - commercial enterprise </option>
+            <option> Individual - checked </option>
+            <option> Individual - unchecked </option>
+          </select>
+          <label for="category">Category</label>
+          <div class="bar"></div>
+          <span class="error" *ngIf="category.touched && category.invalid"> Please Select a Category </span>
+        </div>
+
+        <div class="button-container">
+          <button [disabled]="!registerForm.valid">
+            <span *ngIf="!isProcessing">Register</span>
+            <span *ngIf="isProcessing"><i class="fa fa-spinner fa-spin"></i></span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

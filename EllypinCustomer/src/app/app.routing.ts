@@ -14,6 +14,8 @@ import { ProductsComponent } from './products/products.component';
 import { AboutComponent } from './about/about.component';
 import { ContactComponent } from './contact/contact.component';
 import { FaqComponent } from './faq/faq.component';
+import { RegisterComponent } from './register/register.component';
+import { LoginComponent } from './login/login.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent,  },
@@ -31,8 +33,9 @@ export const routes: Routes = [
     { path:'pom', component:PomComponent },
     { path:'customer', component:CustomerComponent }
   ]},
+  {path:'login', component:LoginComponent},
+  {path:'register', component:RegisterComponent},
   {path:'', redirectTo:'/', pathMatch:'full' },
   {path:'**', redirectTo:'/', pathMatch:'full'  }
-  ]; 
+  ];
   export const routing:ModuleWithProviders = RouterModule.forRoot(routes,{ useHash: true });
-  
