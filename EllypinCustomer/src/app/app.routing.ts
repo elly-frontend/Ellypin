@@ -16,12 +16,14 @@ import { ContactComponent } from './contact/contact.component';
 import { FaqComponent } from './faq/faq.component';
 import { RegisterComponent } from './register/register.component';
 import { LoginComponent } from './login/login.component';
+import { Custodian2Component } from './custodian2/custodian2.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent,  },
   // { path: 'service', component:ServiceComponent   },
   {path: 'admin', component:AdminComponent},
   {path:'custodian', component:CustodianComponent},
+  {path: 'secondCustodian', component:Custodian2Component},
   {path:'terms', component:TermsComponent},
   {path:'whitepaper', component:WhitepaperComponent},
   {path:'product', component:ProductsComponent},

@@ -144,9 +144,9 @@
                 </div>
                 <div class="col-sm-6 interact-link-wrapper">
                     <h3>Interact With Ellypin</h3>
-                    <a  (click)="openPopup('buy-pop')">Buy</a>
-                    <a  (click)="openPopup('redeem-pop')">Redeem</a>
-                    <a >Pod Faucet</a>
+                    <a class="pointer" (click)="openPopup('buy-pop')">Buy</a>
+                    <a class="pointer" (click)="openPopup('redeem-pop')">Redeem</a>
+                    <a class="pointer" (click)="openPopup('swap-contract-pop')">Swap Contract</a>
                 </div>
               </div>
             </div>
@@ -449,6 +449,113 @@
               <div class="form-submit">
                 <button type="submit" class="btn btn-danger btn-lg" data-dismiss="modal" [disabled]="transferForm.invalid" (click)="transferTokens()">Execute</button>
               </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="swap-contract-pop" data-backdrop="static" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-body">
+        <button type="button" class="close" data-dismiss="modal" (click)="closeModal('swap-contract-pop')">&times;</button>
+        <form action="" [formGroup]="swapForm">
+          <h3>Swap Contract</h3>
+          <div class="row">
+            <div class="col-sm-6 col-xs-12">
+              <div class="form-group">
+                <label>Redeem</label>
+                <div class="input-group">
+                  <input class="form-control" type="text" (keyup)="keySwap($event)" formControlName="swapToken" name="red-pod">
+                  <span class="input-group-addon">Pods</span>
+                </div>
+                <span *ngIf="swapForm.get('swapToken').invalid && swapForm.get('swapToken').touched" style="color:red;font-size: 11px">Enter tokens to swap</span>
+              </div>
+            </div>
+            <div class="col-sm-6 col-xs-12">
+              <div class="form-group">
+                <label>Swap Fee</label>
+                <input class="form-control" type="text" formControlName="swapFee" readonly name="red-fee">
+              </div>
+            </div>  
+            <div class="col-sm-12 col-xs-12">
+              <div class="form-group">
+                <label>Net to you</label>
+                <div class="input-group">
+                  <span class="input-group-addon"><i class="fa fa-usd" aria-hidden="true"></i></span>
+                  <input class="form-control" type="text" name="net-amnt" readonly [(ngModel)]="swapTotal" [ngModelOptions]="{standalone: true}" >
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-12 col-xs-12">
+              <div class="form-group">
+                <label>Email</label>
+                <div class="input-group swapEmail">
+                  <!-- <span class="input-group-addon"><i class="fa fa-usd" aria-hidden="true"></i></span> -->
+                  <input class="form-control" type="text" name="net-amnt" formControlName="swapEmail" >
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- <h3>Pay To</h3>
+          <div class="row"> 
+            <div class="col-sm-6 col-xs-12">
+              <div class="form-group">
+                <label>Receiving Bank Name and Address</label>
+                <input class="form-control" type="text" [formControl]="redeemBank" name="receive-bank-name">
+                <span *ngIf="redeemBank.invalid && redeemBank.touched" style="color:red;font-size: 11px">Enter valid bank name and address</span>
+              </div>
+            </div>
+            <div class="col-sm-3 col-xs-12">
+              <div class="form-group">
+                <label>Account Number</label>
+                <input class="form-control" type="text" [formControl]="redeemAccountNumber" name="acc-number">
+                <span *ngIf="redeemAccountNumber.invalid && redeemAccountNumber.touched" style="color:red;font-size: 11px">Enter valid bank number</span>
+              </div>
+            </div>
+            <div class="col-sm-3 col-xs-12">
+              <div class="form-group">
+                <label>Swift Code</label>
+                <input class="form-control" type="text" [formControl]="redeemSwiftCode" name="swift-code">
+                <span *ngIf="redeemSwiftCode.invalid && redeemSwiftCode.touched" style="color:red;font-size: 11px">Enter swift code</span>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-8 col-xs-12">
+              <div class="form-group">
+                <label>Beneficiary Name and Address</label>
+                <input class="form-control" type="text" [formControl]="redeemBeneficiary" name="ben-name-add">
+                <span *ngIf="redeemBeneficiary.invalid && redeemBeneficiary.touched" style="color:red;font-size: 11px">Enter swift code</span>
+              </div>
+            </div>
+            <div class="col-sm-4 col-xs-12">
+              <div class="form-group">
+                <label>Email</label>
+                <input class="form-control" type="email" [formControl]="redeemEmail" name="ben-email">
+                <span *ngIf="redeemEmail.invalid && redeemEmail.touched" style="color:red;font-size: 11px">Enter a valid email</span>
+              </div>
+            </div>
+          </div> -->
+          <div class="row" *ngIf="!requestCreated">
+            <div class="col-sm-12">
+              <div class="form-submit">
+                <button type="submit" class="btn btn-danger btn-lg" [disabled]="swapForm.invalid" (click)="swapRequest()">Submit</button>
+              </div>
+            </div>
+          </div>
+          <div class="row" *ngIf="requestId">
+            <div class="alert alert-success">
+                <p style="text-align:center">Swap Request Created Succesfully</p>
+                <p style="text-align:center">Request Id:{{requestId}}</p>
+                <p style="text-align:center">Please COPY this ID Number and include it in any correspondence with us
+                </p>
+                <div style="text-align:center">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="closeModal('swap-contract-pop')">OK</button>
+                </div>
             </div>
           </div>
         </form>

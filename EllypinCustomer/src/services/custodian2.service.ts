@@ -10,7 +10,7 @@ declare let window: any;
 let tokenAbi = require('../tokenContract.json');
 
 @Injectable()
-export class CustodianService {
+export class Custodian2Service {
   // clientPromise = StitchClientFactory.create('ifakebook-eqvwi');
   // client;
   // db;

@@ -8,6 +8,7 @@ declare let require: any;
 declare let window: any;
 
 let tokenAbi = require('../tokenContract.json');
+let pod2TokenAbi = require('../pod2_abi.json');
 
 @Injectable()
 export class ContractService {
@@ -19,18 +20,26 @@ export class ContractService {
   private _web3: any;
 
   private _tokenContract: any;
-  private _tokenContractAddress: string = "0x44128f17132ae9aac62ce8a47c0cf5465e225c97";
+  private _tokenContractAddress: string;
 
   constructor(private httpClient : HttpClient) {
 
     if (typeof window.web3 !== 'undefined') {
       // Use Mist/MetaMask's provider
       this._web3 = new Web3(window.web3.currentProvider);
-      
       window.ethereum.enable(); 
+      if(window.web3.currentProvider.networkVersion == 3){
+        this._tokenContractAddress = "0x44128f17132ae9aac62ce8a47c0cf5465e225c97";
+        this._tokenContract = this._web3.eth.contract(tokenAbi).at(this._tokenContractAddress);
+      }else{
+        if(window.web3.currentProvider.networkVersion == 4){
+          this._tokenContractAddress = "0x6091a88eEaA6387452F49a0776096953647953e1";
+          this._tokenContract = this._web3.eth.contract(pod2TokenAbi).at(this._tokenContractAddress);
+        }
+      }
+      
       // let account = this.getAccount();
       
-      this._tokenContract = this._web3.eth.contract(tokenAbi).at(this._tokenContractAddress);
       // if (this._web3.version.network !== '4') {
       //   alert('Please connect to the Rinkeby network');
       // }

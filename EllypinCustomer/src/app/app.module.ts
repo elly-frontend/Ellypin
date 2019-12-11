@@ -27,6 +27,8 @@ import { FaqComponent } from './faq/faq.component';
 import { WhitepaperComponent } from './whitepaper/whitepaper.component';
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
+import { Custodian2Component } from './custodian2/custodian2.component';
+import { Custodian2Service } from 'src/services/custodian2.service';
 
 @NgModule({
   declarations: [
@@ -46,7 +48,8 @@ import { RegisterComponent } from './register/register.component';
     FaqComponent,
     WhitepaperComponent,
     LoginComponent,
-    RegisterComponent
+    RegisterComponent,
+    Custodian2Component
   ],
   imports: [
     BrowserModule,
@@ -57,7 +60,7 @@ import { RegisterComponent } from './register/register.component';
     NgxPaginationModule,
     routing
   ],
-  providers: [DataService,ContractService, CustodianService],
+  providers: [DataService,ContractService, CustodianService, Custodian2Service],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

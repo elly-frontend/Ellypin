@@ -1,22 +1,22 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, AbstractControl, FormGroup, Validators } from '@angular/forms';
-import { CustodianService } from '../../services/custodian.service';
+import { FormGroup, AbstractControl, FormBuilder, Validators } from '@angular/forms';
+import { Custodian2Service } from 'src/services/custodian2.service';
 import { Message, Message_Type } from '../sharedData/message.interface';
 import adminPublicKey from '../sharedData/adminPublicKey';
 import adminPrivateKey from '../sharedData/adminPrivateKey';
-import custodianPrivateKey from '../sharedData/custodianPrivateKey';
-import custodianPublicKey from '../sharedData/custodianPublic';
+import custodian2PrivateKey from '../sharedData/custodian2PrivateKey';
 import custodian2PublicKey from '../sharedData/custodian2PublicKey';
+import custodianPublicKey from '../sharedData/custodianPublic';
 import swal from 'sweetalert2';
 import * as openpgp from 'openpgp';
 declare var $: any
 
 @Component({
-  selector: 'app-custodian',
-  templateUrl: './custodian.component.html',
-  styleUrls: ['./custodian.component.css']
+  selector: 'app-custodian2',
+  templateUrl: './custodian2.component.html',
+  styleUrls: ['./custodian2.component.css']
 })
-export class CustodianComponent implements OnInit {
+export class Custodian2Component implements OnInit {
 
   public loginForm: FormGroup;
   public email: AbstractControl;
@@ -52,7 +52,7 @@ export class CustodianComponent implements OnInit {
   public itemsPerPage: number = 5;
 
 
-  constructor(public fb: FormBuilder, public custodianService: CustodianService) {
+  constructor(public fb: FormBuilder, public custodianService: Custodian2Service) {
     this.loginForm = fb.group({
       'email': ['', Validators.compose([Validators.required, Validators.pattern(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)])],
       'password': ['', Validators.compose([Validators.required])]
@@ -74,7 +74,7 @@ export class CustodianComponent implements OnInit {
       let payload = {
         'loginId': this.loginForm.value.email,
         'loginPin': this.loginForm.value.password,
-        'role': 'CUSTODIAN'
+        'role': 'CUSTODIANTWO'
       }
       this.error = null;
       this.custodianService.login(payload).subscribe(
@@ -251,59 +251,26 @@ export class CustodianComponent implements OnInit {
   }
 
   public async getSwapMessages() {
-    this.custodianService.getSwapMessages('CUSTODIAN').subscribe(
+    this.custodianService.getSwapMessages('CUSTODIAN2').subscribe(
       async (data: any) => {
         // console.log('MESSAGEDATA:',data);
 
         if (data.length > 0) {
-          this.buyMessageArray = [];
-          this.redeemMessageArray = [];
           this.swapMessageArray = [];
           data.forEach(
             message => {
-              if (message.type == 'BUY') {
-                this.buyMessageArray.push(message);
-              }
-              else {
-                if (message.type == 'SWAP') {
-                  this.swapMessageArray.push(message);
-                }
-                else {
-                  this.redeemMessageArray.push(message)
-                }
+              if (message.type == 'SWAP') {
+                this.swapMessageArray.push(message);
               }
               // this.decrypt(data.message,'custodian');
             }
           )
         }
-        let indexBuy = 0, indexRedeem = 0;
-        this.buyMessageDisplay = [];
-        this.buyMessageArray.forEach(
-          async buyMsg => {
-
-            var buyObject = await this.decrypt(buyMsg.message, 'custodian');
-            buyObject['_id'] = buyMsg['_id'].$oid;
-            this.buyMessageDisplay.push(buyObject);
-            this.buyMessageDisplay[indexBuy]['counter'] = this.buyMessageArray[indexBuy]['counter'];
-            ++indexBuy;
-          }
-        )
-        this.redeemMessageDisplay = [];
-        this.redeemMessageArray.forEach(
-          async redeemMsg => {
-
-            var buyObject = await this.decrypt(redeemMsg.message, 'custodian');
-            buyObject['_id'] = redeemMsg['_id'].$oid;
-            this.redeemMessageDisplay.push(buyObject);
-            this.redeemMessageDisplay[indexRedeem]['counter'] = this.redeemMessageArray[indexRedeem]['counter'];
-            ++indexRedeem;
-          }
-        )
         let indexSwap = 0;
         this.swapMessageDisplay = [];
         this.swapMessageArray.forEach(
           async swapMsg => {
-            var swapObject = await this.decrypt(swapMsg.message, 'custodian');
+            var swapObject = await this.decrypt(swapMsg.message, 'custodian2');
             swapObject['_id'] = swapMsg['_id'].$oid;
             this.swapMessageDisplay.push(swapObject);
             this.swapMessageDisplay[indexSwap]['counter'] = this.swapMessageArray[indexSwap]['counter'];
@@ -346,100 +313,98 @@ export class CustodianComponent implements OnInit {
     this.swapObjectSet[Message_Type.SWAP_TOKEN_REQUEST] = this.swapObjectSet[Message_Type.SWAP_TOKEN_REQUEST] || {};
     this.swapObjectSet['serialNo'] = this.swapMessageArray[this.swapIndex]['counter'];
     this.swapObjectSet['totalToken'] = parseInt(this.swapObjectSet['swapFee']) + parseInt(this.swapObjectSet['swapToken']);
-    console.log(this.swapObjectSet);
-    
     // console.log('REdeemObject:', this.redeemObjectSet);
 
   }
 
-  public async updateBuyObject() {
-    // console.log('BUYOBJECT:',this.buyObjectSet);
-    if (this.buyObjectSet.SEND_TOKEN_REQUEST) {
-      if (this.buyObjectSet.totalToken) {
-        $('#buy-kyc').modal('hide');
-        this.buyObjectSet.SEND_TOKEN_REQUEST.custodianSet = true;
-      }
-    }
-    this.loading = true;
-    console.log('BUYOBJEECTSET:', this.buyObjectSet);
+  // public async updateBuyObject() {
+  //   // console.log('BUYOBJECT:',this.buyObjectSet);
+  //   if (this.buyObjectSet.SEND_TOKEN_REQUEST) {
+  //     if (this.buyObjectSet.totalToken) {
+  //       $('#buy-kyc').modal('hide');
+  //       this.buyObjectSet.SEND_TOKEN_REQUEST.custodianSet = true;
+  //     }
+  //   }
+  //   this.loading = true;
+  //   console.log('BUYOBJEECTSET:', this.buyObjectSet);
 
-    let admin_message: Message = {} as any;
-    admin_message.type = Message_Type.BUY;
-    admin_message.counter = this.buyObjectSet['serialNo'];
-    admin_message.publicKey = this.buyMessageArray[this.buyIndex].publicKey;
-    admin_message.message = await this.encrypt(JSON.stringify(this.buyObjectSet), 'admin');
-    let custodian_message: Message = {} as any;
-    custodian_message.type = Message_Type.BUY;
-    custodian_message.counter = this.buyObjectSet['serialNo'];
-    custodian_message.publicKey = this.buyMessageArray[this.buyIndex].publicKey;
-    custodian_message.message = await this.encrypt(JSON.stringify(this.buyObjectSet), 'custodian');
-    let _id = this.buyMessageArray[this.buyIndex]['_id'].$oid;
-    this.custodianService.sendMessage(admin_message, custodian_message, _id).subscribe(
-      (data: any) => {
-        // console.log(data);
+  //   let admin_message: Message = {} as any;
+  //   admin_message.type = Message_Type.BUY;
+  //   admin_message.counter = this.buyObjectSet['serialNo'];
+  //   admin_message.publicKey = this.buyMessageArray[this.buyIndex].publicKey;
+  //   admin_message.message = await this.encrypt(JSON.stringify(this.buyObjectSet), 'admin');
+  //   let custodian_message: Message = {} as any;
+  //   custodian_message.type = Message_Type.BUY;
+  //   custodian_message.counter = this.buyObjectSet['serialNo'];
+  //   custodian_message.publicKey = this.buyMessageArray[this.buyIndex].publicKey;
+  //   custodian_message.message = await this.encrypt(JSON.stringify(this.buyObjectSet), 'custodian');
+  //   let _id = this.buyMessageArray[this.buyIndex]['_id'].$oid;
+  //   this.custodianService.sendMessage(admin_message, custodian_message, _id).subscribe(
+  //     (data: any) => {
+  //       // console.log(data);
 
-        this.loading = false;
-        swal('Request Created Successfully');
-        this.buyIndex = null;
-        this.buyObjectSet = {};
-        this.getMessage();
-      },
-      error => {
-        console.log(error);
-        this.loading = false;
-      },
-      () => {
-      }
-    )    // this.dataService.sendMessage()
-  }
+  //       this.loading = false;
+  //       swal('Request Created Successfully');
+  //       this.buyIndex = null;
+  //       this.buyObjectSet = {};
+  //       this.getMessage();
+  //     },
+  //     error => {
+  //       console.log(error);
+  //       this.loading = false;
+  //     },
+  //     () => {
+  //     }
+  //   )    // this.dataService.sendMessage()
+  // }
 
-  public async updateRedeemObject() {
-    // console.log('REDEEMOBJECT:',this.redeemObjectSet);
-    if (this.redeemObjectSet.BURN_TOKEN_REQUEST) {
-      if (this.redeemObjectSet.totalToken) {
-        $('#redeem-kyc').modal('hide');
-        this.redeemObjectSet.BURN_TOKEN_REQUEST.custodianSet = true;
-      }
-    }
-    this.loading = true;
-    // console.log('Updated Redeem Object:',this.redeemObjectSet);
+  // public async updateRedeemObject() {
+  //   // console.log('REDEEMOBJECT:',this.redeemObjectSet);
+  //   if (this.redeemObjectSet.BURN_TOKEN_REQUEST) {
+  //     if (this.redeemObjectSet.totalToken) {
+  //       $('#redeem-kyc').modal('hide');
+  //       this.redeemObjectSet.BURN_TOKEN_REQUEST.custodianSet = true;
+  //     }
+  //   }
+  //   this.loading = true;
+  //   // console.log('Updated Redeem Object:',this.redeemObjectSet);
 
-    let admin_message: Message = {} as any;
-    admin_message.type = Message_Type.REDEEM;
-    admin_message.counter = this.redeemObjectSet['serialNo'];
-    admin_message.publicKey = this.redeemMessageArray[this.redeemIndex].publicKey;
-    admin_message.message = await this.encrypt(JSON.stringify(this.redeemObjectSet), 'admin');
-    let custodian_message: Message = {} as any;
-    custodian_message.type = Message_Type.REDEEM;
-    custodian_message.counter = this.redeemObjectSet['serialNo'];
-    custodian_message.publicKey = this.redeemMessageArray[this.redeemIndex].publicKey;
-    custodian_message.message = await this.encrypt(JSON.stringify(this.redeemObjectSet), 'custodian');
-    let _id = this.redeemMessageArray[this.redeemIndex]['_id'].$oid;
-    this.custodianService.sendMessage(admin_message, custodian_message, _id).subscribe(
-      (data: any) => {
-        // console.log(data);
+  //   let admin_message: Message = {} as any;
+  //   admin_message.type = Message_Type.REDEEM;
+  //   admin_message.counter = this.redeemObjectSet['serialNo'];
+  //   admin_message.publicKey = this.redeemMessageArray[this.redeemIndex].publicKey;
+  //   admin_message.message = await this.encrypt(JSON.stringify(this.redeemObjectSet), 'admin');
+  //   let custodian_message: Message = {} as any;
+  //   custodian_message.type = Message_Type.REDEEM;
+  //   custodian_message.counter = this.redeemObjectSet['serialNo'];
+  //   custodian_message.publicKey = this.redeemMessageArray[this.redeemIndex].publicKey;
+  //   custodian_message.message = await this.encrypt(JSON.stringify(this.redeemObjectSet), 'custodian');
+  //   let _id = this.redeemMessageArray[this.redeemIndex]['_id'].$oid;
+  //   this.custodianService.sendMessage(admin_message, custodian_message, _id).subscribe(
+  //     (data: any) => {
+  //       // console.log(data);
 
-        swal('Updated Successfully');
-        this.redeemIndex = null;
-        this.redeemObjectSet = {};
-        this.getMessage();
-        this.loading = false;
-      },
-      error => {
-        console.log(error);
-        this.loading = false;
-      },
-      () => {
-      }
-    )
+  //       swal('Updated Successfully');
+  //       this.redeemIndex = null;
+  //       this.redeemObjectSet = {};
+  //       this.getMessage();
+  //       this.loading = false;
+  //     },
+  //     error => {
+  //       console.log(error);
+  //       this.loading = false;
+  //     },
+  //     () => {
+  //     }
+  //   )
 
-  }
+  // }
 
   public async updateSwapObject() {
     if (this.swapObjectSet.SWAP_TOKEN_REQUEST) {
       if (this.swapObjectSet.totalToken) {
         $('#swap-kyc').modal('hide');
-        this.swapObjectSet.SWAP_TOKEN_REQUEST.custodianSet = true;
+        this.swapObjectSet.SWAP_TOKEN_REQUEST.secondCustodianSet = true;
       }
     }
     this.loading = true;
@@ -518,12 +483,12 @@ export class CustodianComponent implements OnInit {
   public async decrypt(encryptedData, role) {
 
     let privkey: any;
-    if (role == 'admin') {
-      privkey = adminPrivateKey.replace(/\r/, "").split("\n").join('\n');
-    }
-    else {
-      privkey = custodianPrivateKey.replace(/\r/, "").split("\n").join('\n');
-    }
+    // if (role == 'admin') {
+    //   privkey = adminPrivateKey.replace(/\r/, "").split("\n").join('\n');
+    // }
+    // else {
+      privkey = custodian2PrivateKey.replace(/\r/, "").split("\n").join('\n');
+    // }
 
     const passphrase = `
     super long and hard to guess secret
@@ -545,7 +510,6 @@ export class CustodianComponent implements OnInit {
     })
     return decryptedMsg;
   }
-
 
 
 }
