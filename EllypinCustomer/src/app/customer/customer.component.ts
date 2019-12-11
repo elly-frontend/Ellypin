@@ -462,7 +462,7 @@ export class CustomerComponent implements OnInit {
         message_object.type = Message_Type.SWAP;
         // delete message_object['email'];
         message_object[Message_Type.KYC] = "Not Approved";
-        message_object[Message_Type.SWAP_TOKEN_REQUEST] = null;
+        message_object[Message_Type.SWAP_TOKEN_REQUEST] = { requestTokenType : (this.currentProvider == 3) ? 'POD2' : 'POD1' };
         message_object[Message_Type.SWAP_TOKEN_ACKNOWLEDGE] = null;
         let admin_message = Object.assign({}, messageToSend);
         let custodian1_message = Object.assign({}, messageToSend);

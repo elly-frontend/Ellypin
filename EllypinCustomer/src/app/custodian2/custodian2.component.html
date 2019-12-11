@@ -500,32 +500,57 @@
           <p class="text-center">KYC is not approved</p>
         </form>
 
-        <form action=""
-          [hidden]="(swapObjectSet?.KYC != 'Approve') || (swapObjectSet?.SWAP_TOKEN_REQUEST?.custodianSet)">
-          <h3 class="text-center">Serial Number: <span>{{swapObjectSet.serialNo}}</span></h3>
-          <p class="text-center">Tokens not yet received by First Custodian</p>
-        </form>
+        <span *ngIf="swapObjectSet?.SWAP_TOKEN_REQUEST?.requestTokenType == 'POD2'">
+          <form action=""
+            [hidden]="(swapObjectSet?.KYC != 'Approve') || (swapObjectSet?.SWAP_TOKEN_REQUEST?.custodianSet)">
+            <h3 class="text-center">Serial Number: <span>{{swapObjectSet.serialNo}}</span></h3>
+            <p class="text-center">Tokens not yet received by Other Custodian</p>
+          </form>
 
-        <form action="" [hidden]="swapObjectSet?.SWAP_TOKEN_ACKNOWLEDGE || !(swapObjectSet?.SWAP_TOKEN_REQUEST?.custodianSet) || swapObjectSet?.KYC != 'Approve'">
-          <h3 class="text-center">Serial Number: <span>{{swapObjectSet.serialNo}}</span></h3>
-          <div class="row" *ngIf="swapObjectSet.SWAP_TOKEN_REQUEST">
-            <div class="col-sm-12">
-              <div class="form-group">
-                <label>Total Tokens &nbsp;&nbsp;</label>
-                <input type="text" [(ngModel)]="swapObjectSet.totalToken" [ngModelOptions]="{standalone: true}"
-                  [readonly]="swapObjectSet.KYC != 'Approve' || swapObjectSet.SWAP_TOKEN_REQUEST.secondCustodianSet"
-                  class="form-control"> </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-sm-12">
-              <div class="form-submit" [hidden]="swapObjectSet?.SWAP_TOKEN_REQUEST?.secondCustodianSet">
-                <button type="submit" class="btn btn-success btn-lg" (click)="updateSwapObject()">Update</button>
+          <form action=""
+            [hidden]="swapObjectSet?.SWAP_TOKEN_ACKNOWLEDGE || !(swapObjectSet?.SWAP_TOKEN_REQUEST?.custodianSet) || swapObjectSet?.KYC != 'Approve'">
+            <h3 class="text-center">Serial Number: <span>{{swapObjectSet.serialNo}}</span></h3>
+            <div class="row" *ngIf="swapObjectSet.SWAP_TOKEN_REQUEST">
+              <div class="col-sm-12">
+                <div class="form-group">
+                  <label>Total Tokens &nbsp;&nbsp;</label>
+                  <input type="text" [(ngModel)]="swapObjectSet.totalToken" [ngModelOptions]="{standalone: true}"
+                    [readonly]="swapObjectSet.KYC != 'Approve' || swapObjectSet.SWAP_TOKEN_REQUEST.secondCustodianSet"
+                    class="form-control"> </div>
               </div>
             </div>
-          </div>
-        </form>
+            <div class="row">
+              <div class="col-sm-12">
+                <div class="form-submit" [hidden]="swapObjectSet?.SWAP_TOKEN_REQUEST?.secondCustodianSet">
+                  <button type="submit" class="btn btn-success btn-lg" (click)="updateSwapObject()">Update</button>
+                </div>
+              </div>
+            </div>
+          </form>
+        </span>
 
+        <span *ngIf="swapObjectSet?.SWAP_TOKEN_REQUEST?.requestTokenType == 'POD1'">
+          <form action="" [hidden]="swapObjectSet?.SWAP_TOKEN_ACKNOWLEDGE|| swapObjectSet?.KYC != 'Approve'">
+            <h3 class="text-center">Serial Number: <span>{{swapObjectSet.serialNo}}</span></h3>
+            <div class="row" *ngIf="swapObjectSet.SWAP_TOKEN_REQUEST">
+              <div class="col-sm-12">
+                <div class="form-group">
+                  <label>Tokens Received &nbsp;&nbsp;</label>
+                  <input type="text" [(ngModel)]="swapObjectSet.totalToken" [ngModelOptions]="{standalone: true}"
+                    [readonly]="swapObjectSet.KYC != 'Approve' || swapObjectSet.SWAP_TOKEN_REQUEST.secondCustodianSet"
+                    class="form-control"> </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-12">
+                <div class="form-submit" [hidden]="swapObjectSet?.SWAP_TOKEN_REQUEST?.secondCustodianSet">
+                  <button type="submit" class="btn btn-success btn-lg" (click)="updateSwapObject()">Update</button>
+                </div>
+              </div>
+            </div>
+          </form>
+        </span>
+        
         <form action="" [hidden]="!swapObjectSet?.SWAP_TOKEN_ACKNOWLEDGE">
           <h3 class="text-center">Serial Number: <span>{{swapObjectSet.serialNo}}</span></h3>
           <div class="row">
