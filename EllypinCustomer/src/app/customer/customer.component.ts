@@ -8,6 +8,7 @@ import custodian2PublicKey from '../sharedData/custodian2PublicKey';
 import custodianPublicKey from '../sharedData/custodianPublic';
 import swal from 'sweetalert2';
 declare var $: any;
+declare let window: any;
 import * as openpgp from 'openpgp';
 import { DataService } from '../../services/data.service';
 
@@ -66,6 +67,10 @@ export class CustomerComponent implements OnInit {
   public netToken: any;
   public requestId: any;
   public requestCreated = false;
+  currentProvider: any;
+  public tokenToMint : any;
+  public tokenToRedeem : any;
+
 
   constructor(public contractService: ContractService, public dataService: DataService, public fb: FormBuilder) {
     this.buyForm = fb.group({
@@ -139,7 +144,7 @@ export class CustomerComponent implements OnInit {
       this.getAccounts();
       //  console.log('Printing every 5 seconds');
     }, 2000);
-
+    this.currentProvider = window.web3.currentProvider.networkVersion;
   }
 
   // @HostListener('click', ['$event'])
@@ -192,20 +197,30 @@ export class CustomerComponent implements OnInit {
       }
     )
 
-    await this.contractService.getTotalBurn().then(
-      (burn: any) => {
-        this.totalBurn = burn.c[0];
-      }
-    )
+    // await this.contractService.getTotalBurn().then(
+    //   (burn: any) => {
+    //     this.totalBurn = burn.c[0];
+    //   }
+    // )
 
-    await this.contractService.getUserBalance('0xbd49F20F816C8ff831832F20fF0509A6176F9902').then(
-      (redeem: any) => {
-        this.totalRedeem = parseInt(redeem.c[0]) + parseInt(this.totalBurn);
-        this.netToken = parseInt(this.totalSupply) + parseInt(this.totalBurn);
-      }
-    )
+    // await this.contractService.getUserBalance('0xbd49F20F816C8ff831832F20fF0509A6176F9902').then(
+    //   (redeem: any) => {
+    //     this.totalRedeem = parseInt(redeem.c[0]) + parseInt(this.totalBurn);
+    //     this.netToken = parseInt(this.totalSupply) + parseInt(this.totalBurn);
+    //   }
+    // )
 
-    this.contractDetails['contractAddress'] = "0x44128f17132ae9aac62ce8a47c0cf5465e225c97";
+    if(this.currentProvider == 3){
+      this.contractDetails['contractAddress'] = "0x44128f17132ae9aac62ce8a47c0cf5465e225c97";
+      this.tokenToMint = 'Pod2';
+      this.tokenToRedeem = 'Pod1'; 
+    }
+
+    if(this.currentProvider == 4){
+      this.contractDetails['contractAddress'] = "0xe12fFbfa5FF156A195b9e52B9D39091253f8DecC";
+      this.tokenToMint = 'Pod1';
+      this.tokenToRedeem = 'Pod2';
+    }
   }
 
   getBalance() {

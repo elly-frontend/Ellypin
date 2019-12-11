@@ -9,7 +9,8 @@ import custodian2PublicKey from '../sharedData/custodian2PublicKey';
 import custodianPublicKey from '../sharedData/custodianPublic';
 import swal from 'sweetalert2';
 import * as openpgp from 'openpgp';
-declare var $: any
+declare var $: any;
+declare let window: any;
 
 @Component({
   selector: 'app-custodian2',
@@ -50,6 +51,7 @@ export class Custodian2Component implements OnInit {
   public totalRedeem: any;
   public netToken: any;
   public itemsPerPage: number = 5;
+  currentProvider: number;
 
 
   constructor(public fb: FormBuilder, public custodianService: Custodian2Service) {
@@ -65,7 +67,7 @@ export class Custodian2Component implements OnInit {
   ngOnInit() {
     $('#login-pop').modal('show');
     this.getCustomerData();
-
+    this.currentProvider = window.web3.currentProvider.networkVersion;
   }
 
   public async loginSubmit() {
@@ -166,22 +168,22 @@ export class Custodian2Component implements OnInit {
       }
     )
 
-    await this.custodianService.getTotalBurn().then(
-      (burn: any) => {
-        // console.log('Burn:',burn);
+    // await this.custodianService.getTotalBurn().then(
+    //   (burn: any) => {
+    //     // console.log('Burn:',burn);
 
-        this.totalBurn = burn.c[0];
-      }
-    )
+    //     this.totalBurn = burn.c[0];
+    //   }
+    // )
 
-    await this.custodianService.getUserBalance('0xbd49F20F816C8ff831832F20fF0509A6176F9902').then(
-      (redeem: any) => {
-        // console.log('Redeem:',redeem);
+    // await this.custodianService.getUserBalance('0xbd49F20F816C8ff831832F20fF0509A6176F9902').then(
+    //   (redeem: any) => {
+    //     // console.log('Redeem:',redeem);
 
-        this.totalRedeem = parseInt(redeem.c[0]) + parseInt(this.totalBurn);
-        this.netToken = parseInt(this.totalSupply) + parseInt(this.totalBurn);
-      }
-    )
+    //     this.totalRedeem = parseInt(redeem.c[0]) + parseInt(this.totalBurn);
+    //     this.netToken = parseInt(this.totalSupply) + parseInt(this.totalBurn);
+    //   }
+    // )
 
     await this.custodianService.getFees().then(
       (data: any) => {
@@ -194,7 +196,13 @@ export class Custodian2Component implements OnInit {
         }
       )
 
-    this.contractDetails['contractAddress'] = "0x44128f17132ae9aac62ce8a47c0cf5465e225c97";
+      if(this.currentProvider == 3){
+        this.contractDetails['contractAddress'] = "0x44128f17132ae9aac62ce8a47c0cf5465e225c97";
+      }
+  
+      if(this.currentProvider == 4){
+        this.contractDetails['contractAddress'] = "0xe12fFbfa5FF156A195b9e52B9D39091253f8DecC";
+      }
   }
 
 
@@ -312,7 +320,7 @@ export class Custodian2Component implements OnInit {
     this.swapObjectSet = this.swapMessageDisplay[this.swapIndex];
     this.swapObjectSet[Message_Type.SWAP_TOKEN_REQUEST] = this.swapObjectSet[Message_Type.SWAP_TOKEN_REQUEST] || {};
     this.swapObjectSet['serialNo'] = this.swapMessageArray[this.swapIndex]['counter'];
-    this.swapObjectSet['totalToken'] = parseInt(this.swapObjectSet['swapFee']) + parseInt(this.swapObjectSet['swapToken']);
+    this.swapObjectSet['totalToken'] = this.swapObjectSet['totalToken'] ? this.swapObjectSet['totalToken'] : Math.abs(parseInt(this.swapObjectSet['swapFee']) - parseInt(this.swapObjectSet['swapToken']));
     // console.log('REdeemObject:', this.redeemObjectSet);
 
   }

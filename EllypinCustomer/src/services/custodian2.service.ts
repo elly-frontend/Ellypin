@@ -7,7 +7,7 @@ import * as Web3 from 'web3';
 declare let require: any;
 declare let window: any;
 
-let tokenAbi = require('../tokenContract.json');
+let tokenAbi = require('../pod2_abi.json');
 
 @Injectable()
 export class Custodian2Service {
@@ -19,7 +19,7 @@ export class Custodian2Service {
   private _web3: any;
 
   private _tokenContract: any;
-  private _tokenContractAddress: string = "0x44128f17132ae9aac62ce8a47c0cf5465e225c97";
+  private _tokenContractAddress: string = "0xe12fFbfa5FF156A195b9e52B9D39091253f8DecC";;
 
   constructor(private httpClient : HttpClient) {
   //   this.clientPromise.then(_client => {

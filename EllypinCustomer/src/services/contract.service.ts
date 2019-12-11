@@ -33,7 +33,7 @@ export class ContractService {
         this._tokenContract = this._web3.eth.contract(tokenAbi).at(this._tokenContractAddress);
       }else{
         if(window.web3.currentProvider.networkVersion == 4){
-          this._tokenContractAddress = "0x6091a88eEaA6387452F49a0776096953647953e1";
+          this._tokenContractAddress = "0xe12fFbfa5FF156A195b9e52B9D39091253f8DecC";
           this._tokenContract = this._web3.eth.contract(pod2TokenAbi).at(this._tokenContractAddress);
         }
       }

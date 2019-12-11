@@ -467,10 +467,10 @@
           <div class="row">
             <div class="col-sm-6 col-xs-12">
               <div class="form-group">
-                <label>Redeem</label>
+                <label>Swap</label>
                 <div class="input-group">
                   <input class="form-control" type="text" (keyup)="keySwap($event)" formControlName="swapToken" name="red-pod">
-                  <span class="input-group-addon">Pods</span>
+                  <span class="input-group-addon">{{tokenToRedeem}}</span>
                 </div>
                 <span *ngIf="swapForm.get('swapToken').invalid && swapForm.get('swapToken').touched" style="color:red;font-size: 11px">Enter tokens to swap</span>
               </div>
@@ -485,8 +485,10 @@
               <div class="form-group">
                 <label>Net to you</label>
                 <div class="input-group">
-                  <span class="input-group-addon"><i class="fa fa-usd" aria-hidden="true"></i></span>
+                  <!-- <span class="input-group-addon"><i class="fa fa-usd" aria-hidden="true"></i></span> -->
                   <input class="form-control" type="text" name="net-amnt" readonly [(ngModel)]="swapTotal" [ngModelOptions]="{standalone: true}" >
+                  <span class="input-group-addon">{{tokenToMint}}</span>
+
                 </div>
               </div>
             </div>

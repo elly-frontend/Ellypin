@@ -197,18 +197,18 @@ export class AdminComponent implements OnInit {
       }
     )
 
-    await this.contractService.getTotalBurn().then(
-      (burn: any) => {
-        this.totalBurn = burn.c[0];
-      }
-    )
+    // await this.contractService.getTotalBurn().then(
+    //   (burn: any) => {
+    //     this.totalBurn = burn.c[0];
+    //   }
+    // )
 
-    await this.contractService.getUserBalance('0xbd49F20F816C8ff831832F20fF0509A6176F9902').then(
-      (redeem: any) => {
-        this.totalRedeem = parseInt(redeem.c[0]) + parseInt(this.totalBurn);
-        this.netToken = parseInt(this.totalSupply) + parseInt(this.totalBurn);
-      }
-    )
+    // await this.contractService.getUserBalance('0xbd49F20F816C8ff831832F20fF0509A6176F9902').then(
+    //   (redeem: any) => {
+    //     this.totalRedeem = parseInt(redeem.c[0]) + parseInt(this.totalBurn);
+    //     this.netToken = parseInt(this.totalSupply) + parseInt(this.totalBurn);
+    //   }
+    // )
 
     await this.contractService.getFees().then(
       (data: any) => {
@@ -221,7 +221,13 @@ export class AdminComponent implements OnInit {
         }
       )
 
-    this.contractDetails['contractAddress'] = "0x44128f17132ae9aac62ce8a47c0cf5465e225c97";
+      if(this.currentProvider == 3){
+        this.contractDetails['contractAddress'] = "0x44128f17132ae9aac62ce8a47c0cf5465e225c97";
+      }
+  
+      if(this.currentProvider == 4){
+        this.contractDetails['contractAddress'] = "0xe12fFbfa5FF156A195b9e52B9D39091253f8DecC";
+      }
   }
 
 
@@ -635,8 +641,10 @@ export class AdminComponent implements OnInit {
   mintSwapToken(){
     if (this.swapObjectSet.SWAP_TOKEN_ACKNOWLEDGE != true) {
       this.swapObjectSet.SWAP_TOKEN_ACKNOWLEDGE = true;
-      this.contractService.mintToken(this.swapObjectSet.publicKey, (parseInt(this.swapObjectSet.totalToken) - parseInt(this.swapObjectSet.buyFee)));
-      this.updateBuyMessage();
+      console.log(parseInt(this.swapObjectSet.totalToken));
+      
+      this.contractService.mintToken(this.swapObjectSet.publicKey, (parseInt(this.swapObjectSet.totalToken)));
+      this.updateSwapObject();
     }
   }
 
@@ -656,12 +664,18 @@ export class AdminComponent implements OnInit {
       this.swapObjectSet.SWAP_TOKEN_REQUEST.tokenBurned = true;
       //console.log('REDEEMOBJECT',this.swapObjectSet);
       $('#swap-kyc').modal('hide');
-      console.log(this.swapObjectSet);
+      // console.log(this.swapObjectSet);
       
-      // this.contractService.burnTokenFrom(this.swapObjectSet.publicKey, (parseInt(this.swapObjectSet.totalToken) - parseInt(this.swapObjectSet.swapFee))).then(data => {
-      //   this.updateSwapObject();
-      // })
+      // console.log(this.swapObjectSet.publicKey, (parseInt(this.swapObjectSet.totalToken) - parseInt(this.swapObjectSet.swapFee)));
+      
+      this.contractService.burnTokenFrom(this.swapObjectSet.publicKey, (parseInt(this.swapObjectSet.totalToken))).then(data => {
+        this.updateSwapObject();
+      })
     }
+  }
+
+  testPod2Mint(){
+    this.contractService.mintToken('0x06eb21742e5462c065272363aa272428a113a79a', 4);
   }
 
 

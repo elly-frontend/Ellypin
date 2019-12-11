@@ -333,7 +333,7 @@
 
       <div class="row redeem-section">
         <div class="col-sm-2 col-xs-12">
-          <div class="opheading">
+          <div class="opheading" (click)="testPod2Mint()"> 
             <h2>SWAP</h2>
           </div>
         </div>
@@ -644,7 +644,12 @@
           </div>
         </form>
 
-        <form action="" class="form-inline" [hidden]="swapObjectSet.SWAP_TOKEN_REQUEST?.tokenBurned || !swapObjectSet?.SWAP_TOKEN_REQUEST?.custodianSet || swapObjectSet?.SWAP_TOKEN_ACKNOWLEDGE || (currentProvider == 4)">
+        <form action="" class="form-inline" [hidden]="(!swapObjectSet?.SWAP_TOKEN_ACKNOWLEDGE) || (currentProvider == 3)">
+          <h3 class="text-center">Serial Number:  <span>{{swapObjectSet.serialNo}}</span></h3>
+          <p class="text-center">Tokens has been swapped</p>
+        </form>
+
+        <form action="" class="form-inline" [hidden]="swapObjectSet.SWAP_TOKEN_REQUEST?.tokenBurned || !swapObjectSet?.SWAP_TOKEN_REQUEST?.custodianSet || (currentProvider == 4)">
           <h3 class="text-center">Serial Number:  <span>{{swapObjectSet.serialNo}}</span></h3>
           <div class="row">
             <div class="col-sm-12">
@@ -655,8 +660,7 @@
           </div>
         </form>
 
-
-        <form action="" class="form-inline" [hidden]="(!redeemObjectSet.BURN_TOKEN_ACKNOWLEDGE)">
+        <form action="" class="form-inline" [hidden]="(!swapObjectSet.SWAP_TOKEN_REQUEST?.tokenBurned) || (currentProvider == 4)">
           <h3 class="text-center">Serial Number:  <span>{{redeemObjectSet.serialNo}}</span></h3>
           <div class="row">
             <div class="col-sm-12">
