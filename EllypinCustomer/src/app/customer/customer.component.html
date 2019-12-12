@@ -75,7 +75,7 @@
                     <table class="table table-bordered text-center">
                       <thead>
                         <tr>
-                          <th colspan="2">Fees</th>
+                          <th colspan="2">{{tokenToRedeem}} Fees</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -100,7 +100,7 @@
                   </div>
                 </div>
                 <div class="col-sm-4 asset-wrapper">
-                  <h4>Asset Balance</h4>
+                  <h4>{{tokenToRedeem}} Asset Balance</h4>
                   <div class="asset-inner">{{totalSupply}}</div>
                 </div>
                 <div class="col-sm-4 podbal-wrapper">
@@ -108,7 +108,7 @@
                     <table class="table table-bordered text-center">
                       <thead>
                         <tr>
-                          <th colspan="2">Pod Balance</th>
+                          <th colspan="2">{{tokenToRedeem}} Balance</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -144,9 +144,12 @@
                 </div>
                 <div class="col-sm-6 interact-link-wrapper">
                     <h3>Interact With Ellypin</h3>
-                    <a class="pointer" (click)="openPopup('buy-pop')">Buy</a>
-                    <a class="pointer" (click)="openPopup('redeem-pop')">Redeem</a>
-                    <a class="pointer" (click)="openPopup('swap-contract-pop')">Swap Contract</a>
+                    <a class="pointer" (click)="openPopup('buy-pop', 'Pod1')">Buy POD1</a>
+                    <a class="pointer" (click)="openPopup('redeem-pop', 'Pod1')">Redeem POD1</a>
+                    <a class="pointer" (click)="openPopup('swap-contract-pop', 'Pod1')">POD1 Swap Contract</a>
+                    <a class="pointer" (click)="openPopup('buy-pop', 'Pod2')">Buy POD2</a>
+                    <a class="pointer" (click)="openPopup('redeem-pop', 'Pod2')">Redeem POD2</a>
+                    <a class="pointer" (click)="openPopup('swap-contract-pop', 'Pod2')">POD2 Swap Contract</a>
                 </div>
               </div>
             </div>

@@ -30,12 +30,37 @@ export class DataService {;
     return this.httpClient.post('https://webhooks.mongodb-stitch.com/api/client/v2.0/app/ellypin-wysik/service/http/incoming_webhook/sendMessage',Data)
   }
 
+  public sendMessagePod2(admin_payload:any, custodian_payload:any, _id?:any){
+    let Data:any;
+    if(_id){
+      Data = {
+        _id:_id,
+        custodianMessage: custodian_payload,
+        adminMessage: admin_payload
+      }
+    }else{
+      Data = {
+        custodianMessage: custodian_payload,
+        adminMessage: admin_payload
+      }
+    }
+    return this.httpClient.post('https://webhooks.mongodb-stitch.com/api/client/v2.0/app/ellypin-wysik/service/http/incoming_webhook/pod2Api',Data)
+  }
+
   public redeemToken(admin_payload, custodian_payload){
     let Data = {
       custodianMessage: custodian_payload,
       adminMessage: admin_payload
     }
     return this.httpClient.post('https://webhooks.mongodb-stitch.com/api/client/v2.0/app/ellypin-wysik/service/http/incoming_webhook/sendMessage',Data)
+  }
+
+  public redeemTokenPod2(admin_payload, custodian_payload){
+    let Data = {
+      custodianMessage: custodian_payload,
+      adminMessage: admin_payload
+    }
+    return this.httpClient.post('https://webhooks.mongodb-stitch.com/api/client/v2.0/app/ellypin-wysik/service/http/incoming_webhook/pod2Api',Data)
   }
 
   public swapToken(admin_payload, custodian1_payload, custodian2_payload, _id?:any){

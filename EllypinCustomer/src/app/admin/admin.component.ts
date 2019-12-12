@@ -387,6 +387,7 @@ export class AdminComponent implements OnInit {
             ++indexSwap;
           }
         )
+        
       },
       error => {
         console.log(error);
@@ -674,8 +675,13 @@ export class AdminComponent implements OnInit {
     }
   }
 
-  testPod2Mint(){
-    this.contractService.mintToken('0x06eb21742e5462c065272363aa272428a113a79a', 4);
+  // testPod2Mint(){
+  //   this.contractService.mintToken('0x06eb21742e5462c065272363aa272428a113a79a', 4);
+  // }
+
+  showBuy(){
+    // console.log('BUYARRAY:', this.buyMessageArray);
+    //     console.log('BUYDISPLAY:', this.buyMessageDisplay);
   }
 
 

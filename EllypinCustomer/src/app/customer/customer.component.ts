@@ -257,11 +257,21 @@ export class CustomerComponent implements OnInit {
     )
   }
 
-  openPopup(popupId) {
+  openPopup(popupId, tokenType) {
     // console.log('POPID:',popupId);
 
     if (this.ethereumAccount) {
-      $(`#${popupId}`).modal('show');
+      if(tokenType == this.tokenToRedeem){
+        $(`#${popupId}`).modal('show');
+      }
+      else{
+        if(tokenType == 'Pod1'){
+          swal('Switch to Ropsten Network');
+        }
+        else{
+          swal('Switch to Rinkeby Network');
+        }
+      }
     } else {
       swal('Login to Metamask & connect to our application');
     }
@@ -352,7 +362,7 @@ export class CustomerComponent implements OnInit {
       message_object.publicKey = sender;
       message_object.type = Message_Type.BUY;
       message_object.KYC = "Not Approved";
-      message_object[Message_Type.SEND_TOKEN_REQUEST] = null;
+      message_object[Message_Type.SEND_TOKEN_REQUEST] = (this.currentProvider == 4) ? {requestType : 'POD2'} : null;
       message_object[Message_Type.SEND_TOKEN_ACKNOWLEDGE] = null;
 
 
@@ -361,30 +371,56 @@ export class CustomerComponent implements OnInit {
       let admin_message = Object.assign({}, messageToSend);
       let custodian_message = Object.assign({}, messageToSend);
       admin_message.message = await this.encrypt(JSON.stringify(message_object), 'admin');
-      custodian_message.message = await this.encrypt(JSON.stringify(message_object), 'custodian');
       // console.log('ADmin:',admin_message,'Custodian:',custodian_message);
 
       this.loading = true;
-      let a = 5;
-      this.dataService.sendMessage(admin_message, custodian_message).subscribe(
-        (data: any) => {
-          // console.log(data);
-          // this.buyAmount = "";
-          this.requestCreated = true;
-          this.requestId = data;
-          // swal({
-          //   html:'Request Created Succesfully</br>Request Id:'+data
-          // });
-          // this.buyForm.reset();
-        },
-        error => {
-          console.log(error);
-          this.loading = false;
-        },
-        () => {
-          this.loading = false;
-        }
-      )
+      // let a = 5;
+
+      if((this.currentProvider == 3)){
+        custodian_message.message = await this.encrypt(JSON.stringify(message_object), 'custodian');
+        this.dataService.sendMessage(admin_message, custodian_message).subscribe(
+          (data: any) => {
+            // console.log(data);
+            // this.buyAmount = "";
+            this.requestCreated = true;
+            this.requestId = data;
+            // swal({
+            //   html:'Request Created Succesfully</br>Request Id:'+data
+            // });
+            // this.buyForm.reset();
+          },
+          error => {
+            console.log(error);
+            this.loading = false;
+          },
+          () => {
+            this.loading = false;
+          }
+        )
+      }
+      else{
+        custodian_message.message = await this.encrypt(JSON.stringify(message_object), 'custodian2');
+        this.dataService.sendMessagePod2(admin_message, custodian_message).subscribe(
+          (data: any) => {
+            // console.log(data);
+            // this.buyAmount = "";
+            this.requestCreated = true;
+            this.requestId = data;
+            // swal({
+            //   html:'Request Created Succesfully</br>Request Id:'+data
+            // });
+            // this.buyForm.reset();
+          },
+          error => {
+            console.log(error);
+            this.loading = false;
+          },
+          () => {
+            this.loading = false;
+          }
+        )
+      }
+
     }
   }
 
@@ -412,30 +448,49 @@ export class CustomerComponent implements OnInit {
         message_object.type = Message_Type.REDEEM;
         delete message_object['email'];
         message_object[Message_Type.KYC] = "Not Approved";
-        message_object[Message_Type.BURN_TOKEN_REQUEST] = null;
+        message_object[Message_Type.BURN_TOKEN_REQUEST] = (this.currentProvider == 4) ? {requestType : 'POD2'} : null;;
         message_object[Message_Type.BURN_TOKEN_ACKNOWLEDGE] = null;
         let admin_message = Object.assign({}, messageToSend);
         let custodian_message = Object.assign({}, messageToSend);
         admin_message.message = [];
         admin_message.message.push(await this.encrypt(JSON.stringify(message_object), 'admin'));
         custodian_message.message = [];
-        custodian_message.message.push(await this.encrypt(JSON.stringify(message_object), 'custodian'));
-
+        
         this.loading = true;
-        this.dataService.redeemToken(admin_message, custodian_message).subscribe(
-          (data: any) => {
-            // console.log(data);
-            this.requestCreated = true;
-            this.burnToken(this.redeemForm.value.redeemToken, data)
-          },
-          error => {
-            console.log(error);
-            this.loading = false;
-          },
-          () => {
-            this.loading = false;
-          }
-        )
+        if(this.currentProvider == 3){
+          custodian_message.message.push(await this.encrypt(JSON.stringify(message_object), 'custodian'));
+          this.dataService.redeemToken(admin_message, custodian_message).subscribe(
+            (data: any) => {
+              // console.log(data);
+              this.requestCreated = true;
+              this.burnToken(this.redeemForm.value.redeemToken, data)
+            },
+            error => {
+              console.log(error);
+              this.loading = false;
+            },
+            () => {
+              this.loading = false;
+            }
+          )
+        }
+        else{
+          custodian_message.message.push(await this.encrypt(JSON.stringify(message_object), 'custodian2'));
+          this.dataService.redeemTokenPod2(admin_message, custodian_message).subscribe(
+            (data: any) => {
+              // console.log(data);
+              this.requestCreated = true;
+              this.burnToken(this.redeemForm.value.redeemToken, data)
+            },
+            error => {
+              console.log(error);
+              this.loading = false;
+            },
+            () => {
+              this.loading = false;
+            }
+          )
+        }
       }
     }
   }
