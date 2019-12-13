@@ -138,9 +138,10 @@
                 <div class="col-sm-6 external-link-wrapper">
                   <h3>External Transactions</h3>
                   <a (click)="openPopup('approve-pop')">Approve</a>
-                  <a  (click)="openPopup('transfer-pop')">Transfer</a>
+                  <a  (click)="openPopup('transfer-pop', 'Pod1')">Transfer POD1</a>
+                  <a  (click)="openPopup('transfer-pop', 'Pod2')">Transfer POD2</a>
                   <a >Market Place</a>
-                  <a >Link To Exchanges</a>
+                  <a (click)="checkTxn()">Link To Exchanges</a>
                 </div>
                 <div class="col-sm-6 interact-link-wrapper">
                     <h3>Interact With Ellypin</h3>

@@ -339,12 +339,12 @@ export class Custodian2Service {
     if(_id){
       Data = {
         _id:_id,
-        custodianMessage: custodian_payload,
+        custodian2Message: custodian_payload,
         adminMessage: admin_payload
       }  
     }else{
       Data = {
-        custodianMessage: custodian_payload,
+        custodian2Message: custodian_payload,
         adminMessage: admin_payload
       }
     }

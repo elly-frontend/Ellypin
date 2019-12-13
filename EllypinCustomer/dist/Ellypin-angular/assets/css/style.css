@@ -40,6 +40,10 @@ table {
   margin: 0 !important;
 }
 
+.pointer {
+  cursor : pointer;
+}
+
 /*=================== Scrollbar ==================*/
 
 ::-webkit-scrollbar-track {

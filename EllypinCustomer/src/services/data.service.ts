@@ -35,12 +35,12 @@ export class DataService {;
     if(_id){
       Data = {
         _id:_id,
-        custodianMessage: custodian_payload,
+        custodian2Message: custodian_payload,
         adminMessage: admin_payload
       }
     }else{
       Data = {
-        custodianMessage: custodian_payload,
+        custodian2Message: custodian_payload,
         adminMessage: admin_payload
       }
     }
@@ -57,7 +57,7 @@ export class DataService {;
 
   public redeemTokenPod2(admin_payload, custodian_payload){
     let Data = {
-      custodianMessage: custodian_payload,
+      custodian2Message: custodian_payload,
       adminMessage: admin_payload
     }
     return this.httpClient.post('https://webhooks.mongodb-stitch.com/api/client/v2.0/app/ellypin-wysik/service/http/incoming_webhook/pod2Api',Data)

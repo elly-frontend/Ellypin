@@ -11,6 +11,7 @@ declare var $: any;
 declare let window: any;
 import * as openpgp from 'openpgp';
 import { DataService } from '../../services/data.service';
+import { Contract721Service } from 'src/services/contract721.service';
 
 
 @Component({
@@ -72,7 +73,7 @@ export class CustomerComponent implements OnInit {
   public tokenToRedeem : any;
 
 
-  constructor(public contractService: ContractService, public dataService: DataService, public fb: FormBuilder) {
+  constructor(public contractService: ContractService, public dataService: DataService, public fb: FormBuilder, public Contract721Service : Contract721Service) {
     this.buyForm = fb.group({
       'buyToken': ['', Validators.compose([Validators.required, Validators.pattern(/^[1-9][0-9]*$/)])],
       'buyFee': ['', Validators.compose([Validators.required])],
@@ -597,4 +598,7 @@ export class CustomerComponent implements OnInit {
 
   }
 
+  checkTxn(){
+    // this.Contract721Service.mintToken('0x06EB21742e5462c065272363Aa272428a113A79A', 1);
+  }
 }

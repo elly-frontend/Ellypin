@@ -29,6 +29,7 @@ import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { Custodian2Component } from './custodian2/custodian2.component';
 import { Custodian2Service } from 'src/services/custodian2.service';
+import { Contract721Service } from 'src/services/contract721.service';
 
 @NgModule({
   declarations: [
@@ -60,7 +61,7 @@ import { Custodian2Service } from 'src/services/custodian2.service';
     NgxPaginationModule,
     routing
   ],
-  providers: [DataService,ContractService, CustodianService, Custodian2Service],
+  providers: [DataService,ContractService, CustodianService, Custodian2Service, Contract721Service],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

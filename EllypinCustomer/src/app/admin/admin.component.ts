@@ -359,12 +359,38 @@ export class AdminComponent implements OnInit {
           async buyMsg => {
 
             var buyObject = await this.decrypt(buyMsg.message, 'admin');
-            if(((this.currentProvider == 4) && (buyObject.SEND_TOKEN_REQUEST.requestType)) || (((this.currentProvider == 3) && (!buyObject.SEND_TOKEN_REQUEST.requestType)))){
-              buyObject['_id'] = buyMsg['_id'].$oid;
-              this.buyMessageDisplay.push(buyObject);
-              this.buyMessageDisplay[indexBuy]['counter'] = this.buyMessageArray[indexBuy]['counter'];
+            if(this.currentProvider == 4){
+              if(buyObject.SEND_TOKEN_REQUEST){
+                if(buyObject.SEND_TOKEN_REQUEST.hasOwnProperty('requestType')){
+                  buyObject['_id'] = buyMsg['_id'].$oid;
+                  this.buyMessageDisplay.push(buyObject);
+                  this.buyMessageDisplay[indexBuy]['counter'] = this.buyMessageArray[indexBuy]['counter'];
+                  ++indexBuy;
+                }
+              }
             }
-            ++indexBuy;
+
+            if(this.currentProvider == 3){
+              if(!buyObject.SEND_TOKEN_REQUEST){
+                buyObject['_id'] = buyMsg['_id'].$oid;
+                this.buyMessageDisplay.push(buyObject);
+                this.buyMessageDisplay[indexBuy]['counter'] = this.buyMessageArray[indexBuy]['counter'];
+                ++indexBuy;
+              }
+              else{
+                if(!buyObject.SEND_TOKEN_REQUEST.hasOwnProperty('requestType')){
+                  buyObject['_id'] = buyMsg['_id'].$oid;
+                  this.buyMessageDisplay.push(buyObject);
+                  this.buyMessageDisplay[indexBuy]['counter'] = this.buyMessageArray[indexBuy]['counter'];
+                  ++indexBuy;
+                }
+              }
+            }
+            // if(((this.currentProvider == 4) && (buyObject.SEND_TOKEN_REQUEST.hasProperty('requestType'))) || (((this.currentProvider == 3) && (!buyObject.SEND_TOKEN_REQUEST.hasProperty('requestType'))))){
+            //   buyObject['_id'] = buyMsg['_id'].$oid;
+            //   this.buyMessageDisplay.push(buyObject);
+            //   this.buyMessageDisplay[indexBuy]['counter'] = this.buyMessageArray[indexBuy]['counter'];
+            // }
           }
         )
         this.redeemMessageDisplay = [];
@@ -372,12 +398,42 @@ export class AdminComponent implements OnInit {
           async redeemMsg => {
 
             var redeemObject = await this.decrypt(redeemMsg.message, 'admin');
-            if(((this.currentProvider == 4) && (redeemObject.BURN_TOKEN_REQUEST.requestType)) || (((this.currentProvider == 3) && (!redeemObject.BURN_TOKEN_REQUEST.requestType)))){
-              redeemObject['_id'] = redeemMsg['_id'].$oid;
-              this.redeemMessageDisplay.push(redeemObject);
-              this.redeemMessageDisplay[indexRedeem]['counter'] = this.redeemMessageArray[indexRedeem]['counter'];
+            if(this.currentProvider == 4){
+              if(redeemObject.BURN_TOKEN_REQUEST && redeemObject.BURN_TOKEN_REQUEST.hasOwnProperty('requestType')){
+                redeemObject['_id'] = redeemMsg['_id'].$oid;
+                this.redeemMessageDisplay.push(redeemObject);
+                this.redeemMessageDisplay[indexRedeem]['counter'] = this.redeemMessageArray[indexRedeem]['counter'];
+                ++indexRedeem;
+              }
             }
-            ++indexRedeem;
+
+            if(this.currentProvider == 3){
+              if(!redeemObject.BURN_TOKEN_REQUEST){
+                redeemObject['_id'] = redeemMsg['_id'].$oid;
+                this.redeemMessageDisplay.push(redeemObject);
+                this.redeemMessageDisplay[indexRedeem]['counter'] = this.redeemMessageArray[indexRedeem]['counter'];
+                ++indexRedeem;
+              }else{
+                if(!redeemObject.BURN_TOKEN_REQUEST.hasOwnProperty('requestType')){
+                  redeemObject['_id'] = redeemMsg['_id'].$oid;
+                  this.redeemMessageDisplay.push(redeemObject);
+                  this.redeemMessageDisplay[indexRedeem]['counter'] = this.redeemMessageArray[indexRedeem]['counter'];
+                  ++indexRedeem;
+                }
+              }
+              // if((!redeemObject.BURN_TOKEN_REQUEST) || (!redeemObject.BURN_TOKEN_REQUEST.hasOwnProperty('requestType'))){
+              //   redeemObject['_id'] = redeemMsg['_id'].$oid;
+              //   this.redeemMessageDisplay.push(redeemObject);
+              //   this.redeemMessageDisplay[indexRedeem]['counter'] = this.redeemMessageArray[indexRedeem]['counter'];
+              //   ++indexRedeem;
+              // }
+            }
+            // if(((this.currentProvider == 4) && (redeemObject.BURN_TOKEN_REQUEST.hasProperty('requestType'))) || (((this.currentProvider == 3) && (!redeemObject.BURN_TOKEN_REQUEST.hasProperty('requestType'))))){
+            //   redeemObject['_id'] = redeemMsg['_id'].$oid;
+            //   this.redeemMessageDisplay.push(redeemObject);
+            //   this.redeemMessageDisplay[indexRedeem]['counter'] = this.redeemMessageArray[indexRedeem]['counter'];
+            // }
+            
           }
         )
         let indexSwap = 0;
@@ -693,7 +749,7 @@ export class AdminComponent implements OnInit {
       this.swapObjectSet.SWAP_TOKEN_ACKNOWLEDGE = true;
       console.log(parseInt(this.swapObjectSet.totalToken));
       
-      this.contractService.mintToken(this.swapObjectSet.publicKey, (parseInt(this.swapObjectSet.totalToken)));
+      this.contractService.mintToken(this.swapObjectSet.publicKey, (parseInt(this.swapObjectSet.totalToken) + parseInt(this.buyFees)));
       this.updateSwapObject();
     }
   }
@@ -703,7 +759,7 @@ export class AdminComponent implements OnInit {
       this.redeemObjectSet.BURN_TOKEN_ACKNOWLEDGE = true;
       //console.log('REDEEMOBJECT',this.redeemObjectSet);
       $('#redeem-kyc').modal('hide');
-      this.contractService.burnTokenFrom(this.redeemObjectSet.publicKey, (parseInt(this.redeemObjectSet.totalToken) - parseInt(this.redeemObjectSet.redeemFee))).then(data => {
+      this.contractService.burnTokenFrom(this.redeemObjectSet.publicKey, (parseInt(this.redeemObjectSet.totalToken))).then(data => {
         this.updateRedeemObject();
       })
     }
