@@ -392,7 +392,7 @@ export class CustodianComponent implements OnInit {
         swal('Request Created Successfully');
         this.buyIndex = null;
         this.buyObjectSet = {};
-        this.getMessage();
+        this.getSwapMessages();
       },
       error => {
         console.log(error);
@@ -432,7 +432,7 @@ export class CustodianComponent implements OnInit {
         swal('Updated Successfully');
         this.redeemIndex = null;
         this.redeemObjectSet = {};
-        this.getMessage();
+        this.getSwapMessages();
         this.loading = false;
       },
       error => {
