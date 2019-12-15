@@ -141,7 +141,7 @@
                   <a  (click)="openPopup('transfer-pop', 'Pod1')">Transfer POD1</a>
                   <a  (click)="openPopup('transfer-pop', 'Pod2')">Transfer POD2</a>
                   <a >Market Place</a>
-                  <a (click)="checkTxn()">Link To Exchanges</a>
+                  <a (click) = "testApi()">Link To Exchanges</a>
                 </div>
                 <div class="col-sm-6 interact-link-wrapper">
                     <h3>Interact With Ellypin</h3>
@@ -151,6 +151,8 @@
                     <a class="pointer" (click)="openPopup('buy-pop', 'Pod2')">Buy POD2</a>
                     <a class="pointer" (click)="openPopup('redeem-pop', 'Pod2')">Redeem POD2</a>
                     <a class="pointer" (click)="openPopup('swap-contract-pop', 'Pod2')">POD2 Swap Contract</a>
+                    <a class="pointer" (click)="openPopup('buy-pop', 'PodK')">Buy PODK</a>
+                    <a class="pointer" (click)="openPopup('redeem-pop', 'PodK')">Redeem PODK</a>
                 </div>
               </div>
             </div>
@@ -339,7 +341,7 @@
               <div class="form-group">
                 <label>Redeem</label>
                 <div class="input-group">
-                  <input class="form-control" type="text" (keyup)="keyRedeem($event)" [formControl]="redeemToken" name="red-pod">
+                  <input class="form-control" type="text" (keyup)="keyRedeem($event)" [readonly] = 'currPod == "PodK"' [formControl]="redeemToken" name="red-pod">
                   <span class="input-group-addon">Pods</span>
                 </div>
                 <span *ngIf="redeemToken.invalid && redeemToken.touched" style="color:red;font-size: 11px">Enter tokens to redeem</span>

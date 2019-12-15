@@ -50,7 +50,7 @@ export class CustomerComponent implements OnInit {
   public transferToken: AbstractControl;
   public transferAddr: AbstractControl;
   public swapForm: FormGroup;
-  public swapTotal:any;
+  public swapTotal: any;
   public ethereumAccount: any;
   public intervalId: any;
   public fees: any;
@@ -69,11 +69,14 @@ export class CustomerComponent implements OnInit {
   public requestId: any;
   public requestCreated = false;
   currentProvider: any;
-  public tokenToMint : any;
-  public tokenToRedeem : any;
+  public tokenToMint: any;
+  public tokenToRedeem: any;
+  public currPod = '';
+  public redeem721 = '10';
+  public userBalance721: any;
 
 
-  constructor(public contractService: ContractService, public dataService: DataService, public fb: FormBuilder, public Contract721Service : Contract721Service) {
+  constructor(public contractService: ContractService, public dataService: DataService, public fb: FormBuilder, public contract721Service: Contract721Service) {
     this.buyForm = fb.group({
       'buyToken': ['', Validators.compose([Validators.required, Validators.pattern(/^[1-9][0-9]*$/)])],
       'buyFee': ['', Validators.compose([Validators.required])],
@@ -109,7 +112,7 @@ export class CustomerComponent implements OnInit {
     this.swapForm = fb.group({
       swapToken: ['', Validators.compose([Validators.required])],
       swapFee: ['', Validators.compose([Validators.required])],
-      swapEmail : ['', Validators.compose([Validators.required])]
+      swapEmail: ['', Validators.compose([Validators.required])]
     })
 
     this.buyToken = this.buyForm.controls['buyToken'];
@@ -211,13 +214,13 @@ export class CustomerComponent implements OnInit {
     //   }
     // )
 
-    if(this.currentProvider == 3){
+    if (this.currentProvider == 3) {
       this.contractDetails['contractAddress'] = "0x44128f17132ae9aac62ce8a47c0cf5465e225c97";
       this.tokenToMint = 'Pod2';
-      this.tokenToRedeem = 'Pod1'; 
+      this.tokenToRedeem = 'Pod1';
     }
 
-    if(this.currentProvider == 4){
+    if (this.currentProvider == 4) {
       this.contractDetails['contractAddress'] = "0xe12fFbfa5FF156A195b9e52B9D39091253f8DecC";
       this.tokenToMint = 'Pod1';
       this.tokenToRedeem = 'Pod2';
@@ -230,6 +233,11 @@ export class CustomerComponent implements OnInit {
       // console.log('UserBalance:',this.userBalance);
 
     });
+    if (this.currentProvider == 3) {
+      this.contract721Service.getUserBalance().then((balance721: any) => {
+        this.userBalance721 = balance721.c[0];
+      });
+    }
   }
 
   getFees() {
@@ -262,15 +270,23 @@ export class CustomerComponent implements OnInit {
     // console.log('POPID:',popupId);
 
     if (this.ethereumAccount) {
-      if(tokenType == this.tokenToRedeem){
+      if (((tokenType == 'Pod2') && (this.currentProvider == 4)) || ((this.currentProvider == 3) && ((tokenType == 'Pod1') || (tokenType == 'PodK')))) {
         $(`#${popupId}`).modal('show');
-      }
-      else{
-        if(tokenType == 'Pod1'){
-          swal('Switch to Ropsten Network');
+        this.currPod = tokenType;
+        if ((popupId == 'redeem-pop') && (tokenType == 'PodK')) {
+          this.redeemForm.patchValue({
+            redeemToken: 1,
+            redeemFee: 5
+          })
+          this.redeemTotal = this.redeem721
         }
-        else{
+      }
+      else {
+        if (tokenType == 'Pod2') {
           swal('Switch to Rinkeby Network');
+        }
+        else {
+          swal('Switch to Ropsten Network');
         }
       }
     } else {
@@ -345,6 +361,29 @@ export class CustomerComponent implements OnInit {
     });
   }
 
+  burn721Token(id){
+    this.contract721Service.tokenId().then((id721:any) => {
+      let tokenId = id721.c[0];
+      this.contract721Service.approveTxn('0x5C6a5121d259DF9Eca31FAf034A54FFa25db2834', tokenId).then((approve:any) => {
+        this.contract721Service.sendContractToken721('0x5C6a5121d259DF9Eca31FAf034A54FFa25db2834', tokenId).then((txn:any) => {
+          console.log(txn);
+          this.contractService.burnToken(this.redeemForm.value.redeemFee).then(() => {
+            this.requestId = id;
+          });
+        },
+        (err) => {
+          console.log(err);
+        })
+      },
+      (err) => {
+        console.log(err);
+      })
+    },
+    (err) => {
+      console.log(err);
+    })
+  }
+
   public async buyRequest() {
     if (this.buyForm.valid) {
       // console.log(JSON.stringify(this.buyForm.value));
@@ -363,7 +402,7 @@ export class CustomerComponent implements OnInit {
       message_object.publicKey = sender;
       message_object.type = Message_Type.BUY;
       message_object.KYC = "Not Approved";
-      message_object[Message_Type.SEND_TOKEN_REQUEST] = (this.currentProvider == 4) ? {requestType : 'POD2'} : null;
+      message_object[Message_Type.SEND_TOKEN_REQUEST] = { requestType: this.currPod };
       message_object[Message_Type.SEND_TOKEN_ACKNOWLEDGE] = null;
 
 
@@ -377,7 +416,7 @@ export class CustomerComponent implements OnInit {
       this.loading = true;
       // let a = 5;
 
-      if((this.currentProvider == 3)){
+      if ((this.currentProvider == 3)) {
         custodian_message.message = await this.encrypt(JSON.stringify(message_object), 'custodian');
         this.dataService.sendMessage(admin_message, custodian_message).subscribe(
           (data: any) => {
@@ -399,7 +438,7 @@ export class CustomerComponent implements OnInit {
           }
         )
       }
-      else{
+      else {
         custodian_message.message = await this.encrypt(JSON.stringify(message_object), 'custodian2');
         this.dataService.sendMessagePod2(admin_message, custodian_message).subscribe(
           (data: any) => {
@@ -427,71 +466,77 @@ export class CustomerComponent implements OnInit {
 
   public async redeemRequest() {
     if (this.redeemForm.valid) {
-      if (parseInt(this.redeemForm.value.redeemToken) > parseInt(this.userBalance)) {
+      if ((this.currPod == 'PodK') && ((parseInt(this.redeemForm.value.redeemToken) > parseInt(this.userBalance721)) || (parseInt(this.redeemForm.value.redeemFee) > parseInt(this.userBalance)))) {
         swal('Insufficient no. of tokens');
-        console.log(parseInt(this.redeemForm.value.redeemToken) + this.fees);
+        return;
+      }
+      if ((this.currPod != 'PodK') && (parseInt(this.redeemForm.value.redeemToken) > parseInt(this.userBalance))) {
+        swal('Insufficient no. of tokens');
+        return;
+      }
+      let sender = await this.contractService.getAccount().then(accounts => {
+        // console.log(accounts);
+        return accounts;
+      });
+      let messageToSend: Message = {} as any;
+      // messageToSend.parentMessage = null;
+      messageToSend.type = Message_Type.REDEEM;
+      messageToSend.time = new Date().getTime();
+      messageToSend.email = this.redeemForm.value.redeemEmail;
+      messageToSend.publicKey = sender;
 
+      let message_object = Object.assign({}, this.redeemForm.value);
+      message_object.publicKey = sender;
+      message_object.type = Message_Type.REDEEM;
+      delete message_object['email'];
+      message_object[Message_Type.KYC] = "Not Approved";
+      message_object[Message_Type.BURN_TOKEN_REQUEST] = { requestType: this.currPod };
+      message_object[Message_Type.BURN_TOKEN_ACKNOWLEDGE] = null;
+      let admin_message = Object.assign({}, messageToSend);
+      let custodian_message = Object.assign({}, messageToSend);
+      admin_message.message = [];
+      admin_message.message.push(await this.encrypt(JSON.stringify(message_object), 'admin'));
+      custodian_message.message = [];
+
+      this.loading = true;
+      if (this.currentProvider == 3) {
+        custodian_message.message.push(await this.encrypt(JSON.stringify(message_object), 'custodian'));
+        this.dataService.redeemToken(admin_message, custodian_message).subscribe(
+          (data: any) => {
+            // console.log(data);
+            this.requestCreated = true;
+            if(this.currPod == 'PodK'){
+              this.burn721Token(data);
+            }
+            if(this.currPod == 'Pod1'){
+              this.burnToken(this.redeemForm.value.redeemToken, data)
+            }
+          },
+          error => {
+            console.log(error);
+            this.loading = false;
+          },
+          () => {
+            this.loading = false;
+          }
+        )
       }
       else {
-        let sender = await this.contractService.getAccount().then(accounts => {
-          // console.log(accounts);
-          return accounts;
-        });
-        let messageToSend: Message = {} as any;
-        // messageToSend.parentMessage = null;
-        messageToSend.type = Message_Type.REDEEM;
-        messageToSend.time = new Date().getTime();
-        messageToSend.email = this.redeemForm.value.redeemEmail;
-        messageToSend.publicKey = sender;
-
-        let message_object = Object.assign({}, this.redeemForm.value);
-        message_object.publicKey = sender;
-        message_object.type = Message_Type.REDEEM;
-        delete message_object['email'];
-        message_object[Message_Type.KYC] = "Not Approved";
-        message_object[Message_Type.BURN_TOKEN_REQUEST] = (this.currentProvider == 4) ? {requestType : 'POD2'} : null;;
-        message_object[Message_Type.BURN_TOKEN_ACKNOWLEDGE] = null;
-        let admin_message = Object.assign({}, messageToSend);
-        let custodian_message = Object.assign({}, messageToSend);
-        admin_message.message = [];
-        admin_message.message.push(await this.encrypt(JSON.stringify(message_object), 'admin'));
-        custodian_message.message = [];
-        
-        this.loading = true;
-        if(this.currentProvider == 3){
-          custodian_message.message.push(await this.encrypt(JSON.stringify(message_object), 'custodian'));
-          this.dataService.redeemToken(admin_message, custodian_message).subscribe(
-            (data: any) => {
-              // console.log(data);
-              this.requestCreated = true;
-              this.burnToken(this.redeemForm.value.redeemToken, data)
-            },
-            error => {
-              console.log(error);
-              this.loading = false;
-            },
-            () => {
-              this.loading = false;
-            }
-          )
-        }
-        else{
-          custodian_message.message.push(await this.encrypt(JSON.stringify(message_object), 'custodian2'));
-          this.dataService.redeemTokenPod2(admin_message, custodian_message).subscribe(
-            (data: any) => {
-              // console.log(data);
-              this.requestCreated = true;
-              this.burnToken(this.redeemForm.value.redeemToken, data)
-            },
-            error => {
-              console.log(error);
-              this.loading = false;
-            },
-            () => {
-              this.loading = false;
-            }
-          )
-        }
+        custodian_message.message.push(await this.encrypt(JSON.stringify(message_object), 'custodian2'));
+        this.dataService.redeemTokenPod2(admin_message, custodian_message).subscribe(
+          (data: any) => {
+            // console.log(data);
+            this.requestCreated = true;
+            this.burnToken(this.redeemForm.value.redeemToken, data)
+          },
+          error => {
+            console.log(error);
+            this.loading = false;
+          },
+          () => {
+            this.loading = false;
+          }
+        )
       }
     }
   }
@@ -518,7 +563,7 @@ export class CustomerComponent implements OnInit {
         message_object.type = Message_Type.SWAP;
         // delete message_object['email'];
         message_object[Message_Type.KYC] = "Not Approved";
-        message_object[Message_Type.SWAP_TOKEN_REQUEST] = { requestTokenType : (this.currentProvider == 3) ? 'POD2' : 'POD1' };
+        message_object[Message_Type.SWAP_TOKEN_REQUEST] = { requestTokenType: (this.currentProvider == 3) ? 'POD2' : 'POD1' };
         message_object[Message_Type.SWAP_TOKEN_ACKNOWLEDGE] = null;
         let admin_message = Object.assign({}, messageToSend);
         let custodian1_message = Object.assign({}, messageToSend);
@@ -574,10 +619,10 @@ export class CustomerComponent implements OnInit {
       pubkey = adminPublicKey.split("\n").join('\n')
     }
     else {
-      if(encryptionFor === 'custodian2'){
+      if (encryptionFor === 'custodian2') {
         pubkey = custodian2PublicKey.split("\n").join('\n');
       }
-      else{
+      else {
         pubkey = custodianPublicKey.split("\n").join('\n');
       }
     }
@@ -598,7 +643,7 @@ export class CustomerComponent implements OnInit {
 
   }
 
-  checkTxn(){
-    // this.Contract721Service.mintToken('0x06EB21742e5462c065272363Aa272428a113A79A', 1);
+  testApi(){
+    this.contractService.getTransactionsByAccount('0x06EB21742e5462c065272363Aa272428a113A79A');
   }
 }

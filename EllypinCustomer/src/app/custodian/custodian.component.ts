@@ -343,7 +343,11 @@ export class CustodianComponent implements OnInit {
     this.redeemObjectSet = this.redeemMessageDisplay[this.redeemIndex];
     this.redeemObjectSet[Message_Type.BURN_TOKEN_REQUEST] = this.redeemObjectSet[Message_Type.BURN_TOKEN_REQUEST] || {};
     this.redeemObjectSet['serialNo'] = this.redeemMessageArray[this.redeemIndex]['counter'];
-    this.redeemObjectSet['totalToken'] = Math.abs(parseInt(this.redeemObjectSet['redeemFee']) - parseInt(this.redeemObjectSet['redeemToken']));
+    if(this.redeemObjectSet[Message_Type.BURN_TOKEN_REQUEST]['requestType'] == 'PodK'){
+      this.redeemObjectSet['totalToken'] = this.redeemObjectSet['redeemToken'];
+    }else{
+      this.redeemObjectSet['totalToken'] = Math.abs(parseInt(this.redeemObjectSet['redeemFee']) - parseInt(this.redeemObjectSet['redeemToken']));
+    }
     // console.log('REdeemObject:', this.redeemObjectSet);
 
   }

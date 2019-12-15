@@ -10,6 +10,7 @@ import custodianPublicKey from '../sharedData/custodianPublic';
 import custodian2PublicKey from '../sharedData/custodian2PublicKey';
 import swal from 'sweetalert2';
 import * as openpgp from 'openpgp';
+import { Contract721Service } from 'src/services/contract721.service';
 declare let window: any;
 declare var $: any
 
@@ -61,7 +62,7 @@ export class AdminComponent implements OnInit {
   // public currentAdminPage:any=0;
   public itemsPerPage: number = 5;
 
-  constructor(public fb: FormBuilder, public dataService: DataService, public contractService: ContractService) {
+  constructor(public fb: FormBuilder, public dataService: DataService, public contractService: ContractService, public contract721Service : Contract721Service) {
     this.loginForm = fb.group({
       'email': ['', Validators.compose([Validators.required, Validators.pattern(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)])],
       'password': ['', Validators.compose([Validators.required])]
@@ -360,31 +361,21 @@ export class AdminComponent implements OnInit {
 
             var buyObject = await this.decrypt(buyMsg.message, 'admin');
             if(this.currentProvider == 4){
-              if(buyObject.SEND_TOKEN_REQUEST){
-                if(buyObject.SEND_TOKEN_REQUEST.hasOwnProperty('requestType')){
+                if(buyObject.SEND_TOKEN_REQUEST.requestType == 'Pod2'){
                   buyObject['_id'] = buyMsg['_id'].$oid;
                   this.buyMessageDisplay.push(buyObject);
                   this.buyMessageDisplay[indexBuy]['counter'] = this.buyMessageArray[indexBuy]['counter'];
                   ++indexBuy;
                 }
-              }
             }
 
             if(this.currentProvider == 3){
-              if(!buyObject.SEND_TOKEN_REQUEST){
-                buyObject['_id'] = buyMsg['_id'].$oid;
-                this.buyMessageDisplay.push(buyObject);
-                this.buyMessageDisplay[indexBuy]['counter'] = this.buyMessageArray[indexBuy]['counter'];
-                ++indexBuy;
-              }
-              else{
-                if(!buyObject.SEND_TOKEN_REQUEST.hasOwnProperty('requestType')){
+                if(buyObject.SEND_TOKEN_REQUEST.requestType == 'Pod1' || buyObject.SEND_TOKEN_REQUEST.requestType == 'PodK' ){
                   buyObject['_id'] = buyMsg['_id'].$oid;
                   this.buyMessageDisplay.push(buyObject);
                   this.buyMessageDisplay[indexBuy]['counter'] = this.buyMessageArray[indexBuy]['counter'];
                   ++indexBuy;
                 }
-              }
             }
             // if(((this.currentProvider == 4) && (buyObject.SEND_TOKEN_REQUEST.hasProperty('requestType'))) || (((this.currentProvider == 3) && (!buyObject.SEND_TOKEN_REQUEST.hasProperty('requestType'))))){
             //   buyObject['_id'] = buyMsg['_id'].$oid;
@@ -399,7 +390,7 @@ export class AdminComponent implements OnInit {
 
             var redeemObject = await this.decrypt(redeemMsg.message, 'admin');
             if(this.currentProvider == 4){
-              if(redeemObject.BURN_TOKEN_REQUEST && redeemObject.BURN_TOKEN_REQUEST.hasOwnProperty('requestType')){
+              if(redeemObject.BURN_TOKEN_REQUEST.requestType == 'Pod2'){
                 redeemObject['_id'] = redeemMsg['_id'].$oid;
                 this.redeemMessageDisplay.push(redeemObject);
                 this.redeemMessageDisplay[indexRedeem]['counter'] = this.redeemMessageArray[indexRedeem]['counter'];
@@ -408,32 +399,13 @@ export class AdminComponent implements OnInit {
             }
 
             if(this.currentProvider == 3){
-              if(!redeemObject.BURN_TOKEN_REQUEST){
+              if(redeemObject.BURN_TOKEN_REQUEST.requestType == 'Pod1' || redeemObject.BURN_TOKEN_REQUEST.requestType == 'PodK'){
                 redeemObject['_id'] = redeemMsg['_id'].$oid;
                 this.redeemMessageDisplay.push(redeemObject);
                 this.redeemMessageDisplay[indexRedeem]['counter'] = this.redeemMessageArray[indexRedeem]['counter'];
                 ++indexRedeem;
-              }else{
-                if(!redeemObject.BURN_TOKEN_REQUEST.hasOwnProperty('requestType')){
-                  redeemObject['_id'] = redeemMsg['_id'].$oid;
-                  this.redeemMessageDisplay.push(redeemObject);
-                  this.redeemMessageDisplay[indexRedeem]['counter'] = this.redeemMessageArray[indexRedeem]['counter'];
-                  ++indexRedeem;
-                }
               }
-              // if((!redeemObject.BURN_TOKEN_REQUEST) || (!redeemObject.BURN_TOKEN_REQUEST.hasOwnProperty('requestType'))){
-              //   redeemObject['_id'] = redeemMsg['_id'].$oid;
-              //   this.redeemMessageDisplay.push(redeemObject);
-              //   this.redeemMessageDisplay[indexRedeem]['counter'] = this.redeemMessageArray[indexRedeem]['counter'];
-              //   ++indexRedeem;
-              // }
             }
-            // if(((this.currentProvider == 4) && (redeemObject.BURN_TOKEN_REQUEST.hasProperty('requestType'))) || (((this.currentProvider == 3) && (!redeemObject.BURN_TOKEN_REQUEST.hasProperty('requestType'))))){
-            //   redeemObject['_id'] = redeemMsg['_id'].$oid;
-            //   this.redeemMessageDisplay.push(redeemObject);
-            //   this.redeemMessageDisplay[indexRedeem]['counter'] = this.redeemMessageArray[indexRedeem]['counter'];
-            // }
-            
           }
         )
         let indexSwap = 0;
@@ -739,7 +711,12 @@ export class AdminComponent implements OnInit {
     //console.log('In mintToken');
     if (this.buyObjectSet.SEND_TOKEN_ACKNOWLEDGE != true) {
       this.buyObjectSet.SEND_TOKEN_ACKNOWLEDGE = true;
-      this.contractService.mintToken(this.buyObjectSet.publicKey, (parseInt(this.buyObjectSet.totalToken) - parseInt(this.buyObjectSet.buyFee)));
+      if(this.buyObjectSet.SEND_TOKEN_REQUEST.requestType == 'PodK'){
+        this.contract721Service.mintToken(this.buyObjectSet.publicKey);
+      }
+      else{
+        this.contractService.mintToken(this.buyObjectSet.publicKey, (parseInt(this.buyObjectSet.totalToken) - parseInt(this.buyObjectSet.buyFee)));
+      }
       this.updateBuyMessage();
     }
   }
@@ -759,9 +736,31 @@ export class AdminComponent implements OnInit {
       this.redeemObjectSet.BURN_TOKEN_ACKNOWLEDGE = true;
       //console.log('REDEEMOBJECT',this.redeemObjectSet);
       $('#redeem-kyc').modal('hide');
-      this.contractService.burnTokenFrom(this.redeemObjectSet.publicKey, (parseInt(this.redeemObjectSet.totalToken))).then(data => {
-        this.updateRedeemObject();
-      })
+      if(this.redeemObjectSet.BURN_TOKEN_REQUEST.requestType == 'PodK'){
+        this.contract721Service.getUserBalance().then((res: any) => {
+          // console.log(res.c[0]);
+          if (res.c[0] > 0) {
+            this.contract721Service.tokenId().then((res: any) => {
+              // console.log(res.c[0]);
+              this.contract721Service.burnTokenFrom721(res.c[0]).then((res) => {
+                console.log(res);
+                this.updateRedeemObject();
+              },
+                (err) => {
+                  console.log(err);
+                })
+            },
+              (err) => {
+                console.log(err);
+    
+              })
+          }
+        })
+      }else{
+        this.contractService.burnTokenFrom(this.redeemObjectSet.publicKey, (parseInt(this.redeemObjectSet.totalToken))).then(data => {
+          this.updateRedeemObject();
+        })
+      }
     }
   }
 

@@ -114,6 +114,59 @@ export class Contract721Service {
     }) as Promise<number>;
   }
 
+  public async tokenId(address?): Promise<number> {
+    let account:any;
+    if(!address){
+      account = await this.getAccount();
+    }else{
+      account = address;
+    }
+
+    return new Promise((resolve, reject) => {
+      let _web3 = this._web3;
+      this._tokenContract.tokenOfOwnerByIndex.call(account,  0, (err, result) => {
+        if(err != null) {
+          reject(err);
+        }
+        // console.log(result);
+        
+        resolve(result);
+      });
+    }) as Promise<number>;
+  }
+
+  public async approveTxn(address,tokenId){
+    return new Promise((resolve, reject) => {
+      var send = this._tokenContract.approve( address,tokenId,(err, result) => {
+        if(err != null){
+          console.log(err);
+          reject();
+        }
+        else{
+          console.log(result);
+          resolve(result)
+        }
+      });
+    })
+  }
+
+  public async sendContractToken721(addressTo, tokenId){
+    let addressFrom = await this.getAccount();
+    return new Promise((resolve, reject) => {
+      var send = this._tokenContract.transferFrom( addressFrom, addressTo, tokenId,(err, result) => {
+        if(err != null){
+          console.log(err);
+          reject();
+        }
+        else{
+          console.log(result);
+          resolve(result);
+        }
+      });
+    })
+  }
+
+
   public async getName(): Promise<string>{
     return new Promise((resolve, reject) => {
       this._tokenContract.name.call((err, result) => {
@@ -331,11 +384,11 @@ export class Contract721Service {
   }
 
 
-  public async mintToken(address:string, amount:number){
-    console.log('Address:',address,'Amount:',amount);
+  public async mintToken(address:string){
+    console.log('Address:',address,'Amount:');
 
     return new Promise((resolve, reject) => {
-      this._tokenContract.mint(address, amount,(err,result)=>{
+      this._tokenContract.mint(address,(err,result)=>{
         if(err != null){
           reject(err);
         }
@@ -407,11 +460,14 @@ export class Contract721Service {
     })as Promise<number>;
   }
 
-  public async burnTokenFrom(address:string,token){
-   console.log('address:',address,'token:',token);
+  public async burnTokenFrom721(tokenId, address?){
+  //  console.log('address:',address,'token:',token);
+    if(!address){
+      address = await this.getAccount();
+    }
 
    return new Promise((resolve, reject) => {
-    this._tokenContract.burnFrom(address,token,(err,result)=>{
+    this._tokenContract.burnFrom(address,tokenId,(err,result)=>{
       if(err != null){
         reject(err);
       }

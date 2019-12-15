@@ -427,48 +427,87 @@ export class ContractService {
 
   })as Promise<number>;
   }
+
+
+  async getTransactionsByAccount(myaccount, startBlockNumber?, endBlockNumber?) {
+    if (endBlockNumber == null) {
+      endBlockNumber = await this.getBlockNumber();
+      console.log("Using endBlockNumber: " + endBlockNumber);
+    }
+    if (startBlockNumber == null) {
+      startBlockNumber = endBlockNumber - 100;
+      console.log("Using startBlockNumber: " + startBlockNumber);
+    }
+    console.log("Searching for transactions to/from account \"" + myaccount + "\" within blocks "  + startBlockNumber + " and " + endBlockNumber);
   
-  // async getTransactionsByAccount(myaccount, startBlockNumber, endBlockNumber) {
-  //   console.log('called');
-    
-  //   this._web3.eth.blockNumber(function(err, transactionHash) {
-  //     if (!err)
-  //       console.log(transactionHash); 
-  //   })
-  //   // if (endBlockNumber == null) {
-  //   //   endBlockNumber = this._web3.eth.blockNumber;
-  //   //   console.log("Using endBlockNumber: " + endBlockNumber);
-  //   // }
-  //   // if (startBlockNumber == null) {
-  //   //   startBlockNumber = endBlockNumber - 1000;
-  //   //   console.log("Using startBlockNumber: " + startBlockNumber);
-  //   // }
-  //   // console.log("Searching for transactions to/from account \"" + myaccount + "\" within blocks "  + startBlockNumber + " and " + endBlockNumber);
+    // for (var i = startBlockNumber; i <= endBlockNumber; i++) {
+    //   if (i % 1000 == 0) {
+    //     console.log("Searching block " + i);
+    //   }
+
+    let currBlockLength = endBlockNumber - startBlockNumber;
+    let blockNumber = startBlockNumber; 
+
+    let newBlock = () => {
+      this._web3.eth.getBlock(blockNumber, true, (error, response) => {
+        if(error) {
+          console.log(error);
+          return;
+        }
+        var block = response;
+        if (block != null && block.transactions != null) {
+          block.transactions.forEach( function(e) {
+            if ( myaccount == e.from || myaccount == e.to) {
+              console.log("  tx hash          : " + e.hash + "\n"
+                + "   nonce           : " + e.nonce + "\n"
+                + "   blockHash       : " + e.blockHash + "\n"
+                + "   blockNumber     : " + e.blockNumber + "\n"
+                + "   transactionIndex: " + e.transactionIndex + "\n"
+                + "   from            : " + e.from + "\n" 
+                + "   to              : " + e.to + "\n"
+                + "   value           : " + e.value + "\n"
+                + "   time            : " + block.timestamp + " " + new Date(block.timestamp * 1000).toUTCString() + "\n"
+                + "   gasPrice        : " + e.gasPrice + "\n"
+                + "   gas             : " + e.gas + "\n"
+                + "   input           : " + e.input);
+            }
+          })
+        }
+        --currBlockLength;
+        if(currBlockLength > 0){
+          ++blockNumber;
+          newBlock();
+        }
+      });
+    }
+
+    if(currBlockLength > 0){
+      newBlock();
+    }
+      
+    // }
+  }
+
+  getBlockNumber() : Promise<Boolean>{
+    return new Promise((resolve, reject) => {
+      this._web3.eth.getBlockNumber((err, res) => {
+        if(err){
+          console.log(err);
+          return;
+        }
+        resolve(res);
+      });
+    })
+  }
+
+
+  testApi(){
+      var filter=this._web3.eth.filter({address: '0x06EB21742e5462c065272363Aa272428a113A79A', fromBlock: 1, toBlock: 909023});
+      filter.get(function(error, log) {
+        console.log(JSON.stringify(log));
+      });
+      // filter.stopWatching(); 
+    }
   
-  //   // for (var i = startBlockNumber; i <= endBlockNumber; i++) {
-  //   //   if (i % 1000 == 0) {
-  //   //     console.log("Searching block " + i);
-  //   //   }
-  //   //   var block = this._web3.eth.getBlock(i, true);
-  //   //   if (block != null && block.transactions != null) {
-  //   //     block.transactions.forEach( function(e) {
-  //   //       if (myaccount == "*" || myaccount == e.from || myaccount == e.to) {
-  //   //         console.log("  tx hash          : " + e.hash + "\n"
-  //   //           + "   nonce           : " + e.nonce + "\n"
-  //   //           + "   blockHash       : " + e.blockHash + "\n"
-  //   //           + "   blockNumber     : " + e.blockNumber + "\n"
-  //   //           + "   transactionIndex: " + e.transactionIndex + "\n"
-  //   //           + "   from            : " + e.from + "\n" 
-  //   //           + "   to              : " + e.to + "\n"
-  //   //           + "   value           : " + e.value + "\n"
-  //   //           + "   time            : " + block.timestamp + " " + new Date(block.timestamp * 1000).toUTCString() + "\n"
-  //   //           + "   gasPrice        : " + e.gasPrice + "\n"
-  //   //           + "   gas             : " + e.gas + "\n"
-  //   //           + "   input           : " + e.input);
-  //   //       }
-  //   //     })
-  //   //   }
-  //   // }
-  // }
 
 }
