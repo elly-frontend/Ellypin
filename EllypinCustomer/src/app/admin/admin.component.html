@@ -2,7 +2,7 @@
   <div class="container-fluid">
     <div class="button-inner">
       <ul>
-        <li><a (click)="tempMint()">Admin Ui</a></li>
+        <li><a >Admin Ui</a></li>
         <li><a href="#">Home</a></li>
       </ul>
     </div>
@@ -111,7 +111,7 @@
                   <table class="table table-bordered text-center">
                     <thead>
                       <tr>
-                        <th colspan="3">{{(currentProvider == 3)? 'Pod1' : 'Pod2'}}Fees</th>
+                        <th colspan="3">{{(currentProvider == 3)? 'Pod1' : 'Pod2'}} Fees</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -170,6 +170,10 @@
                       </tr> -->
                     </tbody>
                   </table>
+                </div>
+                <div class="exportButtons">
+                  <button type="button" class="btn pointer" (click)="exportRopstenCsv()">Export Ropsten</button>
+                  <button type="button" class="btn pointer" (click)="exportRinkebyCsv()">Export Rinkeby</button>
                 </div>
               </div>
             </div>
@@ -482,7 +486,7 @@
       <div class="modal-body">
         <button type="button" class="close" data-dismiss="modal" (click)="closeModal()">&times;</button>
         <form action="" class="form-inline" [hidden]="buyObjectSet?.SEND_TOKEN_REQUEST?.custodianSet">
-          <h3 class="text-center">Serial Number: <span>{{buyObjectSet.serialNo}}</span></h3>
+          <h3 class="text-center">Serial Number: <span>{{buyObjectSet.serialNo}} ({{buyObjectSet.SEND_TOKEN_REQUEST?.requestType}})</span></h3>
           <div *ngIf="error">
             <div class="alert alert-danger">
               {{error}}
@@ -517,7 +521,7 @@
 
         <form action="" class="form-inline"
           [hidden]="!buyObjectSet?.SEND_TOKEN_REQUEST?.custodianSet || buyObjectSet?.SEND_TOKEN_ACKNOWLEDGE">
-          <h3 class="text-center">Serial Number: <span>{{buyObjectSet.serialNo}}</span></h3>
+          <h3 class="text-center">Serial Number: <span>{{buyObjectSet.serialNo}} ({{buyObjectSet.SEND_TOKEN_REQUEST?.requestType}})</span></h3>
           <div class="row">
             <div class="col-sm-12">
               <div class="form-submit">
@@ -530,7 +534,7 @@
 
 
         <form action="" class="form-inline" [hidden]="(!buyObjectSet?.SEND_TOKEN_ACKNOWLEDGE)">
-          <h3 class="text-center">Serial Number: <span>{{buyObjectSet.serialNo}}</span></h3>
+          <h3 class="text-center">Serial Number: <span>{{buyObjectSet.serialNo}} ({{buyObjectSet.SEND_TOKEN_REQUEST?.requestType}})</span></h3>
           <div class="row">
             <div class="col-sm-12">
               <div class="form-submit">
@@ -551,7 +555,7 @@
       <div class="modal-body">
         <button type="button" class="close" data-dismiss="modal" (close)="closeModal()">&times;</button>
         <form action="" class="form-inline" [hidden]="redeemObjectSet?.BURN_TOKEN_REQUEST?.custodianSet">
-          <h3 class="text-center">Serial Number: <span>{{redeemObjectSet.serialNo}}</span></h3>
+          <h3 class="text-center">Serial Number: <span>{{redeemObjectSet.serialNo}} ({{redeemObjectSet.BURN_TOKEN_REQUEST?.requestType}})</span></h3>
           <div *ngIf="error">
             <div class="alert alert-danger">
               {{error}}
@@ -585,7 +589,7 @@
 
         <form action="" class="form-inline"
           [hidden]="!redeemObjectSet?.BURN_TOKEN_REQUEST?.custodianSet || redeemObjectSet?.BURN_TOKEN_ACKNOWLEDGE">
-          <h3 class="text-center">Serial Number: <span>{{redeemObjectSet.serialNo}}</span></h3>
+          <h3 class="text-center">Serial Number: <span>{{redeemObjectSet.serialNo}} ({{redeemObjectSet.BURN_TOKEN_REQUEST?.requestType}})</span></h3>
           <div class="row">
             <div class="col-sm-12">
               <div class="form-submit">
@@ -597,7 +601,7 @@
 
 
         <form action="" class="form-inline" [hidden]="(!redeemObjectSet.BURN_TOKEN_ACKNOWLEDGE)">
-          <h3 class="text-center">Serial Number: <span>{{redeemObjectSet.serialNo}}</span></h3>
+          <h3 class="text-center">Serial Number: <span>{{redeemObjectSet.serialNo}} ({{redeemObjectSet.BURN_TOKEN_REQUEST?.requestType}})</span></h3>
           <div class="row">
             <div class="col-sm-12">
               <div class="form-submit">

@@ -509,5 +509,4 @@ export class ContractService {
       // filter.stopWatching(); 
     }
   
-
 }

@@ -5,6 +5,8 @@ import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http
 @Injectable()
 export class DataService {;
 
+  public etherscanApiKey = 'YVSCXWNV3E5N9MDYKC2RS5WYPMTU6NIZTP';
+
   constructor(private httpClient : HttpClient) {
 
   }
@@ -122,6 +124,12 @@ export class DataService {;
         'Content-Type': 'application/json'
       })
     });
+  }
+
+  etherscan(networkType, fieldName, address){
+    // return this.httpClient.get<any>(`https://api-${networkType}.etherscan.io/api?module=account&action=txlist&${fieldName}=${address}&startblock=0&endblock=999999999&sort=asc&apikey=${this.etherscanApiKey}`)
+
+    return this.httpClient.get<any>(`https://api-${networkType}.etherscan.io/api?module=account&action=tokentx&${fieldName}=${address}&startblock=0&endblock=999999999&sort=asc&apikey=${this.etherscanApiKey}`)
   }
 
 }

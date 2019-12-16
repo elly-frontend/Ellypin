@@ -332,8 +332,13 @@ export class CustodianComponent implements OnInit {
     this.buyObjectSet = this.buyMessageDisplay[this.buyIndex];
     this.buyObjectSet.SEND_TOKEN_REQUEST = this.buyObjectSet.SEND_TOKEN_REQUEST || {};
     this.buyObjectSet['serialNo'] = this.buyMessageArray[this.buyIndex]['counter'];
-    this.buyObjectSet['totalToken'] = parseInt(this.buyObjectSet['buyFee']) + parseInt(this.buyObjectSet['buyToken']);
-    console.log('Index:', this.buyObjectSet);
+    if(this.buyObjectSet[Message_Type.SEND_TOKEN_REQUEST]['requestType'] == 'PodK'){
+      this.buyObjectSet['totalToken'] = parseInt(this.buyObjectSet['buyFee']) + 100000;      
+    }
+    else{
+      this.buyObjectSet['totalToken'] = parseInt(this.buyObjectSet['buyFee']) + parseInt(this.buyObjectSet['buyToken']);
+    }
+    // console.log('Index:', this.buyObjectSet);
   }
 
   redeemClicked(index) {

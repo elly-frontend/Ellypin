@@ -1,122 +1,123 @@
 <div class="body-wrapper">
   <div class="container-fluid">
-      <div class="body-inner">
-        <div class="row">
-          <div class="col-sm-12">
-            <div class="right-part">
-              <div class="contract-detail-wrapper">
+    <div class="body-inner">
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="right-part">
+            <div class="contract-detail-wrapper">
+              <div class="table-responsive">
+                <table class="table table-bordered text-center">
+                  <thead>
+                    <tr>
+                      <th>Pod</th>
+                      <th>Currency Pod</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Name</td>
+                      <td>{{contractDetails.contractName}}</td>
+                    </tr>
+                    <tr>
+                      <td>Symbol</td>
+                      <td>{{contractDetails.symbol}}</td>
+                    </tr>
+                    <tr>
+                      <td>Asset tokenized / Rate</td>
+                      <td>{{custData.asset}} <span *ngIf="custData.asset">/</span> {{custData.rate}}</td>
+                    </tr>
+                    <tr>
+                      <td>Maturity</td>
+                      <td>{{custData.maturity}}</td>
+                    </tr>
+                    <tr>
+                      <td>Custodian</td>
+                      <td>{{custData.custodian}}</td>
+                    </tr>
+                    <tr>
+                      <td>Location</td>
+                      <td>{{custData.location}}</td>
+                    </tr>
+                    <tr>
+                      <td>Decimals</td>
+                      <td>{{contractDetails.decimal}}</td>
+                    </tr>
+                    <tr>
+                      <td>Mint and assigned when assets deposited</td>
+                      <td>{{custData.mint}}</td>
+                    </tr>
+                    <tr>
+                      <td>Contract Address</td>
+                      <td>{{contractDetails.contractAddress}}</td>
+                    </tr>
+                    <tr>
+                      <td>Contract Owner</td>
+                      <td>{{custData.owner}}</td>
+                    </tr>
+                    <tr>
+                      <td>Smart Contract type</td>
+                      <td>{{custData.contractType}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="bottom-link-wrapper">
+              <a>Fee Schedule</a>
+              <a routerLink='/terms'>Terms and Condition</a>
+              <a href="https://ropsten.etherscan.io/address/0x44128f17132ae9aac62ce8a47c0cf5465e225c97" target="_blank"
+                style="cursor: pointer">MyEtherScan</a>
+            </div>
+
+            <div class="row">
+              <div class="col-sm-4 fees-wrapper">
                 <div class="table-responsive">
                   <table class="table table-bordered text-center">
                     <thead>
                       <tr>
-                        <th>Pod</th>
-                        <th>Currency Pod</th>
+                        <th colspan="2">{{tokenToRedeem}} Fees</th>
                       </tr>
                     </thead>
                     <tbody>
                       <tr>
-                        <td>Name</td>
-                        <td>{{contractDetails.contractName}}</td>
+                        <td>Transfer</td>
+                        <td>{{transferFees}}</td>
                       </tr>
                       <tr>
-                        <td>Symbol</td>
-                        <td>{{contractDetails.symbol}}</td>
+                        <td>Redeem</td>
+                        <td>{{fees}}</td>
                       </tr>
                       <tr>
-                        <td>Asset tokenized / Rate</td>
-                        <td>{{custData.asset}} <span *ngIf="custData.asset">/</span> {{custData.rate}}</td>
+                        <td>Buy</td>
+                        <td>{{buyFees}}</td>
                       </tr>
                       <tr>
-                        <td>Maturity</td>
-                        <td>{{custData.maturity}}</td>
-                      </tr>
-                      <tr>
-                        <td>Custodian</td>
-                        <td>{{custData.custodian}}</td>
-                      </tr>
-                      <tr>
-                        <td>Location</td>
-                        <td>{{custData.location}}</td>
-                      </tr>
-                      <tr>
-                        <td>Decimals</td>
-                        <td>{{contractDetails.decimal}}</td>
-                      </tr>
-                      <tr>
-                        <td>Mint and assigned when assets deposited</td>
-                        <td>{{custData.mint}}</td>
-                      </tr>
-                      <tr>
-                        <td>Contract Address</td>
-                        <td>{{contractDetails.contractAddress}}</td>
-                      </tr>
-                      <tr>
-                        <td>Contract Owner</td>
-                        <td>{{custData.owner}}</td>
-                      </tr>
-                      <tr>
-                        <td>Smart Contract type</td>
-                        <td>{{custData.contractType}}</td>
+                        <td></td>
+                        <td></td>
                       </tr>
                     </tbody>
                   </table>
                 </div>
               </div>
-
-              <div class="bottom-link-wrapper">
-                <a >Fee Schedule</a>
-                <a routerLink='/terms'>Terms and Condition</a>
-                <a href="https://ropsten.etherscan.io/address/0x44128f17132ae9aac62ce8a47c0cf5465e225c97" target="_blank" style="cursor: pointer">MyEtherScan</a>
+              <div class="col-sm-4 asset-wrapper">
+                <h4>{{tokenToRedeem}} Asset Balance</h4>
+                <div class="asset-inner">{{totalSupply}}</div>
               </div>
-
-              <div class="clearfix">
-                <div class="col-sm-4 fees-wrapper">
-                  <div class="table-responsive">
-                    <table class="table table-bordered text-center">
-                      <thead>
-                        <tr>
-                          <th colspan="2">{{tokenToRedeem}} Fees</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td>Transfer</td>
-                          <td>{{transferFees}}</td>
-                        </tr>
-                        <tr>
-                          <td>Redeem</td>
-                          <td>{{fees}}</td>
-                        </tr>
-                        <tr>
-                          <td>Buy</td>
-                          <td>{{buyFees}}</td>
-                        </tr>
-                        <tr>
-                          <td></td>
-                          <td></td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-                <div class="col-sm-4 asset-wrapper">
-                  <h4>{{tokenToRedeem}} Asset Balance</h4>
-                  <div class="asset-inner">{{totalSupply}}</div>
-                </div>
-                <div class="col-sm-4 podbal-wrapper">
-                  <div class="table-responsive">
-                    <table class="table table-bordered text-center">
-                      <thead>
-                        <tr>
-                          <th colspan="2">{{tokenToRedeem}} Balance</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td>Total</td>
-                          <td>{{totalSupply}}</td>
-                        </tr>
-                        <!-- <tr>
+              <div class="col-sm-4 podbal-wrapper">
+                <div class="table-responsive">
+                  <table class="table table-bordered text-center">
+                    <thead>
+                      <tr>
+                        <th colspan="2">{{tokenToRedeem}} Balance</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>Total</td>
+                        <td>{{totalSupply}}</td>
+                      </tr>
+                      <!-- <tr>
                           <td>Burned</td>
                           <td>{{totalBurn}}</td>
                         </tr>
@@ -128,40 +129,80 @@
                           <td>Net</td>
                           <td>{{netToken}}</td>
                         </tr> -->
-                      </tbody>
-                    </table>
-                  </div>
+                    </tbody>
+                  </table>
                 </div>
               </div>
+            </div>
+            <div class="row" *ngIf="currentProvider == 3">
+              <div class="col-sm-4 asset-wrapper">
+                <h4>PodK Asset Balance</h4>
+                <div class="asset-inner">{{asset721}}</div>
+              </div>
+              <div class="col-sm-4 podbal-wrapper">
+                <div class="table-responsive">
+                  <table class="table table-bordered text-center">
+                    <thead>
+                      <tr>
+                        <th colspan="2">PodK Balance</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>Total</td>
+                        <td>{{asset721}}</td>
+                      </tr>
+                      <!-- <tr>
+                          <td>Burned</td>
+                          <td>{{totalBurn}}</td>
+                        </tr>
+                        <tr>
+                          <td>Redeemed</td>
+                          <td>{{totalRedeem}}</td>
+                        </tr>
+                        <tr>
+                          <td>Net</td>
+                          <td>{{netToken}}</td>
+                        </tr> -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
 
-              <div class="pop-links clearfix">
-                <div class="col-sm-6 external-link-wrapper">
-                  <h3>External Transactions</h3>
-                  <a (click)="openPopup('approve-pop')">Approve</a>
-                  <a  (click)="openPopup('transfer-pop', 'Pod1')">Transfer POD1</a>
-                  <a  (click)="openPopup('transfer-pop', 'Pod2')">Transfer POD2</a>
-                  <a >Market Place</a>
-                  <a (click) = "testApi()">Link To Exchanges</a>
-                </div>
-                <div class="col-sm-6 interact-link-wrapper">
-                    <h3>Interact With Ellypin</h3>
-                    <a class="pointer" (click)="openPopup('buy-pop', 'Pod1')">Buy POD1</a>
-                    <a class="pointer" (click)="openPopup('redeem-pop', 'Pod1')">Redeem POD1</a>
-                    <a class="pointer" (click)="openPopup('swap-contract-pop', 'Pod1')">POD1 Swap Contract</a>
-                    <a class="pointer" (click)="openPopup('buy-pop', 'Pod2')">Buy POD2</a>
-                    <a class="pointer" (click)="openPopup('redeem-pop', 'Pod2')">Redeem POD2</a>
-                    <a class="pointer" (click)="openPopup('swap-contract-pop', 'Pod2')">POD2 Swap Contract</a>
-                    <a class="pointer" (click)="openPopup('buy-pop', 'PodK')">Buy PODK</a>
-                    <a class="pointer" (click)="openPopup('redeem-pop', 'PodK')">Redeem PODK</a>
-                </div>
+            <div class="pop-links clearfix">
+              <div class="col-sm-6 external-link-wrapper">
+                <h3 (click)="testApi()">External Transactions</h3>
+                <!-- <a (click)="openPopup('approve-pop')">Approve</a> -->
+                <a class="pointer" (click)="openPopup('transfer-pop', 'Pod1')">Transfer POD1</a>
+                <a class="pointer" (click)="openPopup('transfer-pop', 'Pod2')">Transfer POD2</a>
+                <a class="pointer" (click)="openPopup('transfer-pop', 'PodK')">Transfer PODK</a>
+                <!-- <a>Market Place</a>
+                <a>Link To Exchanges</a> -->
+                <!-- <a class="pointer" (click)="exportRopstenCsv()">Export Ropsten</a>
+                  <a class="pointer" (click)="exportRinkebyCsv()">Export Rinkeby</a> -->
+              </div>
+              <div class="col-sm-6 interact-link-wrapper">
+                <h3>Interact With Ellypin</h3>
+                <a class="pointer" (click)="openPopup('buy-pop', 'Pod1')">Buy POD1</a>
+                <a class="pointer" (click)="openPopup('redeem-pop', 'Pod1')">Redeem POD1</a>
+                <a class="pointer" (click)="openPopup('swap-contract-pop', 'Pod1')">POD1 Swap Contract</a>
+                <a class="pointer" (click)="openPopup('buy-pop', 'Pod2')">Buy POD2</a>
+                <a class="pointer" (click)="openPopup('redeem-pop', 'Pod2')">Redeem POD2</a>
+                <a class="pointer" (click)="openPopup('swap-contract-pop', 'Pod2')">POD2 Swap Contract</a>
+                <a class="pointer" (click)="openPopup('buy-pop', 'PodK')">Buy PODK</a>
+                <a class="pointer" (click)="openPopup('redeem-pop', 'PodK')">Redeem PODK</a>
               </div>
             </div>
           </div>
         </div>
       </div>
+    </div>
   </div>
 </div>
-<ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px',fullScreenBackdrop:true, animationType:'circleSwish' }" [template]="customLoadingTemplate"></ngx-loading>
+<ngx-loading [show]="loading"
+  [config]="{ backdropBorderRadius: '3px',fullScreenBackdrop:true, animationType:'circleSwish' }"
+  [template]="customLoadingTemplate"></ngx-loading>
 
 <div class="modal fade" id="buy-pop" data-backdrop="static" role="dialog">
   <div class="modal-dialog">
@@ -175,10 +216,12 @@
               <div class="form-group">
                 <label>Buy</label>
                 <div class="input-group">
-                  <input class="form-control" type="text" (keyup)="keyBuy($event)" [formControl]="buyToken" name="buypod" >
+                  <input class="form-control" type="text" (keyup)="keyBuy($event)" [readonly]="currPod == 'PodK'"
+                    [formControl]="buyToken" name="buypod">
                   <span class="input-group-addon">Pods</span>
                 </div>
-                <span *ngIf="buyToken.invalid && buyToken.touched" style="color:red;font-size: 11px">Enter tokens to buy</span>
+                <span *ngIf="buyToken.invalid && buyToken.touched" style="color:red;font-size: 11px">Enter tokens to
+                  buy</span>
               </div>
             </div>
             <div class="col-sm-6 col-xs-12">
@@ -186,46 +229,51 @@
                 <label>Fee</label>
                 <input class="form-control" readonly [formControl]="buyFee" type="text" name="fee" required="">
               </div>
-            </div>  
+            </div>
             <div class="col-sm-12 col-xs-12">
               <div class="form-group">
                 <label>Amount to Pay</label>
-                <input class="form-control" readonly type="text" [(ngModel)]="buyAmount"  [ngModelOptions]="{standalone: true}" name="amnt-pay" required="">
+                <input class="form-control" readonly type="text" [(ngModel)]="buyAmount"
+                  [ngModelOptions]="{standalone: true}" name="amnt-pay" required="">
               </div>
             </div>
           </div>
-          
+
           <div class="row">
             <div class="col-sm-6 col-xs-12">
               <h3>Buyer Details</h3>
             </div>
             <div class="col-sm-6">
-                <div class="form-group">
-                  <label class="file-uploader">
-                    <input type="file" name="buyer-id">
-                    <span>Upload Identity Document</span>
-                  </label>
-                </div>
-              </div>  
+              <div class="form-group">
+                <label class="file-uploader">
+                  <input type="file" name="buyer-id">
+                  <span>Upload Identity Document</span>
+                </label>
+              </div>
+            </div>
             <div class="col-sm-4 col-xs-12">
               <div class="form-group">
                 <label>First Name</label>
-                <input class="form-control" type="text" [formControl]="buyFirstName" placeholder="Enter First Name" name="buyer-fname" required="">
-                <span *ngIf="buyFirstName.invalid && buyFirstName.touched" style="color:red;font-size: 11px">Enter your first name</span>
+                <input class="form-control" type="text" [formControl]="buyFirstName" placeholder="Enter First Name"
+                  name="buyer-fname" required="">
+                <span *ngIf="buyFirstName.invalid && buyFirstName.touched" style="color:red;font-size: 11px">Enter your
+                  first name</span>
               </div>
             </div>
             <div class="col-sm-4 col-xs-12">
               <div class="form-group">
                 <label>Middle Name</label>
                 <input class="form-control" type="text" [formControl]="buyMiddleName" name="buyer-mname">
-                <span *ngIf="buyMiddleName.invalid && buyMiddleName.touched" style="color:red;font-size: 11px">Enter your middle name</span>
+                <span *ngIf="buyMiddleName.invalid && buyMiddleName.touched" style="color:red;font-size: 11px">Enter
+                  your middle name</span>
               </div>
             </div>
             <div class="col-sm-4 col-xs-12">
               <div class="form-group">
                 <label>Last Name</label>
                 <input class="form-control" type="text" [formControl]="buyLastName" name="buyer-lname">
-                <span *ngIf="buyLastName.invalid && buyLastName.touched" style="color:red;font-size: 11px">Enter your last name</span>
+                <span *ngIf="buyLastName.invalid && buyLastName.touched" style="color:red;font-size: 11px">Enter your
+                  last name</span>
               </div>
             </div>
           </div>
@@ -233,29 +281,33 @@
             <div class="col-sm-12 col-xs-12">
               <div class="form-group">
                 <label>Address - Number and Street</label>
-                <input class="form-control" type="text" [formControl]="buyAddress" name="buy-add" >
-                <span *ngIf="buyAddress.invalid && buyAddress.touched" style="color:red;font-size: 11px">Enter a valid address</span>
+                <input class="form-control" type="text" [formControl]="buyAddress" name="buy-add">
+                <span *ngIf="buyAddress.invalid && buyAddress.touched" style="color:red;font-size: 11px">Enter a valid
+                  address</span>
               </div>
             </div>
             <div class="col-sm-4 col-xs-12">
               <div class="form-group">
                 <label>City</label>
-                <input class="form-control" type="text" [formControl]="buyCity" name="buyer-city" >
-                <span *ngIf="buyCity.invalid && buyCity.touched" style="color:red;font-size: 11px">Enter a valid city name</span>
+                <input class="form-control" type="text" [formControl]="buyCity" name="buyer-city">
+                <span *ngIf="buyCity.invalid && buyCity.touched" style="color:red;font-size: 11px">Enter a valid city
+                  name</span>
               </div>
             </div>
             <div class="col-sm-4 col-xs-12">
               <div class="form-group">
                 <label>Province</label>
                 <input class="form-control" type="text" [formControl]="buyProvince" name="buyer-province">
-                <span *ngIf="buyProvince.invalid && buyProvince.touched" style="color:red;font-size: 11px">Enter a valid province name</span>
+                <span *ngIf="buyProvince.invalid && buyProvince.touched" style="color:red;font-size: 11px">Enter a valid
+                  province name</span>
               </div>
             </div>
             <div class="col-sm-4 col-xs-12">
               <div class="form-group">
                 <label>Country</label>
                 <input class="form-control" type="text" [formControl]="buyCountry" name="buyer-country">
-                <span *ngIf="buyCountry.invalid && buyCountry.touched" style="color:red;font-size: 11px">Enter a valid country name</span>
+                <span *ngIf="buyCountry.invalid && buyCountry.touched" style="color:red;font-size: 11px">Enter a valid
+                  country name</span>
               </div>
             </div>
           </div>
@@ -264,21 +316,24 @@
               <div class="form-group">
                 <label>Email</label>
                 <input class="form-control" type="email" [formControl]="buyEmail" name="buyer-email">
-                <span *ngIf="buyEmail.invalid && buyEmail.touched" style="color:red;font-size: 11px">Enter a valid email id</span>
+                <span *ngIf="buyEmail.invalid && buyEmail.touched" style="color:red;font-size: 11px">Enter a valid email
+                  id</span>
               </div>
             </div>
             <div class="col-sm-4 col-xs-12">
               <div class="form-group">
                 <label>Tel</label>
                 <input class="form-control" type="tel" [formControl]="buyTel" name="buyer-tel">
-                <span *ngIf="buyTel.invalid && buyTel.touched" style="color:red;font-size: 11px">Enter a valid phone number</span>
+                <span *ngIf="buyTel.invalid && buyTel.touched" style="color:red;font-size: 11px">Enter a valid phone
+                  number</span>
               </div>
             </div>
             <div class="col-sm-4 col-xs-12">
               <div class="form-group">
                 <label>Postcode</label>
                 <input class="form-control" type="text" [formControl]="buyPostCode" name="buyer-postcode">
-                <span *ngIf="buyPostCode.invalid && buyPostCode.touched" style="color:red;font-size: 11px">Enter a valid postalcode</span>
+                <span *ngIf="buyPostCode.invalid && buyPostCode.touched" style="color:red;font-size: 11px">Enter a valid
+                  postalcode</span>
               </div>
             </div>
           </div>
@@ -287,7 +342,8 @@
             <div class="col-sm-8 col-xs-12">
               <div class="form-group">
                 <label>Paying Bank Name and Address</label>
-                <p>Pay to ABC Bank, Singapore .<br> SWIFT No xxxxxxxxxxxx <br> Account Noaaaaaaaaaaaa <br> Account Name: Ellypin EAD account</p>
+                <p>Pay to ABC Bank, Singapore .<br> SWIFT No xxxxxxxxxxxx <br> Account Noaaaaaaaaaaaa <br> Account Name:
+                  Ellypin EAD account</p>
                 <!-- <input class="form-control" type="text" [formControl]="buyBank" name="bank-name"> -->
                 <!-- <span *ngIf="buyBank.invalid && buyBank.touched" style="color:red;font-size: 11px">Enter the bank name </span> -->
               </div>
@@ -306,7 +362,8 @@
             </div> -->
             <div class="col-sm-12" *ngIf="!requestCreated">
               <div class="form-submit">
-                <button type="submit" class="btn btn-danger btn-lg" [disabled]="buyForm.invalid" (click)="buyRequest()">Submit</button>
+                <button type="submit" class="btn btn-danger btn-lg" [disabled]="buyForm.invalid"
+                  (click)="buyRequest()">Submit</button>
               </div>
             </div>
           </div>
@@ -318,7 +375,8 @@
                 <p style="text-align:center">Please COPY this ID Number and include it in any correspondence with us
                 </p>
                 <div style="text-align:center">
-                    <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="closeModal('buy-pop')">OK</button>
+                  <button type="button" class="btn btn-primary" data-dismiss="modal"
+                    (click)="closeModal('buy-pop')">OK</button>
                 </div>
               </div>
             </div>
@@ -341,10 +399,12 @@
               <div class="form-group">
                 <label>Redeem</label>
                 <div class="input-group">
-                  <input class="form-control" type="text" (keyup)="keyRedeem($event)" [readonly] = 'currPod == "PodK"' [formControl]="redeemToken" name="red-pod">
+                  <input class="form-control" type="text" (keyup)="keyRedeem($event)" [readonly]='currPod == "PodK"'
+                    [formControl]="redeemToken" name="red-pod">
                   <span class="input-group-addon">Pods</span>
                 </div>
-                <span *ngIf="redeemToken.invalid && redeemToken.touched" style="color:red;font-size: 11px">Enter tokens to redeem</span>
+                <span *ngIf="redeemToken.invalid && redeemToken.touched" style="color:red;font-size: 11px">Enter tokens
+                  to redeem</span>
               </div>
             </div>
             <div class="col-sm-6 col-xs-12">
@@ -352,38 +412,42 @@
                 <label>Redemption Fee</label>
                 <input class="form-control" type="text" [formControl]="redeemFee" readonly name="red-fee">
               </div>
-            </div>  
+            </div>
             <div class="col-sm-12 col-xs-12">
               <div class="form-group">
                 <label>Net to you</label>
                 <div class="input-group">
                   <span class="input-group-addon"><i class="fa fa-usd" aria-hidden="true"></i></span>
-                  <input class="form-control" type="text" name="net-amnt" readonly [(ngModel)]="redeemTotal" [ngModelOptions]="{standalone: true}" >
+                  <input class="form-control" type="text" name="net-amnt" readonly [(ngModel)]="redeemTotal"
+                    [ngModelOptions]="{standalone: true}">
                 </div>
               </div>
             </div>
           </div>
           <h3>Pay To</h3>
-          <div class="row"> 
+          <div class="row">
             <div class="col-sm-6 col-xs-12">
               <div class="form-group">
                 <label>Receiving Bank Name and Address</label>
                 <input class="form-control" type="text" [formControl]="redeemBank" name="receive-bank-name">
-                <span *ngIf="redeemBank.invalid && redeemBank.touched" style="color:red;font-size: 11px">Enter valid bank name and address</span>
+                <span *ngIf="redeemBank.invalid && redeemBank.touched" style="color:red;font-size: 11px">Enter valid
+                  bank name and address</span>
               </div>
             </div>
             <div class="col-sm-3 col-xs-12">
               <div class="form-group">
                 <label>Account Number</label>
                 <input class="form-control" type="text" [formControl]="redeemAccountNumber" name="acc-number">
-                <span *ngIf="redeemAccountNumber.invalid && redeemAccountNumber.touched" style="color:red;font-size: 11px">Enter valid bank number</span>
+                <span *ngIf="redeemAccountNumber.invalid && redeemAccountNumber.touched"
+                  style="color:red;font-size: 11px">Enter valid bank number</span>
               </div>
             </div>
             <div class="col-sm-3 col-xs-12">
               <div class="form-group">
                 <label>Swift Code</label>
                 <input class="form-control" type="text" [formControl]="redeemSwiftCode" name="swift-code">
-                <span *ngIf="redeemSwiftCode.invalid && redeemSwiftCode.touched" style="color:red;font-size: 11px">Enter swift code</span>
+                <span *ngIf="redeemSwiftCode.invalid && redeemSwiftCode.touched" style="color:red;font-size: 11px">Enter
+                  swift code</span>
               </div>
             </div>
           </div>
@@ -392,33 +456,38 @@
               <div class="form-group">
                 <label>Beneficiary Name and Address</label>
                 <input class="form-control" type="text" [formControl]="redeemBeneficiary" name="ben-name-add">
-                <span *ngIf="redeemBeneficiary.invalid && redeemBeneficiary.touched" style="color:red;font-size: 11px">Enter swift code</span>
+                <span *ngIf="redeemBeneficiary.invalid && redeemBeneficiary.touched"
+                  style="color:red;font-size: 11px">Enter swift code</span>
               </div>
             </div>
             <div class="col-sm-4 col-xs-12">
               <div class="form-group">
                 <label>Email</label>
                 <input class="form-control" type="email" [formControl]="redeemEmail" name="ben-email">
-                <span *ngIf="redeemEmail.invalid && redeemEmail.touched" style="color:red;font-size: 11px">Enter a valid email</span>
+                <span *ngIf="redeemEmail.invalid && redeemEmail.touched" style="color:red;font-size: 11px">Enter a valid
+                  email</span>
               </div>
             </div>
           </div>
           <div class="row" *ngIf="!requestCreated">
             <div class="col-sm-12">
               <div class="form-submit">
-                <button type="submit" class="btn btn-danger btn-lg" [disabled]="redeemForm.invalid" (click)="redeemRequest()">Submit</button>
+                <button type="submit" class="btn btn-danger btn-lg" [disabled]="redeemForm.invalid"
+                  (click)="redeemRequest()">Submit</button>
               </div>
             </div>
           </div>
           <div class="row" *ngIf="requestId">
             <div class="alert alert-success">
-                <p style="text-align:center">Redeem Request Created Succesfully</p>
-                <p style="text-align:center">Request Id:{{requestId}}</p>
-                <p style="text-align:center">Please COPY this ID Number and include it in any correspondence with us
-                </p>
-                <div style="text-align:center">
-                    <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="closeModal('redeem-pop')">OK</button>
-                </div>
+              <p style="text-align:center">Redeem Request Created Succesfully</p>
+              <p style="text-align:center">Request Id:{{requestId}}</p>
+              <p style="text-align:center" *ngIf="currPod == 'PodK'">Redeem Token Id:{{tokenId}}</p>
+              <p style="text-align:center">Please COPY this ID Number and include it in any correspondence with us
+              </p>
+              <div style="text-align:center">
+                <button type="button" class="btn btn-primary" data-dismiss="modal"
+                  (click)="closeModal('redeem-pop')">OK</button>
+              </div>
             </div>
           </div>
         </form>
@@ -439,21 +508,32 @@
               <div class="form-group">
                 <label>To Address</label>
                 <input class="form-control" [formControl]="transferAddr" type="text" name="to-add">
-                <span *ngIf="transferAddr.invalid && transferAddr.touched" style="color:red;font-size: 11px">Enter tokens to transfer</span>
+                <span *ngIf="transferAddr.invalid && transferAddr.touched" style="color:red;font-size: 11px">Enter
+                  tokens to transfer</span>
               </div>
             </div>
             <div class="col-sm-12">
               <div class="form-group">
                 <label>Quantity</label>
-                <input class="form-control" type="text" [formControl]="transferToken" name="qty-transfer">
-                <span *ngIf="transferToken.invalid && transferToken.touched" style="color:red;font-size: 11px">Enter receiver address</span>
+                <input class="form-control" type="text" [readonly]="currPod == 'PodK'" [formControl]="transferToken"
+                  name="qty-transfer">
+                <span *ngIf="transferToken.invalid && transferToken.touched" style="color:red;font-size: 11px">Enter
+                  receiver address</span>
               </div>
             </div>
+            <div class="col-sm-12" *ngIf="currPod == 'PodK'">
+              <div class="form-group">
+                <label>Fees</label>
+                <input class="form-control" type="text" [readonly]="currPod == 'PodK'" [(ngModel)]="transfer721Fees" [ngModelOptions]="{standalone: true}"
+                  name="qty-transfer">
+              </div>
             </div>
+          </div>
           <div class="row">
             <div class="col-sm-12">
               <div class="form-submit">
-                <button type="submit" class="btn btn-danger btn-lg" data-dismiss="modal" [disabled]="transferForm.invalid" (click)="transferTokens()">Execute</button>
+                <button type="submit" class="btn btn-danger btn-lg" data-dismiss="modal"
+                  [disabled]="transferForm.invalid" (click)="transferTokens()">Execute</button>
               </div>
             </div>
           </div>
@@ -467,7 +547,8 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-body">
-        <button type="button" class="close" data-dismiss="modal" (click)="closeModal('swap-contract-pop')">&times;</button>
+        <button type="button" class="close" data-dismiss="modal"
+          (click)="closeModal('swap-contract-pop')">&times;</button>
         <form action="" [formGroup]="swapForm">
           <h3>Swap Contract</h3>
           <div class="row">
@@ -475,10 +556,12 @@
               <div class="form-group">
                 <label>Swap</label>
                 <div class="input-group">
-                  <input class="form-control" type="text" (keyup)="keySwap($event)" formControlName="swapToken" name="red-pod">
+                  <input class="form-control" type="text" (keyup)="keySwap($event)" formControlName="swapToken"
+                    name="red-pod">
                   <span class="input-group-addon">{{tokenToRedeem}}</span>
                 </div>
-                <span *ngIf="swapForm.get('swapToken').invalid && swapForm.get('swapToken').touched" style="color:red;font-size: 11px">Enter tokens to swap</span>
+                <span *ngIf="swapForm.get('swapToken').invalid && swapForm.get('swapToken').touched"
+                  style="color:red;font-size: 11px">Enter tokens to swap</span>
               </div>
             </div>
             <div class="col-sm-6 col-xs-12">
@@ -486,13 +569,14 @@
                 <label>Swap Fee</label>
                 <input class="form-control" type="text" formControlName="swapFee" readonly name="red-fee">
               </div>
-            </div>  
+            </div>
             <div class="col-sm-12 col-xs-12">
               <div class="form-group">
                 <label>Net to you</label>
                 <div class="input-group">
                   <!-- <span class="input-group-addon"><i class="fa fa-usd" aria-hidden="true"></i></span> -->
-                  <input class="form-control" type="text" name="net-amnt" readonly [(ngModel)]="swapTotal" [ngModelOptions]="{standalone: true}" >
+                  <input class="form-control" type="text" name="net-amnt" readonly [(ngModel)]="swapTotal"
+                    [ngModelOptions]="{standalone: true}">
                   <span class="input-group-addon">{{tokenToMint}}</span>
 
                 </div>
@@ -503,7 +587,7 @@
                 <label>Email</label>
                 <div class="input-group swapEmail">
                   <!-- <span class="input-group-addon"><i class="fa fa-usd" aria-hidden="true"></i></span> -->
-                  <input class="form-control" type="text" name="net-amnt" formControlName="swapEmail" >
+                  <input class="form-control" type="text" name="net-amnt" formControlName="swapEmail">
                 </div>
               </div>
             </div>
@@ -551,19 +635,21 @@
           <div class="row" *ngIf="!requestCreated">
             <div class="col-sm-12">
               <div class="form-submit">
-                <button type="submit" class="btn btn-danger btn-lg" [disabled]="swapForm.invalid" (click)="swapRequest()">Submit</button>
+                <button type="submit" class="btn btn-danger btn-lg" [disabled]="swapForm.invalid"
+                  (click)="swapRequest()">Submit</button>
               </div>
             </div>
           </div>
           <div class="row" *ngIf="requestId">
             <div class="alert alert-success">
-                <p style="text-align:center">Swap Request Created Succesfully</p>
-                <p style="text-align:center">Request Id:{{requestId}}</p>
-                <p style="text-align:center">Please COPY this ID Number and include it in any correspondence with us
-                </p>
-                <div style="text-align:center">
-                    <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="closeModal('swap-contract-pop')">OK</button>
-                </div>
+              <p style="text-align:center">Swap Request Created Succesfully</p>
+              <p style="text-align:center">Request Id:{{requestId}}</p>
+              <p style="text-align:center">Please COPY this ID Number and include it in any correspondence with us
+              </p>
+              <div style="text-align:center">
+                <button type="button" class="btn btn-primary" data-dismiss="modal"
+                  (click)="closeModal('swap-contract-pop')">OK</button>
+              </div>
             </div>
           </div>
         </form>

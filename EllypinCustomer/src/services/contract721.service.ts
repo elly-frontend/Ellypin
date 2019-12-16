@@ -203,7 +203,7 @@ export class Contract721Service {
     })as Promise<string>;
   }
 
-  public async getTotalSupply(): Promise<string>{
+  public async getTotalSupply721(): Promise<string>{
     return new Promise((resolve, reject) => {
       this._tokenContract.totalSupply.call((err, result) => {
         if(err != null){

@@ -12,6 +12,7 @@ import swal from 'sweetalert2';
 import * as openpgp from 'openpgp';
 import { Contract721Service } from 'src/services/contract721.service';
 declare let window: any;
+import { ExportToCsv } from 'export-to-csv';
 declare var $: any
 
 @Component({
@@ -703,12 +704,13 @@ export class AdminComponent implements OnInit {
     this.kycSwapValue = '';
   }
 
-  tempMint() {
-    this.contractService.mintToken('0x5C6a5121d259DF9Eca31FAf034A54FFa25db2834', 5);
-  }
-
   mintToken() {
     //console.log('In mintToken');
+    let adminAccount = '0x5C6a5121d259DF9Eca31FAf034A54FFa25db2834';
+    if(this.ethereumAccount.toLowerCase() != adminAccount.toLowerCase()){
+      swal('Kindly use Admin Account');
+      return;
+    }
     if (this.buyObjectSet.SEND_TOKEN_ACKNOWLEDGE != true) {
       this.buyObjectSet.SEND_TOKEN_ACKNOWLEDGE = true;
       if(this.buyObjectSet.SEND_TOKEN_REQUEST.requestType == 'PodK'){
@@ -722,6 +724,11 @@ export class AdminComponent implements OnInit {
   }
 
   mintSwapToken(){
+    let adminAccount = '0x5C6a5121d259DF9Eca31FAf034A54FFa25db2834';
+    if(this.ethereumAccount.toLowerCase() != adminAccount.toLowerCase()){
+      swal('Kindly use Admin Account');
+      return;
+    }
     if (this.swapObjectSet.SWAP_TOKEN_ACKNOWLEDGE != true) {
       this.swapObjectSet.SWAP_TOKEN_ACKNOWLEDGE = true;
       console.log(parseInt(this.swapObjectSet.totalToken));
@@ -732,6 +739,11 @@ export class AdminComponent implements OnInit {
   }
 
   burnTokens() {
+    let adminAccount = '0x5C6a5121d259DF9Eca31FAf034A54FFa25db2834';
+    if(this.ethereumAccount.toLowerCase() != adminAccount.toLowerCase()){
+      swal('Kindly use Admin Account');
+      return;
+    }
     if (this.redeemObjectSet.BURN_TOKEN_ACKNOWLEDGE != true) {
       this.redeemObjectSet.BURN_TOKEN_ACKNOWLEDGE = true;
       //console.log('REDEEMOBJECT',this.redeemObjectSet);
@@ -765,6 +777,11 @@ export class AdminComponent implements OnInit {
   }
 
   burnSwapTokens(){
+    let adminAccount = '0x5C6a5121d259DF9Eca31FAf034A54FFa25db2834';
+    if(this.ethereumAccount.toLowerCase() != adminAccount.toLowerCase()){
+      swal('Kindly use Admin Account');
+      return;
+    }
     if (!this.swapObjectSet.SWAP_TOKEN_REQUEST.tokenBurned) {
       this.swapObjectSet.SWAP_TOKEN_REQUEST.tokenBurned = true;
       //console.log('REDEEMOBJECT',this.swapObjectSet);
@@ -786,6 +803,94 @@ export class AdminComponent implements OnInit {
   showBuy(){
     // console.log('BUYARRAY:', this.buyMessageArray);
     //     console.log('BUYDISPLAY:', this.buyMessageDisplay);
+  }
+
+  exportRopstenCsv(){
+      this.dataService.etherscan('ropsten', 'contractaddress', '0x44128f17132ae9aac62ce8a47c0cf5465e225c97').subscribe((res:any) => {
+        console.log(res);
+        var data = [];
+        if(res.result.length){
+          res.result.forEach(element => {
+            var txnDate :any = new Date(parseInt(element.timeStamp) * 1000);
+            let csvObject = {
+              hash : element.hash,
+              from : element.from,
+              to : element.to,
+              date : txnDate,
+              amount : element.value,
+              token_name : element.tokenName,
+              token_symbol : element.tokenSymbol
+            }
+            data.push(csvObject);
+          });
+          let todayDate : any = new Date();
+          const options = { 
+            filename : `Ellypin_Ropsten_${todayDate.getDate()}/${todayDate.getMonth()+1}/${todayDate.getYear()}`,
+            fieldSeparator: ',',
+            quoteStrings: '"',
+            decimalSeparator: '.',
+            showLabels: true, 
+            showTitle: true,
+            title: `Ropsten Network`,
+            useTextFile: false,
+            useBom: true,
+            useKeysAsHeaders: false,
+            headers: ['Transaction Hash', 'From', 'To', 'Date', 'Amount', 'Token Name', 'Token Symbol' ] 
+          };
+         
+        const csvExporter = new ExportToCsv(options);
+         
+        csvExporter.generateCsv(data);
+        }
+      },
+      (err:any) => {
+        console.log(err);
+    
+      })
+  }
+
+  exportRinkebyCsv(){
+      this.dataService.etherscan('rinkeby', 'contractaddress', '0xe12fFbfa5FF156A195b9e52B9D39091253f8DecC').subscribe((res:any) => {
+        console.log(res);
+        var data = [];
+        if(res.result.length){
+          res.result.forEach(element => {
+            var txnDate :any = new Date(parseInt(element.timeStamp) * 1000);
+            let csvObject = {
+              hash : element.hash,
+              from : element.from,
+              to : element.to,
+              date : txnDate,
+              amount : element.value,
+              token_name : element.tokenName,
+              token_symbol : element.tokenSymbol
+            }
+            data.push(csvObject);
+          });
+          let todayDate : any = new Date();
+          const options = { 
+            filename : `Ellypin_Rinkeby_${todayDate.getDate()}/${todayDate.getMonth()+1}/${todayDate.getYear()}`,
+            fieldSeparator: ',',
+            quoteStrings: '"',
+            decimalSeparator: '.',
+            showLabels: true, 
+            showTitle: true,
+            title: 'Rinkeby Network',
+            useTextFile: false,
+            useBom: true,
+            useKeysAsHeaders: false,
+            headers: ['Transaction Hash', 'From', 'To', 'Date', 'Amount', 'Token Name', 'Token Symbol' ] 
+          };
+         
+        const csvExporter = new ExportToCsv(options);
+         
+        csvExporter.generateCsv(data);
+        }
+      },
+      (err:any) => {
+        console.log(err);
+    
+      })
   }
 
 

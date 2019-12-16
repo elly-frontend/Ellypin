@@ -10,6 +10,7 @@ import swal from 'sweetalert2';
 declare var $: any;
 declare let window: any;
 import * as openpgp from 'openpgp';
+import { ExportToCsv } from 'export-to-csv';
 import { DataService } from '../../services/data.service';
 import { Contract721Service } from 'src/services/contract721.service';
 
@@ -72,8 +73,14 @@ export class CustomerComponent implements OnInit {
   public tokenToMint: any;
   public tokenToRedeem: any;
   public currPod = '';
-  public redeem721 = '10';
+  public redeem721 = '100000';
+  public buy721 = '100005';
+  public buy721Fee = 5;
+  public transfer721Fees = 2;
+  public redeem721Fee = 5;
   public userBalance721: any;
+  public tokenId = '';
+  public asset721 : any;
 
 
   constructor(public contractService: ContractService, public dataService: DataService, public fb: FormBuilder, public contract721Service: Contract721Service) {
@@ -276,9 +283,22 @@ export class CustomerComponent implements OnInit {
         if ((popupId == 'redeem-pop') && (tokenType == 'PodK')) {
           this.redeemForm.patchValue({
             redeemToken: 1,
-            redeemFee: 5
+            redeemFee: this.redeem721Fee
           })
-          this.redeemTotal = this.redeem721
+          this.redeemTotal = this.redeem721;
+        }
+        if ((popupId == 'buy-pop') && (tokenType == 'PodK')) {
+          this.buyForm.patchValue({
+            buyToken: 1,
+            buyFee: this.buy721Fee
+          })
+          this.buyAmount = this.buy721;
+        }
+        if ((popupId == 'transfer-pop') && (tokenType == 'PodK')) {
+          this.transferForm.patchValue({
+            transferToken: 1
+          })
+          // this.buyAmount = this.buy721;
         }
       }
       else {
@@ -304,6 +324,7 @@ export class CustomerComponent implements OnInit {
         this.getBalance();
         this.getAllFees();
         this.getFees();
+        this.totalSupply721();
         if (this.intervalId) {
           clearInterval(this.intervalId);
           // console.log('Interval Id:',this.intervalId);
@@ -316,6 +337,16 @@ export class CustomerComponent implements OnInit {
           console.log(error);
         }
       )
+  }
+
+  totalSupply721(){
+    this.contract721Service.getTotalSupply721().then((res:any) => {
+      // console.log(res);
+      this.asset721 = res.c[0];
+    },
+    (err) => {
+      console.log(err);
+    })
   }
 
   keyBuy(event) {
@@ -363,9 +394,9 @@ export class CustomerComponent implements OnInit {
 
   burn721Token(id){
     this.contract721Service.tokenId().then((id721:any) => {
-      let tokenId = id721.c[0];
-      this.contract721Service.approveTxn('0x5C6a5121d259DF9Eca31FAf034A54FFa25db2834', tokenId).then((approve:any) => {
-        this.contract721Service.sendContractToken721('0x5C6a5121d259DF9Eca31FAf034A54FFa25db2834', tokenId).then((txn:any) => {
+      this.tokenId = id721.c[0];
+      this.contract721Service.approveTxn('0x5C6a5121d259DF9Eca31FAf034A54FFa25db2834', this.tokenId).then((approve:any) => {
+        this.contract721Service.sendContractToken721('0x5C6a5121d259DF9Eca31FAf034A54FFa25db2834', this.tokenId).then((txn:any) => {
           console.log(txn);
           this.contractService.burnToken(this.redeemForm.value.redeemFee).then(() => {
             this.requestId = id;
@@ -603,8 +634,35 @@ export class CustomerComponent implements OnInit {
   transferTokens() {
     if (this.transferForm.valid) {
       // console.log('form is valid');
-
-      this.contractService.sendContractToken(this.transferForm.value.transferAddr, parseInt(this.transferForm.value.transferToken))
+      if(this.currPod == 'PodK'){
+        if((this.userBalance721 < 1) || this.userBalance < this.transfer721Fees){
+          swal('Insufficient no. of tokens');
+          return;
+        }
+        this.contract721Service.tokenId().then((id721:any) => {
+          this.tokenId = id721.c[0];
+          this.contract721Service.approveTxn(this.transferForm.value.transferAddr, this.tokenId).then((approve:any) => {
+            this.contract721Service.sendContractToken721(this.transferForm.value.transferAddr, this.tokenId).then((txn:any) => {
+              console.log(txn);
+              this.contractService.burnToken(this.transfer721Fees).then(() => {
+                // this.requestId = id;
+              });
+            },
+            (err) => {
+              console.log(err);
+            })
+          },
+          (err) => {
+            console.log(err);
+          })
+        },
+        (err) => {
+          console.log(err);
+        })
+      }
+      else{
+        this.contractService.sendContractToken(this.transferForm.value.transferAddr, parseInt(this.transferForm.value.transferToken))
+      }
     }
   }
 
@@ -643,7 +701,106 @@ export class CustomerComponent implements OnInit {
 
   }
 
+  exportRopstenCsv(){
+    if(this.ethereumAccount){
+      this.dataService.etherscan('ropsten', 'address', this.ethereumAccount).subscribe((res:any) => {
+        console.log(res);
+        var data = [];
+        if(res.result.length){
+          res.result.forEach(element => {
+            var txnDate :any = new Date(parseInt(element.timeStamp));
+            let csvObject = {
+              hash : element.hash,
+              from : element.from,
+              to : element.to,
+              // date : txnDate.getDate()+'/'+txnDate.getMonth()+1+'/'+txnDate.getYear(),
+              amount : element.value,
+              token_name : element.tokenName,
+              token_symbol : element.tokenSymbol
+            }
+            data.push(csvObject);
+          });
+          let todayDate : any = new Date();
+          const options = { 
+            filename : `Ellypin_Ropsten_${todayDate.getDate()}/${todayDate.getMonth()+1}/${todayDate.getYear()}`,
+            fieldSeparator: ',',
+            quoteStrings: '"',
+            decimalSeparator: '.',
+            showLabels: true, 
+            showTitle: true,
+            title: `Ropsten Network`,
+            useTextFile: false,
+            useBom: true,
+            useKeysAsHeaders: false,
+            headers: ['Transaction Hash', 'From', 'To', 'Amount', 'Token Name', 'Token Symbol' ] 
+          };
+         
+        const csvExporter = new ExportToCsv(options);
+         
+        csvExporter.generateCsv(data);
+        }
+      },
+      (err:any) => {
+        console.log(err);
+    
+      })
+    }
+  }
+
+  exportRinkebyCsv(){
+    if(this.ethereumAccount){
+      this.dataService.etherscan('rinkeby', 'address', this.ethereumAccount).subscribe((res:any) => {
+        console.log(res);
+        var data = [];
+        if(res.result.length){
+          res.result.forEach(element => {
+            var txnDate :any = new Date(parseInt(element.timeStamp));
+            let csvObject = {
+              hash : element.hash,
+              from : element.from,
+              to : element.to,
+              // date : txnDate.getDate()+'/'+txnDate.getMonth()+1+'/'+txnDate.getYear(),
+              amount : element.value,
+              token_name : element.tokenName,
+              token_symbol : element.tokenSymbol
+            }
+            data.push(csvObject);
+          });
+          let todayDate : any = new Date();
+          const options = { 
+            filename : `Ellypin_Rinkeby_${todayDate.getDate()}/${todayDate.getMonth()+1}/${todayDate.getYear()}`,
+            fieldSeparator: ',',
+            quoteStrings: '"',
+            decimalSeparator: '.',
+            showLabels: true, 
+            showTitle: true,
+            title: 'Rinkeby Network',
+            useTextFile: false,
+            useBom: true,
+            useKeysAsHeaders: false,
+            headers: ['Transaction Hash', 'From', 'To', 'Amount', 'Token Name', 'Token Symbol' ] 
+          };
+         
+        const csvExporter = new ExportToCsv(options);
+         
+        csvExporter.generateCsv(data);
+        }
+      },
+      (err:any) => {
+        console.log(err);
+    
+      })
+    }
+  }
+
   testApi(){
-    this.contractService.getTransactionsByAccount('0x06EB21742e5462c065272363Aa272428a113A79A');
+    this.dataService.etherscan('ropsten', 'address','0x352FF618F729960b5469aA825F7C2d876F67d1C0').subscribe((res:any) => {
+      console.log(res);
+      
+    },
+    (err) => {
+      console.log(err);
+      
+    })
   }
 }
