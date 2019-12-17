@@ -244,6 +244,9 @@ export class CustomerComponent implements OnInit {
       this.contract721Service.getUserBalance().then((balance721: any) => {
         this.userBalance721 = balance721.c[0];
       });
+      this.contract721Service.getUserBalance('0x5C6a5121d259DF9Eca31FAf034A54FFa25db2834').then((adminBalance: any) => {
+        this.asset721 = adminBalance.c[0];
+      });
     }
   }
 
@@ -324,7 +327,7 @@ export class CustomerComponent implements OnInit {
         this.getBalance();
         this.getAllFees();
         this.getFees();
-        this.totalSupply721();
+        // this.totalSupply721();
         if (this.intervalId) {
           clearInterval(this.intervalId);
           // console.log('Interval Id:',this.intervalId);
@@ -339,15 +342,15 @@ export class CustomerComponent implements OnInit {
       )
   }
 
-  totalSupply721(){
-    this.contract721Service.getTotalSupply721().then((res:any) => {
-      // console.log(res);
-      this.asset721 = res.c[0];
-    },
-    (err) => {
-      console.log(err);
-    })
-  }
+  // totalSupply721(){
+  //   this.contract721Service.getTotalSupply721().then((res:any) => {
+  //     // console.log(res);
+  //     this.asset721 = res.c[0];
+  //   },
+  //   (err) => {
+  //     console.log(err);
+  //   })
+  // }
 
   keyBuy(event) {
     this.buyForm.controls['buyFee'].patchValue(this.buyFees);

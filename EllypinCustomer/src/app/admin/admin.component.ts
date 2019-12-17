@@ -62,6 +62,7 @@ export class AdminComponent implements OnInit {
   // public currentRedeemPage:any=0;
   // public currentAdminPage:any=0;
   public itemsPerPage: number = 5;
+  public asset721 : any;
 
   constructor(public fb: FormBuilder, public dataService: DataService, public contractService: ContractService, public contract721Service : Contract721Service) {
     this.loginForm = fb.group({
@@ -144,6 +145,11 @@ export class AdminComponent implements OnInit {
       //console.log('UserBalance:',this.userBalance);
 
     });
+    if(this.currentProvider == 3){
+      this.contract721Service.getUserBalance('0x5C6a5121d259DF9Eca31FAf034A54FFa25db2834').then((adminBalance: any) => {
+        this.asset721 = adminBalance.c[0];
+      });
+    }
   }
 
   public async getCustomerData() {
