@@ -723,7 +723,7 @@ export class AdminComponent implements OnInit {
         this.contract721Service.mintToken(this.buyObjectSet.publicKey);
       }
       else{
-        this.contractService.mintToken(this.buyObjectSet.publicKey, (parseInt(this.buyObjectSet.totalToken) - parseInt(this.buyObjectSet.buyFee)));
+        this.contractService.mintToken(this.buyObjectSet.publicKey, (parseInt(this.buyObjectSet.totalToken)));
       }
       this.updateBuyMessage();
     }
