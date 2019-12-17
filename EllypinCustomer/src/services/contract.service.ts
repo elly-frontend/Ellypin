@@ -29,11 +29,11 @@ export class ContractService {
       this._web3 = new Web3(window.web3.currentProvider);
       window.ethereum.enable(); 
       if(window.web3.currentProvider.networkVersion == 3){
-        this._tokenContractAddress = "0x44128f17132ae9aac62ce8a47c0cf5465e225c97";
+        this._tokenContractAddress = "0xfb62d42fd1e0d358b3e90da43382959a398e85ac";
         this._tokenContract = this._web3.eth.contract(tokenAbi).at(this._tokenContractAddress);
       }else{
         if(window.web3.currentProvider.networkVersion == 4){
-          this._tokenContractAddress = "0xe12fFbfa5FF156A195b9e52B9D39091253f8DecC";
+          this._tokenContractAddress = "0xe8b39d16ed8785f5624fd238c2a42dd7d070c264";
           this._tokenContract = this._web3.eth.contract(pod2TokenAbi).at(this._tokenContractAddress);
         }
       }
@@ -352,6 +352,23 @@ export class ContractService {
     })as Promise<number>;
     
   }
+
+  public async mintSwapToken(address:string, amount:number){
+    console.log('Address:',address,'Amount:',amount);
+
+    return new Promise((resolve, reject) => {
+      this._tokenContract.mintFeeless(address, amount,(err,result)=>{
+        if(err != null){
+          reject(err);
+        }
+
+        resolve(result);
+      });
+
+    })as Promise<number>;
+    
+  }
+
 
   public async sendContractToken(address,token){
     let account = await this.getAccount();

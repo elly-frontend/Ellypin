@@ -198,11 +198,11 @@ export class CustodianComponent implements OnInit {
       )
 
     if(this.currentProvider == 3){
-      this.contractDetails['contractAddress'] = "0x44128f17132ae9aac62ce8a47c0cf5465e225c97";
+      this.contractDetails['contractAddress'] = "0xfb62d42fd1e0d358b3e90da43382959a398e85ac";
     }
 
     if(this.currentProvider == 4){
-      this.contractDetails['contractAddress'] = "0xe12fFbfa5FF156A195b9e52B9D39091253f8DecC";
+      this.contractDetails['contractAddress'] = "0xe8b39d16ed8785f5624fd238c2a42dd7d070c264";
     }
       
   }
@@ -333,7 +333,7 @@ export class CustodianComponent implements OnInit {
     this.buyObjectSet.SEND_TOKEN_REQUEST = this.buyObjectSet.SEND_TOKEN_REQUEST || {};
     this.buyObjectSet['serialNo'] = this.buyMessageArray[this.buyIndex]['counter'];
     if(this.buyObjectSet[Message_Type.SEND_TOKEN_REQUEST]['requestType'] == 'PodK'){
-      this.buyObjectSet['totalToken'] = parseInt(this.buyObjectSet['buyFee']) + 100000;      
+      this.buyObjectSet['totalToken'] = 100000;      
     }
     else{
       this.buyObjectSet['totalToken'] = parseInt(this.buyObjectSet['buyFee']) + parseInt(this.buyObjectSet['buyToken']);

@@ -74,7 +74,7 @@ export class CustomerComponent implements OnInit {
   public tokenToRedeem: any;
   public currPod = '';
   public redeem721 = '100000';
-  public buy721 = '100005';
+  public buy721 = '100000';
   public buy721Fee = 5;
   public transfer721Fees = 2;
   public redeem721Fee = 5;
@@ -222,13 +222,13 @@ export class CustomerComponent implements OnInit {
     // )
 
     if (this.currentProvider == 3) {
-      this.contractDetails['contractAddress'] = "0x44128f17132ae9aac62ce8a47c0cf5465e225c97";
+      this.contractDetails['contractAddress'] = "0xfb62d42fd1e0d358b3e90da43382959a398e85ac";
       this.tokenToMint = 'Pod2';
       this.tokenToRedeem = 'Pod1';
     }
 
     if (this.currentProvider == 4) {
-      this.contractDetails['contractAddress'] = "0xe12fFbfa5FF156A195b9e52B9D39091253f8DecC";
+      this.contractDetails['contractAddress'] = "0xe8b39d16ed8785f5624fd238c2a42dd7d070c264";
       this.tokenToMint = 'Pod1';
       this.tokenToRedeem = 'Pod2';
     }
@@ -244,9 +244,9 @@ export class CustomerComponent implements OnInit {
       this.contract721Service.getUserBalance().then((balance721: any) => {
         this.userBalance721 = balance721.c[0];
       });
-      this.contract721Service.getUserBalance('0x5C6a5121d259DF9Eca31FAf034A54FFa25db2834').then((adminBalance: any) => {
-        this.asset721 = adminBalance.c[0];
-      });
+      // this.contract721Service.getUserBalance('0x5C6a5121d259DF9Eca31FAf034A54FFa25db2834').then((adminBalance: any) => {
+      //   this.asset721 = adminBalance.c[0];
+      // });
     }
   }
 
@@ -327,7 +327,7 @@ export class CustomerComponent implements OnInit {
         this.getBalance();
         this.getAllFees();
         this.getFees();
-        // this.totalSupply721();
+        this.totalSupply721();
         if (this.intervalId) {
           clearInterval(this.intervalId);
           // console.log('Interval Id:',this.intervalId);
@@ -342,15 +342,15 @@ export class CustomerComponent implements OnInit {
       )
   }
 
-  // totalSupply721(){
-  //   this.contract721Service.getTotalSupply721().then((res:any) => {
-  //     // console.log(res);
-  //     this.asset721 = res.c[0];
-  //   },
-  //   (err) => {
-  //     console.log(err);
-  //   })
-  // }
+  totalSupply721(){
+    this.contract721Service.getTotalSupply721().then((res:any) => {
+      // console.log(res);
+      this.asset721 = res.c[0];
+    },
+    (err) => {
+      console.log(err);
+    })
+  }
 
   keyBuy(event) {
     this.buyForm.controls['buyFee'].patchValue(this.buyFees);
@@ -386,9 +386,11 @@ export class CustomerComponent implements OnInit {
     this.buyAmount = '';
   }
 
-  burnToken(redeemAmount: number, id) {
+  burnToken(redeemAmount: number, id?) {
     this.contractService.burnToken(redeemAmount).then(() => {
-      this.requestId = id;
+      if(id){
+        this.requestId = id;
+      }
       // swal({
       //   html:'Request Created Successfully </br> Request Id: '+ id
       // });
@@ -420,6 +422,10 @@ export class CustomerComponent implements OnInit {
 
   public async buyRequest() {
     if (this.buyForm.valid) {
+      if((this.buyForm.value.buyFee > this.userBalance) && (this.currPod == 'PodK')){
+        swal('Insufficient no. of tokens');
+        return ;
+      }
       // console.log(JSON.stringify(this.buyForm.value));
       let sender = await this.contractService.getAccount().then(accounts => {
         // console.log(accounts);
@@ -456,6 +462,10 @@ export class CustomerComponent implements OnInit {
           (data: any) => {
             // console.log(data);
             // this.buyAmount = "";
+            if(this.currPod == 'PodK'){
+              this.contractService.burnToken(this.buyForm.value.buyFee).then(() => {
+              });
+            }
             this.requestCreated = true;
             this.requestId = data;
             // swal({

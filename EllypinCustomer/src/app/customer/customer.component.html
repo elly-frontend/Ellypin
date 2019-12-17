@@ -66,8 +66,8 @@
             <div class="bottom-link-wrapper">
               <a>Fee Schedule</a>
               <a routerLink='/terms'>Terms and Condition</a>
-              <a href="https://ropsten.etherscan.io/address/0x44128f17132ae9aac62ce8a47c0cf5465e225c97" target="_blank"
-                style="cursor: pointer">MyEtherScan</a>
+              <a [href]="'https://ropsten.etherscan.io/address/'+contractDetails.contractAddress" target="_blank"
+                style="cursor: pointer">My EtherScan</a>
             </div>
 
             <div class="row">

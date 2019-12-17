@@ -146,10 +146,18 @@ export class AdminComponent implements OnInit {
 
     });
     if(this.currentProvider == 3){
-      this.contract721Service.getUserBalance('0x5C6a5121d259DF9Eca31FAf034A54FFa25db2834').then((adminBalance: any) => {
-        this.asset721 = adminBalance.c[0];
-      });
+      this.totalSupply721();
     }
+  }
+
+  totalSupply721(){
+    this.contract721Service.getTotalSupply721().then((res:any) => {
+      // console.log(res);
+      this.asset721 = res.c[0];
+    },
+    (err) => {
+      console.log(err);
+    })
   }
 
   public async getCustomerData() {
@@ -230,11 +238,11 @@ export class AdminComponent implements OnInit {
       )
 
       if(this.currentProvider == 3){
-        this.contractDetails['contractAddress'] = "0x44128f17132ae9aac62ce8a47c0cf5465e225c97";
+        this.contractDetails['contractAddress'] = "0xfb62d42fd1e0d358b3e90da43382959a398e85ac";
       }
   
       if(this.currentProvider == 4){
-        this.contractDetails['contractAddress'] = "0xe12fFbfa5FF156A195b9e52B9D39091253f8DecC";
+        this.contractDetails['contractAddress'] = "0xe8b39d16ed8785f5624fd238c2a42dd7d070c264";
       }
   }
 
@@ -739,7 +747,7 @@ export class AdminComponent implements OnInit {
       this.swapObjectSet.SWAP_TOKEN_ACKNOWLEDGE = true;
       console.log(parseInt(this.swapObjectSet.totalToken));
       
-      this.contractService.mintToken(this.swapObjectSet.publicKey, (parseInt(this.swapObjectSet.totalToken) + parseInt(this.buyFees)));
+      this.contractService.mintSwapToken(this.swapObjectSet.publicKey, (parseInt(this.swapObjectSet.totalToken) + parseInt(this.buyFees)));
       this.updateSwapObject();
     }
   }
@@ -812,7 +820,7 @@ export class AdminComponent implements OnInit {
   }
 
   exportRopstenCsv(){
-      this.dataService.etherscan('ropsten', 'contractaddress', '0x44128f17132ae9aac62ce8a47c0cf5465e225c97').subscribe((res:any) => {
+      this.dataService.etherscan('ropsten', 'contractaddress', '0xfb62d42fd1e0d358b3e90da43382959a398e85ac').subscribe((res:any) => {
         console.log(res);
         var data = [];
         if(res.result.length){
@@ -856,7 +864,7 @@ export class AdminComponent implements OnInit {
   }
 
   exportRinkebyCsv(){
-      this.dataService.etherscan('rinkeby', 'contractaddress', '0xe12fFbfa5FF156A195b9e52B9D39091253f8DecC').subscribe((res:any) => {
+      this.dataService.etherscan('rinkeby', 'contractaddress', '0xe8b39d16ed8785f5624fd238c2a42dd7d070c264').subscribe((res:any) => {
         console.log(res);
         var data = [];
         if(res.result.length){
@@ -899,5 +907,7 @@ export class AdminComponent implements OnInit {
       })
   }
 
-
+  exportPodK(){
+    window.open('https://ropsten.etherscan.io/exportData?type=tokentxns-nft&contract=0x352ff618f729960b5469aa825f7c2d876f67d1c0&a=&decimal=0', '_target');
+  }
 }

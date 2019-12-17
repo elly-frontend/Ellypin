@@ -197,11 +197,11 @@ export class Custodian2Component implements OnInit {
       )
 
       if(this.currentProvider == 3){
-        this.contractDetails['contractAddress'] = "0x44128f17132ae9aac62ce8a47c0cf5465e225c97";
+        this.contractDetails['contractAddress'] = "0xfb62d42fd1e0d358b3e90da43382959a398e85ac";
       }
   
       if(this.currentProvider == 4){
-        this.contractDetails['contractAddress'] = "0xe12fFbfa5FF156A195b9e52B9D39091253f8DecC";
+        this.contractDetails['contractAddress'] = "0xe8b39d16ed8785f5624fd238c2a42dd7d070c264";
       }
   }
 
