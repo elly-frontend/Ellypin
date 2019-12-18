@@ -29,11 +29,11 @@ export class ContractService {
       this._web3 = new Web3(window.web3.currentProvider);
       window.ethereum.enable(); 
       if(window.web3.currentProvider.networkVersion == 3){
-        this._tokenContractAddress = "0xfb62d42fd1e0d358b3e90da43382959a398e85ac";
+        this._tokenContractAddress = "0x6f9d2dc60834325bc631f8933ad25652b9e3b619";
         this._tokenContract = this._web3.eth.contract(tokenAbi).at(this._tokenContractAddress);
       }else{
         if(window.web3.currentProvider.networkVersion == 4){
-          this._tokenContractAddress = "0xe8b39d16ed8785f5624fd238c2a42dd7d070c264";
+          this._tokenContractAddress = "0x6a83ce7ba1309aa3b25eefc14d9ef39643b8f973";
           this._tokenContract = this._web3.eth.contract(pod2TokenAbi).at(this._tokenContractAddress);
         }
       }

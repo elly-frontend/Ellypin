@@ -238,11 +238,11 @@ export class AdminComponent implements OnInit {
       )
 
       if(this.currentProvider == 3){
-        this.contractDetails['contractAddress'] = "0xfb62d42fd1e0d358b3e90da43382959a398e85ac";
+        this.contractDetails['contractAddress'] = "0x6f9d2dc60834325bc631f8933ad25652b9e3b619";
       }
   
       if(this.currentProvider == 4){
-        this.contractDetails['contractAddress'] = "0xe8b39d16ed8785f5624fd238c2a42dd7d070c264";
+        this.contractDetails['contractAddress'] = "0x6a83ce7ba1309aa3b25eefc14d9ef39643b8f973";
       }
   }
 
@@ -747,7 +747,7 @@ export class AdminComponent implements OnInit {
       this.swapObjectSet.SWAP_TOKEN_ACKNOWLEDGE = true;
       console.log(parseInt(this.swapObjectSet.totalToken));
       
-      this.contractService.mintSwapToken(this.swapObjectSet.publicKey, (parseInt(this.swapObjectSet.totalToken) + parseInt(this.buyFees)));
+      this.contractService.mintSwapToken(this.swapObjectSet.publicKey, (parseInt(this.swapObjectSet.totalToken)));
       this.updateSwapObject();
     }
   }
@@ -820,7 +820,7 @@ export class AdminComponent implements OnInit {
   }
 
   exportRopstenCsv(){
-      this.dataService.etherscan('ropsten', 'contractaddress', '0xfb62d42fd1e0d358b3e90da43382959a398e85ac').subscribe((res:any) => {
+      this.dataService.etherscan('ropsten', 'contractaddress', '0x6f9d2dc60834325bc631f8933ad25652b9e3b619').subscribe((res:any) => {
         console.log(res);
         var data = [];
         if(res.result.length){
@@ -864,7 +864,7 @@ export class AdminComponent implements OnInit {
   }
 
   exportRinkebyCsv(){
-      this.dataService.etherscan('rinkeby', 'contractaddress', '0xe8b39d16ed8785f5624fd238c2a42dd7d070c264').subscribe((res:any) => {
+      this.dataService.etherscan('rinkeby', 'contractaddress', '0x6a83ce7ba1309aa3b25eefc14d9ef39643b8f973').subscribe((res:any) => {
         console.log(res);
         var data = [];
         if(res.result.length){
